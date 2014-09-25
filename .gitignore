@@ -1,2 +1,5 @@
 /build/
+/db/
 /dist/
+/localizethat.properties
+/nbproject/private/
