@@ -5,17 +5,141 @@
  */
 package net.localizethat.gui;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import net.localizethat.util.gui.JStatusBar;
+
 /**
  * Main window of LocalizeThat!
  * @author rpalomares
  */
 public class MainWindow extends javax.swing.JFrame {
+    private static final Icon CLOSE_TAB_ICON = new ImageIcon(
+            MainWindow.class.getResource("/net/localizethat/resources/close-tab-button.png"));
+    private static final Icon CLOSE_TAB_ICON_HOVER = new ImageIcon(
+            MainWindow.class.getResource("/net/localizethat/resources/close-tab-button-hover.png"));
 
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
+    }
+
+    public JStatusBar getStatusBar() {
+        return statusBar;
+    }
+
+    public void addTab(JPanel content, String title, int order) {
+        // TODO: change addClosableTab to allow order positioning
+        addClosableTab(tabPanel, content, title, null);
+    }
+
+    public void addTab(JPanel content, String title) {
+        addClosableTab(tabPanel, content, title, null);
+    }
+
+    /**
+     * Adds a component to a JTabbedPane with a little "Close tab" button on the right side of the tab.
+     *
+     * @param tabbedPane the JTabbedPane
+     * @param c any JComponent, usually a JPanel
+     * @param title the title for the tab
+     * @param icon the icon for the tab, if desired
+     */
+    public void addClosableTab(final JTabbedPane tabbedPane, final JComponent c,
+            final String title, final Icon icon) {
+
+        // Add the tab to the pane without any label
+        tabbedPane.addTab(null, c);
+        int pos = tabbedPane.indexOfComponent(c);
+
+        // Create a FlowLayout that will space things 5px apart
+        FlowLayout f = new FlowLayout(FlowLayout.CENTER, 5, 0);
+
+        // Make a small JPanel with the layout and make it non-opaque
+        JPanel pnlTab = new JPanel(f);
+        pnlTab.setOpaque(false);
+
+        // Add a JLabel with title and the left-side tab icon
+        JLabel lblTitle = new JLabel(title);
+        lblTitle.setIcon(icon);
+
+        // Create a JButton for the close tab button
+        JButton btnClose = new JButton();
+        btnClose.setOpaque(false);
+
+        // Configure icon and rollover icon for button
+        btnClose.setRolloverIcon(CLOSE_TAB_ICON_HOVER);
+        btnClose.setRolloverEnabled(true);
+        btnClose.setIcon(CLOSE_TAB_ICON);
+
+        // Set border null so the button doesn't make the tab too big
+        btnClose.setBorder(null);
+
+        // Make sure the button can't get focus, otherwise it looks funny
+        btnClose.setFocusable(false);
+
+        // Put the panel together
+        pnlTab.add(lblTitle);
+        pnlTab.add(btnClose);
+
+        // Add a thin border to keep the image below the top edge of the tab
+        // when the tab is selected
+        pnlTab.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
+        // Now assign the component for the tab
+        tabbedPane.setTabComponentAt(pos, pnlTab);
+
+        // Add the listener that removes the tab
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // The component parameter must be declared "final" so that it can be
+                // referenced in the anonymous listener class like this.
+                tabbedPane.remove(c);
+                c.setVisible(false);
+            }
+        };
+        btnClose.addActionListener(listener);
+
+        // Optionally bring the new tab to the front
+        tabbedPane.setSelectedComponent(c);
+
+    //-------------------------------------------------------------
+        // Bonus: Adding a <Ctrl-W> keystroke binding to close the tab
+        //-------------------------------------------------------------
+        AbstractAction closeTabAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPane.remove(c);
+            }
+        };
+
+        // Create a keystroke
+        KeyStroke controlW = KeyStroke.getKeyStroke("control W");
+
+    // Get the appropriate input map using the JComponent constants.
+        // This one works well when the component is a container.
+        InputMap inputMap = c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        // Add the key binding for the keystroke to the action name
+        inputMap.put(controlW, "closeTab");
+
+        // Now add a single binding for the action name to the anonymous action
+        c.getActionMap().put("closeTab", closeTabAction);
     }
 
     /**
@@ -28,14 +152,17 @@ public class MainWindow extends javax.swing.JFrame {
 
         aboutAction = new net.localizethat.actions.AboutAction();
         preferencesAction = new net.localizethat.actions.PreferencesAction();
-        jStatusBar1 = new net.localizethat.util.gui.JStatusBar();
-        jToolBar1 = new javax.swing.JToolBar();
-        jPanel1 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        localeManagerAction = new net.localizethat.actions.LocaleManagerAction();
+        statusBar = new net.localizethat.util.gui.JStatusBar();
+        mainToolBar = new javax.swing.JToolBar();
+        preferencesButton = new javax.swing.JButton();
+        contentPanel = new javax.swing.JPanel();
+        tabPanel = new javax.swing.JTabbedPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         updateProductsMenuItem = new javax.swing.JMenuItem();
         manageProductsMenuItem = new javax.swing.JMenuItem();
+        manageLocalesMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
@@ -52,17 +179,23 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LocalizeThat!");
 
-        jToolBar1.setRollover(true);
+        mainToolBar.setRollover(true);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+        preferencesButton.setAction(preferencesAction);
+        preferencesButton.setHideActionText(true);
+        preferencesButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        preferencesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mainToolBar.add(preferencesButton);
+
+        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
+        contentPanel.setLayout(contentPanelLayout);
+        contentPanelLayout.setHorizontalGroup(
+            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(tabPanel)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+        contentPanelLayout.setVerticalGroup(
+            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
         );
 
         fileMenu.setMnemonic('f');
@@ -75,6 +208,9 @@ public class MainWindow extends javax.swing.JFrame {
         manageProductsMenuItem.setMnemonic('M');
         manageProductsMenuItem.setText("Manage Products");
         fileMenu.add(manageProductsMenuItem);
+
+        manageLocalesMenuItem.setAction(localeManagerAction);
+        fileMenu.add(manageLocalesMenuItem);
         fileMenu.add(jSeparator1);
 
         exitMenuItem.setMnemonic('x');
@@ -101,7 +237,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         preferencesMenuItem.setAction(preferencesAction);
         preferencesMenuItem.setMnemonic('P');
-        preferencesMenuItem.setText("Preferences");
         editMenu.add(preferencesMenuItem);
 
         menuBar.add(editMenu);
@@ -126,18 +261,18 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jStatusBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 734, Short.MAX_VALUE)
+            .addComponent(mainToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(mainToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jStatusBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(statusBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -162,6 +297,7 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private net.localizethat.actions.AboutAction aboutAction;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JPanel contentPanel;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
@@ -169,16 +305,18 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private net.localizethat.util.gui.JStatusBar jStatusBar1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JToolBar jToolBar1;
+    private net.localizethat.actions.LocaleManagerAction localeManagerAction;
+    private javax.swing.JToolBar mainToolBar;
+    private javax.swing.JMenuItem manageLocalesMenuItem;
     private javax.swing.JMenuItem manageProductsMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem pasteMenuItem;
     private net.localizethat.actions.PreferencesAction preferencesAction;
+    private javax.swing.JButton preferencesButton;
     private javax.swing.JMenuItem preferencesMenuItem;
+    private net.localizethat.util.gui.JStatusBar statusBar;
+    private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JMenuItem updateProductsMenuItem;
     // End of variables declaration//GEN-END:variables
 
