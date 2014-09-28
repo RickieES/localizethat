@@ -36,6 +36,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @UniqueConstraint(columnNames = {"L10NNAME"})})
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "L10n.countAll", query = "SELECT COUNT(l) FROM L10n l"),
+    @NamedQuery(name = "L10n.countById", query = "SELECT COUNT(l) FROM L10n l WHERE l.id = :id"),
+    @NamedQuery(name = "L10n.countByL10ncode", query = "SELECT COUNT(l) FROM L10n l WHERE l.code = :code"),
     @NamedQuery(name = "L10n.findAll", query = "SELECT l FROM L10n l ORDER BY l.code"),
     @NamedQuery(name = "L10n.findById", query = "SELECT l FROM L10n l WHERE l.id = :id"),
     @NamedQuery(name = "L10n.findByL10ncode", query = "SELECT l FROM L10n l WHERE l.code = :code"),
