@@ -7,6 +7,7 @@ package net.localizethat.actions;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import net.localizethat.gui.dialogs.PreferencesDialog;
 
 /**
@@ -15,12 +16,17 @@ import net.localizethat.gui.dialogs.PreferencesDialog;
  */
 public class PreferencesAction extends AbstractAction {
     private static final String TITLE = "Preferences";
-    private static final String DESCRIPTION = "Opens Preferences dialog" + TITLE;
+    private static final String DESCRIPTION = "Open Preferences dialog";
+    private static final String ICON = "preferences.png";
     private PreferencesDialog prefDialog;
 
     public PreferencesAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
+
+        ImageIcon icon = new ImageIcon(LocaleManagerAction.class.getResource(
+                    "/net/localizethat/resources/" + ICON));
+        putValue(LARGE_ICON_KEY, icon);
     }
 
     @Override
