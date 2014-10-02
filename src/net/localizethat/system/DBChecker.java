@@ -152,9 +152,9 @@ public final class DBChecker {
 
         try {
             st = dbConnection.createStatement();
-            ResultSet res = st.executeQuery("SELECT VALUE FROM APP.CONFIG WHERE ID = 'DB_VERSION'");
+            ResultSet res = st.executeQuery("SELECT CONFIGVALUE FROM APP.CONFIG WHERE ID = 'DB_VERSION'");
             while (res.next()) {
-                dbVersionString = res.getString("VALUE");
+                dbVersionString = res.getString("CONFIGVALUE");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBChecker.class.getName()).log(Level.WARNING, null, ex);
