@@ -153,6 +153,7 @@ public class MainWindow extends javax.swing.JFrame {
         aboutAction = new net.localizethat.actions.AboutAction();
         preferencesAction = new net.localizethat.actions.PreferencesAction();
         localeManagerAction = new net.localizethat.actions.LocaleManagerAction();
+        channelManagerAction = new net.localizethat.actions.ChannelManagerAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
@@ -163,6 +164,7 @@ public class MainWindow extends javax.swing.JFrame {
         updateProductsMenuItem = new javax.swing.JMenuItem();
         manageProductsMenuItem = new javax.swing.JMenuItem();
         manageLocalesMenuItem = new javax.swing.JMenuItem();
+        manageChannelsMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
@@ -195,7 +197,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
+            .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
         );
 
         fileMenu.setMnemonic('f');
@@ -206,13 +208,17 @@ public class MainWindow extends javax.swing.JFrame {
         fileMenu.add(updateProductsMenuItem);
 
         manageProductsMenuItem.setMnemonic('M');
-        manageProductsMenuItem.setText("Manage Products");
+        manageProductsMenuItem.setText("Product Manager");
         fileMenu.add(manageProductsMenuItem);
 
         manageLocalesMenuItem.setAction(localeManagerAction);
         fileMenu.add(manageLocalesMenuItem);
+
+        manageChannelsMenuItem.setAction(channelManagerAction);
+        fileMenu.add(manageChannelsMenuItem);
         fileMenu.add(jSeparator1);
 
+        exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(formListener);
@@ -261,7 +267,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 734, Short.MAX_VALUE)
+            .addComponent(statusBar, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
             .addComponent(mainToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -297,6 +303,7 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private net.localizethat.actions.AboutAction aboutAction;
     private javax.swing.JMenuItem aboutMenuItem;
+    private net.localizethat.actions.ChannelManagerAction channelManagerAction;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
@@ -308,6 +315,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private net.localizethat.actions.LocaleManagerAction localeManagerAction;
     private javax.swing.JToolBar mainToolBar;
+    private javax.swing.JMenuItem manageChannelsMenuItem;
     private javax.swing.JMenuItem manageLocalesMenuItem;
     private javax.swing.JMenuItem manageProductsMenuItem;
     private javax.swing.JMenuBar menuBar;
