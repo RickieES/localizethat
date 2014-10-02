@@ -15,7 +15,7 @@
 
 CREATE TABLE "APP"."CONFIG" (
   ID varchar(32) CONSTRAINT CONFIG_PK PRIMARY KEY NOT NULL,
-  VALUE varchar(128)
+  CONFIGVALUE varchar(128)
 );
 --
 -- Database schema version. As config values are all strings, and for simplicity,
