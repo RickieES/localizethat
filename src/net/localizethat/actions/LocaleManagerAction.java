@@ -9,7 +9,7 @@ package net.localizethat.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import net.localizethat.Main;
-import net.localizethat.gui.dialogs.L10nGUIManager;
+import net.localizethat.gui.tabpanels.L10nGUIManager;
 
 /**
  * Opens a tab with the locale manager in the main window

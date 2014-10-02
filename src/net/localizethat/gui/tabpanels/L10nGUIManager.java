@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package net.localizethat.gui.dialogs;
+package net.localizethat.gui.tabpanels;
 
 import java.beans.Beans;
 import java.text.SimpleDateFormat;
@@ -64,10 +64,10 @@ public class L10nGUIManager extends javax.swing.JPanel {
         }
 
         // Validation 2: the L10n code can't exist already in the database
-        TypedQuery<Integer> validationQuery = entityManager.createNamedQuery(
-                "L10n.countByL10ncode", Integer.class);
+        TypedQuery<Long> validationQuery = entityManager.createNamedQuery(
+                "L10n.countByL10ncode", Long.class);
         validationQuery.setParameter("code", l10nCodeField.getText());
-        if (validationQuery.getSingleResult() > 0) {
+        if (validationQuery.getSingleResult() > 0L) {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
                     "Error while saving: L10n code already exists",
                     "The L10n code of the entity you want to save already exists in the database");
