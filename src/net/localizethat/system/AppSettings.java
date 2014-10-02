@@ -61,6 +61,12 @@ public class AppSettings {
     public static final String PREF_FONT_TABLEVIEW_STYLE = "font.tableview.style";
     public static final String PREF_FONT_TABLEVIEW_SIZE = "font.tableview.size";
 
+    /**
+     * Keys for logging preferences
+     */
+    public static final String PREF_LOGGING_FILENAME = "logging.filename";
+    public static final String PREF_LOGGING_LOGLEVEL = "logging.loglevel";
+
     private Properties prefValues;
     private String pathToPrefsFile;
 
