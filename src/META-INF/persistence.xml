@@ -3,6 +3,8 @@
   <persistence-unit name="localizethatPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>net.localizethat.model.L10n</class>
+    <class>net.localizethat.model.ConfigValue</class>
+    <class>net.localizethat.model.Channel</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/lt-data"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>
