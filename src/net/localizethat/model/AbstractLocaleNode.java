@@ -43,12 +43,10 @@ public abstract class AbstractLocaleNode implements LocaleNode {
     @Basic(optional = false)
     @Column(name = "LNODENAME", nullable = false, length = LOCALENODENAME_LENGTH)
     private String name;
-    @Column(name = "LNODEPARENT")
-    @JoinColumn(name = "PARENT_ID", referencedColumnName = "ID", nullable = true)
+    @JoinColumn(name = "LNODEPARENT", referencedColumnName = "ID", nullable = true)
     @ManyToOne(optional = false)
     private LocaleNode parent;
-    @Column(name = "LNODETWIN")
-    @JoinColumn(name = "TWIN_ID", referencedColumnName = "ID", nullable = true)
+    @JoinColumn(name = "LNODETWIN", referencedColumnName = "ID", nullable = true)
     @OneToOne(optional = true)
     private LocaleNode defLocaleTwin;
 

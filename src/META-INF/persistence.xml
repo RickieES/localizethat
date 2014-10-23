@@ -7,6 +7,8 @@
     <class>net.localizethat.model.Channel</class>
     <class>net.localizethat.model.ProductLocale</class>
     <class>net.localizethat.model.Product</class>
+    <class>net.localizethat.model.ProductPath</class>
+    <class>net.localizethat.model.LocaleContainer</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/lt-data"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>

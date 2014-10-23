@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -14,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -30,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author rpalomares
  */
 @Entity
-@Table(uniqueConstraints = {
+@Table(name = "APP.PRODUCTLOCALE", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"PRODUCT_ID", "L10N_ID"}),
     @UniqueConstraint(columnNames = {"L10N_ID", "PRODUCT_ID"})})
 @XmlRootElement
@@ -63,6 +66,11 @@ public class ProductLocale implements Serializable {
     @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
     @ManyToOne(optional = false)
     private L10n l10nId;
+    @ManyToMany
+    @JoinTable(name="PRODLOCALEXPATH",
+            joinColumns=@JoinColumn(name="PRODLOCALEID"),
+            inverseJoinColumns=@JoinColumn(name="PRODPATHID"))
+    private Collection<ProductPath> pathList;
     @Column(name = "PRODLCREATIONDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -107,6 +115,65 @@ public class ProductLocale implements Serializable {
 
     public void setL10nId(L10n l10nId) {
         this.l10nId = l10nId;
+    }
+
+    public boolean addProductPath(ProductPath productPath) {
+        if (!hasProductPath(productPath)) {
+            pathList.add(productPath);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean hasProductPath(ProductPath productPath) {
+        return pathList.contains(productPath);
+    }
+
+    public boolean hasProductPath(String path) {
+        return hasProductPath(path, false);
+    }
+
+    public boolean hasProductPath(String path, boolean matchCase) {
+        return pathList.stream().anyMatch((pp) ->
+                ((matchCase) ? (pp.getPath().equals(path)) : (pp.getPath().equalsIgnoreCase(path))));
+    }
+
+    public ProductPath getProductPathByPath(String path) {
+        return getProductPathByPath(path, false);
+    }
+
+    public ProductPath getProductPathByPath(String path, boolean matchCase) {
+        for(ProductPath pp : pathList) {
+            if ((matchCase) ? (pp.getPath().equals(path))
+                                        : (pp.getPath().equalsIgnoreCase(path))) {
+                return pp;
+            }
+        }
+        return null;
+    }
+
+    public ProductPath removeProductPath(String path) {
+        ProductPath pp = getProductPathByPath(path);
+
+        if ((pp != null) && (removeProductPath(pp))) {
+            return pp;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean removeProductPath(ProductPath productPath) {
+        return pathList.remove(productPath);
+    }
+
+    public boolean clearPaths() {
+        try {
+            pathList.clear();
+            return true;
+        } catch (UnsupportedOperationException e) {
+            return false;
+        }
     }
 
     public Date getCreationDate() {

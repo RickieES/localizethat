@@ -5,10 +5,25 @@
  */
 package net.localizethat.model;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author rpalomares
  */
-public class LocaleContainer extends AbstractLocaleNode {
+@Entity
+@Table(name = "APP.LOCALECONTAINER")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "LocaleContainer.countAll", query = "SELECT COUNT(lc) FROM LocaleContainer lc"),
+    @NamedQuery(name = "LocaleContainer.count", query = "SELECT COUNT(lc) FROM LocaleContainer lc")
+})
+
+public class LocaleContainer extends AbstractLocaleNode implements Serializable {
 
 }

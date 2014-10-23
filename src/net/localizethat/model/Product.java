@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author rpalomares
  */
 @Entity
-@Table(uniqueConstraints = {
+@Table(name = "APP.PRODUCT", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"PRODNAME", "CHANNEL_ID"})})
 @XmlRootElement
 @NamedQueries({
