@@ -5,11 +5,11 @@
  */
 package net.localizethat.model;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,11 +18,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -43,12 +44,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Product.countAll", query = "SELECT COUNT(p) FROM Product p"),
     @NamedQuery(name = "Product.countById", query = "SELECT COUNT(p) FROM Product p WHERE p.id = :id"),
-    @NamedQuery(name = "Product.countByName", query = "SELECT COUNT(p) FROM Product p WHERE p.name = :name"),
+    @NamedQuery(name = "Product.countByName", query = "SELECT COUNT(p) FROM Product p WHERE UPPER(p.name) = UPPER(:name)"),
     @NamedQuery(name = "Product.countByL10n", query = "SELECT COUNT(p) FROM Product p WHERE p.l10nId = :l10nid"),
     @NamedQuery(name = "Product.countByChannel", query = "SELECT COUNT(p) FROM Product p WHERE p.channelId = :channelid"),
     @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
     @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
-    @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
+    @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE UPPER(p.name) = UPPER(:name)"),
     @NamedQuery(name = "Product.findBysrcType", query = "SELECT p FROM Product p WHERE p.srcType = :srctype"),
     @NamedQuery(name = "Product.findByL10n", query = "SELECT p FROM Product p WHERE p.l10nId = :l10nid"),
     @NamedQuery(name = "Product.findByChannel", query = "SELECT p FROM Product p WHERE p.channelId = :channelid"),
@@ -93,8 +94,11 @@ public class Product implements Serializable {
     @Column(name = "PRODLASTUPDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
-    private Collection<ProductLocale> productLocaleCollection;
+    @ManyToMany
+    @JoinTable(name="APP.PRODUCT_PATH",
+            joinColumns=@JoinColumn(name="PRODUCT_ID"),
+            inverseJoinColumns=@JoinColumn(name="LOCALEPATH_ID"))
+    private Collection<LocalePath> pathList;
 
     public Product() {
     }
@@ -130,7 +134,7 @@ public class Product implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.substring(0, Math.min(name.length(), Product.PRODNAME_LENGTH));
     }
 
     public ProductSourceType getSrcType() {
@@ -162,7 +166,7 @@ public class Product implements Serializable {
     }
 
     public void setNotes(String notes) {
-        this.notes = notes;
+        this.notes = notes.substring(0, Math.min(notes.length(), Product.PRODNOTES_LENGTH));
     }
 
     public String getColor() {
@@ -170,7 +174,7 @@ public class Product implements Serializable {
     }
 
     public void setColor(String color) {
-        this.color = color;
+        this.color = color.substring(0, Math.min(color.length(), Product.PRODCOLOR_LENGTH));
     }
 
     public Date getCreationDate() {
@@ -189,13 +193,108 @@ public class Product implements Serializable {
         this.lastUpdate = lastUpdate;
     }
 
-    @XmlTransient
-    public Collection<ProductLocale> getProductLocaleCollection() {
-        return productLocaleCollection;
+    public Color returnAwtColor() {
+        // TODO Refactor this parsing from color hexadecimal representation into a common function
+        int rColor;
+        int gColor;
+        int bColor;
+        try {
+            rColor = Integer.parseInt(getColor().substring(0, 2), 16);
+            gColor = Integer.parseInt(getColor().substring(2, 4), 16);
+            bColor = Integer.parseInt(getColor().substring(4, 6), 16);
+        } catch (NumberFormatException numberFormatException) {
+            rColor = Color.LIGHT_GRAY.getRed();
+            gColor = Color.LIGHT_GRAY.getGreen();
+            bColor = Color.LIGHT_GRAY.getBlue();
+        }
+        return new Color(rColor, gColor, bColor);
     }
 
-    public void setProductLocaleCollection(Collection<ProductLocale> productLocaleCollection) {
-        this.productLocaleCollection = productLocaleCollection;
+    public boolean addChild(LocalePath lp) {
+        return addLocalePath(lp);
+    }
+
+    public boolean addLocalePath(LocalePath lp) {
+        if (!Product.this.hasChild(lp)) {
+            pathList.add(lp);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean clearChildren() {
+        return clearLocalePathCollection();
+    }
+
+    public boolean clearLocalePathCollection() {
+        try {
+            pathList.clear();
+            return true;
+        } catch (UnsupportedOperationException e) {
+            return false;
+        }
+    }
+
+    public boolean hasChild(LocalePath lp) {
+        return Product.this.hasLocalePath(lp);
+    }
+
+    public boolean hasLocalePath(LocalePath lp) {
+        return pathList.contains(lp);
+    }
+
+    public boolean hasChild(String path) {
+        return hasLocalePath(path, false);
+    }
+
+    public boolean hasLocalePath(String path) {
+        return hasLocalePath(path, false);
+    }
+
+    public boolean hasChild(String path, boolean matchCase) {
+        return hasLocalePath(path, matchCase);
+    }
+
+    public boolean hasLocalePath(String path, boolean matchCase) {
+        boolean found = false;
+
+        for (LocalePath lp : pathList) {
+            found = (matchCase) ? (lp.getPath().equals(path)) : (lp.getPath().equalsIgnoreCase(path));
+        }
+        return found;
+    }
+
+    public LocalePath getChildByName(String path) {
+        return getLocalePath(path, false);
+    }
+
+    public LocalePath getLocalePath(String path) {
+        return getLocalePath(path, false);
+    }
+
+    public LocalePath getChildByName(String path, boolean matchCase) {
+        return getLocalePath(path, matchCase);
+    }
+
+    public LocalePath getLocalePath(String path, boolean matchCase) {
+        for(LocalePath lp : pathList) {
+            boolean found = (matchCase) ? (lp.getPath().equals(path))
+                                        : (lp.getPath().equalsIgnoreCase(path));
+            if (found) {
+                return lp;
+            }
+        }
+        return null;
+    }
+
+    @XmlTransient
+    public Collection<LocalePath> getPathList() {
+        return pathList;
+    }
+
+    public void setPathList(Collection<LocalePath> pathList) {
+        this.pathList = pathList;
     }
 
     @Override
@@ -207,7 +306,6 @@ public class Product implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Product)) {
             return false;
         }
@@ -217,7 +315,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return name + " (channel: " + ")";
+        return name;
     }
 
 }

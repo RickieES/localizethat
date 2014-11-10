@@ -24,6 +24,21 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LocaleContainer.count", query = "SELECT COUNT(lc) FROM LocaleContainer lc")
 })
 
-public class LocaleContainer extends AbstractLocaleNode implements Serializable {
+public class LocaleContainer extends AbstractLocaleNode<LocaleContainer, LocaleContainer, LocaleContainer> implements Serializable {
+
+    @Override
+    public boolean addChild(LocaleContainer node) {
+        LocaleContainer cont;
+
+        if ((node instanceof LocaleContainer)) { // TODO add check for LocaleFile
+            cont = (LocaleContainer) node;
+
+            if (!hasChild(cont)) {
+                children.add(cont);
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

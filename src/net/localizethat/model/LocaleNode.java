@@ -9,9 +9,12 @@ package net.localizethat.model;
  * A class representing a node in the hierarchical representation of a localization project.
  * The root node is still to be decided, and it extends to the different elements of a
  * localizable file
+ * @param <P> the parent class
+ * @param <S> the sibling class
+ * @param <D> the descendent class
  * @author rpalomares
  */
-public interface LocaleNode {
+public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extends LocaleNode> {
     
     /**
      * Sets the name of the node. What exactly represents the name depends on the specific subtype
@@ -29,15 +32,15 @@ public interface LocaleNode {
 
     /**
      * Sets the parent of this node. This allows travelling up in the tree
-     * @param parent a LocaleNode in whose children list exists this node
+     * @param parent a LocaleNode descendent in whose children list exists this node
      */
-    void setParent(LocaleNode parent);
+    void setParent(P parent);
 
     /**
      * Gets the parent of this node.
-     * @return a LocaleNode in whose children list exists this node
+     * @return a LocaleNode descendent in whose children list exists this node
      */
-    LocaleNode getParent();
+    P getParent();
 
     /**
      * Adds a child to this node. Each implementation must control which LocaleNode subclasses
@@ -46,18 +49,18 @@ public interface LocaleNode {
      *
      * A single LocaleNode instance can't be added twice as child of a given LocaleNode
      *
-     * @param node a LocaleNode that is considered a child of this one
+     * @param node a LocaleNode descendent that is considered a child of this one
      * @return true if node could be added, false otherwise (mainly, because it already existed
      * as a child)
      */
-    boolean addChild(LocaleNode node);
+    boolean addChild(D node);
 
     /**
      * Checks if the LocaleNode passed is a child of this node
      * @param node the LocaleNode to be checked as a child of this node
      * @return true if it is in the children list of this node
      */
-    boolean isChild(LocaleNode node);
+    boolean hasChild(D node);
 
     /**
      * Checks if a LocaleNode exists in the children list of this node which name property
@@ -66,7 +69,7 @@ public interface LocaleNode {
      *             considering the case of the string
      * @return true if a LocaleNode is found with the same name property, case insensitive
      */
-    boolean isChild(String name);
+    boolean hasChild(String name);
 
     /**
      * Checks if a LocaleNode exists in the children list of this node which name property
@@ -75,7 +78,7 @@ public interface LocaleNode {
      * @param matchCase whether the case of the name property and name parameter must match or not
      * @return true if a LocaleNode is found with the same name property
      */
-    boolean isChild(String name, boolean matchCase);
+    boolean hasChild(String name, boolean matchCase);
 
     /**
      * Finds and returns the first LocaleNode child whose name property matches the parameter
@@ -85,7 +88,7 @@ public interface LocaleNode {
      * @return the first LocaleNode child child whose name property matches the parameter
      * passed, case insensitive
      */
-    LocaleNode getChildByName(String name);
+    D getChildByName(String name);
 
     /**
      * Finds and returns the first LocaleNode child whose name property matches the parameter
@@ -95,15 +98,24 @@ public interface LocaleNode {
      * @return the first LocaleNode child child whose name property matches the parameter
      * passed
      */
-    LocaleNode getChildByName(String name, boolean matchCase);
+    D getChildByName(String name, boolean matchCase);
 
     /**
      * Finds and removes the first LocaleNode child whose name property matches the parameter
-     * passed (case sensitive)
+     * passed (case insensitive)
      * @param name the name property that should have the child we are looking for
      * @return the removed LocaleNode, or null if no LocaleNode child could be found with that name
      */
-    LocaleNode removeChild(String name);
+    D removeChild(String name);
+
+    /**
+     * Finds and removes the first LocaleNode child whose name property matches the parameter
+     * passed
+     * @param name the name property that should have the child we are looking for
+     * @param matchCase whether the case of the name property and name parameter must match or not
+     * @return the removed LocaleNode, or null if no LocaleNode child could be found with that name
+     */
+    D removeChild(String name, boolean matchCase);
 
     /**
      * Finds and removes the passed LocaleNode from the children list of this node
@@ -111,7 +123,7 @@ public interface LocaleNode {
      * @return true if the node was successfully removed, false otherwise (mainly, because it was not
      * a child of this)
      */
-    boolean removeChild(LocaleNode node);
+    boolean removeChild(D node);
 
     /**
      * Removes all the children from this node
@@ -139,7 +151,7 @@ public interface LocaleNode {
      * </ul>
      * @param twin the LocaleNode instance equivalent of this in the default locale of the Product
      */
-    void setDefLocaleTwinId(LocaleNode twin);
+    void setDefLocaleTwinId(S twin);
 
     /**
      * Returns the "twin" node of this for the default locale of the Product.
@@ -161,5 +173,5 @@ public interface LocaleNode {
      * </ul>
      * @return the LocaleNode instance equivalent of this in the default locale of the Product
      */
-    LocaleNode getDefLocaleTwin();
+    S getDefLocaleTwin();
 }

@@ -38,13 +38,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "L10n.countAll", query = "SELECT COUNT(l) FROM L10n l"),
     @NamedQuery(name = "L10n.countById", query = "SELECT COUNT(l) FROM L10n l WHERE l.id = :id"),
-    @NamedQuery(name = "L10n.countByL10ncode", query = "SELECT COUNT(l) FROM L10n l WHERE l.code = :code"),
+    @NamedQuery(name = "L10n.countByL10ncode", query = "SELECT COUNT(l) FROM L10n l WHERE UPPER(l.code) = UPPER(:code)"),
     @NamedQuery(name = "L10n.findAll", query = "SELECT l FROM L10n l ORDER BY l.code"),
     @NamedQuery(name = "L10n.findById", query = "SELECT l FROM L10n l WHERE l.id = :id"),
-    @NamedQuery(name = "L10n.findByL10ncode", query = "SELECT l FROM L10n l WHERE l.code = :code"),
-    @NamedQuery(name = "L10n.findByL10nname", query = "SELECT l FROM L10n l WHERE l.name = :name"),
-    @NamedQuery(name = "L10n.findByL10nteamname", query = "SELECT l FROM L10n l WHERE l.teamName = :teamname"),
-    @NamedQuery(name = "L10n.findByL10nurl", query = "SELECT l FROM L10n l WHERE l.url = :url"),
+    @NamedQuery(name = "L10n.findByL10ncode", query = "SELECT l FROM L10n l WHERE UPPER(l.code) = UPPER(:code)"),
+    @NamedQuery(name = "L10n.findByL10nname", query = "SELECT l FROM L10n l WHERE UPPER(l.name) = UPPER(:name)"),
+    @NamedQuery(name = "L10n.findByL10nteamname", query = "SELECT l FROM L10n l WHERE UPPER(l.teamName) = UPPER(:teamname)"),
+    @NamedQuery(name = "L10n.findByL10nurl", query = "SELECT l FROM L10n l WHERE UPPER(l.url) = UPPER(:url)"),
     @NamedQuery(name = "L10n.findByL10ncreationdate", query = "SELECT l FROM L10n l WHERE l.creationDate = :creationdate"),
     @NamedQuery(name = "L10n.findByL10nlastupdate", query = "SELECT l FROM L10n l WHERE l.lastUpdate = :lastupdate")})
 public class L10n implements Serializable, Comparable<L10n> {

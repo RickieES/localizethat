@@ -25,10 +25,14 @@ import javax.persistence.Version;
 
 /**
  *
+ * @param <P> the parent class
+ * @param <S> the sibling class
+ * @param <D> the descendent class
  * @author rpalomares
  */
 @MappedSuperclass
-public abstract class AbstractLocaleNode implements LocaleNode {
+public abstract class AbstractLocaleNode<P extends LocaleNode, S extends LocaleNode, D extends LocaleNode>
+        implements LocaleNode<P, S, D> {
     private static final int LOCALENODENAME_LENGTH = 128;
     @TableGenerator(name="LOCALENODE", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
             valueColumnName="COUNTERVALUE", allocationSize = 5)
@@ -45,17 +49,33 @@ public abstract class AbstractLocaleNode implements LocaleNode {
     private String name;
     @JoinColumn(name = "LNODEPARENT", referencedColumnName = "ID", nullable = true)
     @ManyToOne(optional = false)
-    private LocaleNode parent;
+    private P parent;
     @JoinColumn(name = "LNODETWIN", referencedColumnName = "ID", nullable = true)
     @OneToOne(optional = true)
-    private LocaleNode defLocaleTwin;
-
+    private S defLocaleTwin;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    Collection<LocaleNode> children;
+    Collection<D> children;
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
+    public int getEntityVersion() {
+        return entityVersion;
+    }
+
+    public void setEntityVersion(int entityVersion) {
+        this.entityVersion = entityVersion;
+    }
 
     @Override
     public void setName(String name) {
@@ -68,49 +88,43 @@ public abstract class AbstractLocaleNode implements LocaleNode {
     }
 
     @Override
-    public void setParent(LocaleNode parent) {
+    public void setParent(P parent) {
         this.parent = parent;
     }
 
     @Override
-    public LocaleNode getParent() {
+    public P getParent() {
         return parent;
     }
 
     @Override
-    public boolean addChild(LocaleNode node) {
-
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean isChild(LocaleNode node) {
+    public boolean hasChild(D node) {
         return children.contains(node);
     }
 
     @Override
-    public boolean isChild(String name) {
-        return isChild(name, false);
+    public boolean hasChild(String name) {
+        return hasChild(name, false);
     }
 
     @Override
-    public boolean isChild(String name, boolean matchCase) {
+    public boolean hasChild(String name, boolean matchCase) {
         boolean found = false;
 
-        for(LocaleNode l : children) {
+        for(D l : children) {
             found = (matchCase) ? (l.getName().equals(name)) : (l.getName().equalsIgnoreCase(name));
         }
         return found;
     }
 
     @Override
-    public LocaleNode getChildByName(String name) {
+    public D getChildByName(String name) {
         return getChildByName(name, false);
     }
 
     @Override
-    public LocaleNode getChildByName(String name, boolean matchCase) {
-        for(LocaleNode l : children) {
+    public D getChildByName(String name, boolean matchCase) {
+        for(D l : children) {
             boolean found = (matchCase) ? (l.getName().equals(name))
                                         : (l.getName().equalsIgnoreCase(name));
             if (found) {
@@ -121,8 +135,14 @@ public abstract class AbstractLocaleNode implements LocaleNode {
     }
 
     @Override
-    public LocaleNode removeChild(String name) {
-        LocaleNode l = getChildByName(name);
+    public D removeChild(String name) {
+        return removeChild(name, false);
+    }
+
+
+    @Override
+    public D removeChild(String name, boolean matchCase) {
+        D l = getChildByName(name, matchCase);
 
         if ((l != null) && (removeChild(l))) {
             return l;
@@ -132,7 +152,7 @@ public abstract class AbstractLocaleNode implements LocaleNode {
     }
 
     @Override
-    public boolean removeChild(LocaleNode node) {
+    public boolean removeChild(D node) {
         return children.remove(node);
     }
 
@@ -147,13 +167,29 @@ public abstract class AbstractLocaleNode implements LocaleNode {
     }
 
     @Override
-    public void setDefLocaleTwinId(LocaleNode twin) {
+    public void setDefLocaleTwinId(S twin) {
         this.defLocaleTwin = twin;
     }
 
     @Override
-    public LocaleNode getDefLocaleTwin() {
+    public S getDefLocaleTwin() {
         return defLocaleTwin;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
 }
