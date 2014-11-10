@@ -8,8 +8,6 @@ package net.localizethat.gui.tabpanels;
 import java.beans.Beans;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
@@ -29,7 +27,6 @@ public class L10nGUIManager extends javax.swing.JPanel {
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
-    L10n selectedL10n;
 
     /**
      * Creates new form L10nGUIManager
@@ -66,25 +63,11 @@ public class L10nGUIManager extends javax.swing.JPanel {
             return false;
         }
 
-        // Validation 2: the L10n code (case insensitive) can't exist already in the database,
-        // except in the same item
-        TypedQuery<L10n> validationQuery = entityManager.createNamedQuery(
-                "L10n.findByCode", L10n.class);
+        // Validation 2: the L10n code can't exist already in the database
+        TypedQuery<Long> validationQuery = entityManager.createNamedQuery(
+                "L10n.countByL10ncode", Long.class);
         validationQuery.setParameter("code", l10nCodeField.getText());
-        List<L10n> listL10n = validationQuery.getResultList();
-        int listLength = listL10n.size();
-        boolean isOk;
-        if (listLength == 0) {
-            isOk = true;
-        } else if (listLength == 1) {
-            L10n l10nInDB = listL10n.get(0);
-            isOk = (Objects.equals(l10nInDB.getId(), selectedL10n.getId()));
-        } else {
-            // This should never be reached, since we don't allow more than one product
-            // with the same name, but it is checked just as defensive programming
-            isOk = false;
-        }
-        if (!isOk) {
+        if (validationQuery.getSingleResult() > 0L) {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
                     "Error while saving: L10n code already exists",
                     "The L10n code of the entity you want to save already exists in the database");
@@ -406,13 +389,13 @@ public class L10nGUIManager extends javax.swing.JPanel {
             int selectedRow = l10nTable.getSelectedRow();
             if (selectedRow != -1) {
                 selectedRow = l10nTable.convertRowIndexToModel(selectedRow);
-                selectedL10n = l10nTableModel.getElement(selectedRow);
-                l10nCodeField.setText(selectedL10n.getCode());
-                l10nDescriptionField.setText(selectedL10n.getName());
-                l10nTeamNameField.setText(selectedL10n.getTeamName());
-                l10nUrlField.setText(selectedL10n.getUrl());
-                l10nCreationDateField.setText(selectedL10n.getCreationDate().toString());
-                l10nLastUpdatedField.setText(selectedL10n.getLastUpdate().toString());
+                L10n l = l10nTableModel.getElement(selectedRow);
+                l10nCodeField.setText(l.getCode());
+                l10nDescriptionField.setText(l.getName());
+                l10nTeamNameField.setText(l.getTeamName());
+                l10nUrlField.setText(l.getUrl());
+                l10nCreationDateField.setText(l.getCreationDate().toString());
+                l10nLastUpdatedField.setText(l.getLastUpdate().toString());
             }
         }
     }
