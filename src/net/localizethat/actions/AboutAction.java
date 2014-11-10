@@ -6,6 +6,7 @@
 package net.localizethat.actions;
 
 import java.awt.event.ActionEvent;
+import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import net.localizethat.gui.dialogs.AboutDialog;
 
@@ -26,10 +27,14 @@ public class AboutAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (aboutDialog == null) {
-            aboutDialog = new AboutDialog();
+            try {
+                aboutDialog = new AboutDialog();
+                aboutDialog.setVisible(true);
+            } catch (URISyntaxException ex) {
+                // TODO Add message stating why we can't open the dialogs
+            }
         }
 
-        aboutDialog.setVisible(true);
     }
 
 }
