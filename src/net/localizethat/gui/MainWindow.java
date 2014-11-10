@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import net.localizethat.Main;
 import net.localizethat.util.gui.JStatusBar;
 
 /**
@@ -154,6 +155,7 @@ public class MainWindow extends javax.swing.JFrame {
         preferencesAction = new net.localizethat.actions.PreferencesAction();
         localeManagerAction = new net.localizethat.actions.LocaleManagerAction();
         channelManagerAction = new net.localizethat.actions.ChannelManagerAction();
+        productManagerAction = new net.localizethat.actions.ProductManagerAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
@@ -207,6 +209,7 @@ public class MainWindow extends javax.swing.JFrame {
         updateProductsMenuItem.setText("Update Products");
         fileMenu.add(updateProductsMenuItem);
 
+        manageProductsMenuItem.setAction(productManagerAction);
         manageProductsMenuItem.setMnemonic('M');
         manageProductsMenuItem.setText("Product Manager");
         fileMenu.add(manageProductsMenuItem);
@@ -297,6 +300,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        Main.cleanUpResources();
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
@@ -323,6 +327,7 @@ public class MainWindow extends javax.swing.JFrame {
     private net.localizethat.actions.PreferencesAction preferencesAction;
     private javax.swing.JButton preferencesButton;
     private javax.swing.JMenuItem preferencesMenuItem;
+    private net.localizethat.actions.ProductManagerAction productManagerAction;
     private net.localizethat.util.gui.JStatusBar statusBar;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JMenuItem updateProductsMenuItem;
