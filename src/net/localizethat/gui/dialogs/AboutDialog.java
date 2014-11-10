@@ -21,8 +21,10 @@ public class AboutDialog extends javax.swing.JDialog {
     private static final String website = "http://www.localizethat.net/";
     private final URI productHomeUri;
 
-    /** Creates new form AboutDialog
-     * @throws java.net.URISyntaxException */
+    /**
+     * Creates new form AboutDialog
+     * @throws java.net.URISyntaxException
+     */
     public AboutDialog() throws URISyntaxException {
         super(Main.mainWindow, "", true);
         productHomeUri = new URI(website);
