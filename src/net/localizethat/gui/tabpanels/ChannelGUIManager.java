@@ -8,6 +8,8 @@ package net.localizethat.gui.tabpanels;
 import java.beans.Beans;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
@@ -27,6 +29,7 @@ public class ChannelGUIManager extends javax.swing.JPanel {
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
+    Channel selectedChannel;
 
     /**
      * Creates new form ChannelsManager
@@ -62,11 +65,25 @@ public class ChannelGUIManager extends javax.swing.JPanel {
             return false;
         }
 
-        // Validation 2: the channel name can't exist already in the database
-        TypedQuery<Long> validationQuery = entityManager.createNamedQuery(
-                "Channel.countByName", Long.class);
-        validationQuery.setParameter("name", channelNameField.getText());
-        if (validationQuery.getSingleResult() > 0L) {
+        // Validation 2: the channel name (case insensitive) can't exist already in the database,
+        // except in the same item
+        TypedQuery<Channel> validationQuery = entityManager.createNamedQuery(
+                "Channel.findByName", Channel.class);
+        validationQuery.setParameter("name", this.channelNameField.getText());
+        List<Channel> chnlList = validationQuery.getResultList();
+        int listLength = chnlList.size();
+        boolean isOk;
+        if (listLength == 0) {
+            isOk = true;
+        } else if (listLength == 1) {
+            Channel channelInDB = chnlList.get(0);
+            isOk = (Objects.equals(channelInDB.getId(), selectedChannel.getId()));
+        } else {
+            // This should never be reached, since we don't allow more than one product
+            // with the same name, but it is checked just as defensive programming
+            isOk = false;
+        }
+        if (!isOk) {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
                     "Error while saving: channel name already exists",
                     "The channel name of the entity you want to save already exists in the database");
@@ -408,13 +425,13 @@ public class ChannelGUIManager extends javax.swing.JPanel {
             int selectedRow = channelTable.getSelectedRow();
             if (selectedRow != -1) {
                 selectedRow = channelTable.convertRowIndexToModel(selectedRow);
-                Channel c = channelTableModel.getElement(selectedRow);
-                channelNameField.setText(c.getName());
-                channelDescriptionField.setText(c.getDescription());
-                channelTagField.setText(c.getReplacementTag());
-                channelReplacementTextFieldField.setText(c.getReplacementText());
-                channelCreationDateField.setText(c.getCreationDate().toString());
-                channelLastUpdatedField.setText(c.getLastUpdate().toString());
+                selectedChannel = channelTableModel.getElement(selectedRow);
+                channelNameField.setText(selectedChannel.getName());
+                channelDescriptionField.setText(selectedChannel.getDescription());
+                channelTagField.setText(selectedChannel.getReplacementTag());
+                channelReplacementTextFieldField.setText(selectedChannel.getReplacementText());
+                channelCreationDateField.setText(selectedChannel.getCreationDate().toString());
+                channelLastUpdatedField.setText(selectedChannel.getLastUpdate().toString());
             }
         }
     }
