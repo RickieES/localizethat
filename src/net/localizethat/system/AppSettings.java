@@ -5,11 +5,13 @@
  */
 package net.localizethat.system;
 
+import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -156,6 +158,38 @@ public class AppSettings {
      */
     public void setBoolean(String key, boolean value) {
         prefValues.setProperty(key, Boolean.toString(value));
+    }
+
+    /**
+     * Returns a setting as a color, using white as the default
+     * @param key the key to get
+     * @return the result
+     */
+    public Color getColor(String key) {
+        // TODO use hexadecimal format, like in Product database,
+        // and refactor to a common function
+        Color c;
+        String s = prefValues.getProperty(key, "255,255,255");
+        StringTokenizer st = new StringTokenizer(s, ",");
+
+        c = new Color(Integer.parseInt(st.nextToken()),
+                      Integer.parseInt(st.nextToken()),
+                      Integer.parseInt(st.nextToken()));
+        return c;
+    }
+
+    /**
+     * Set a setting to a string representation of a color value
+     * @param key the key to set
+     * @param value the new value
+     */
+    public void setColor(String key, Color value) {
+        // TODO use hexadecimal format, like in Product database,
+        // and refactor to a common function
+        String s = Integer.toString(value.getRed()) + ","
+                 + Integer.toString(value.getGreen()) + ","
+                 + Integer.toString(value.getBlue());
+        prefValues.setProperty(key, s);
     }
 
     /**
