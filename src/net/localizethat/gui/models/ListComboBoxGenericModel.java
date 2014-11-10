@@ -100,6 +100,18 @@ public class ListComboBoxGenericModel<T> extends AbstractListModel<T> implements
         }
     }
 
+    public T getSelectedTypedItem() {
+        if (selectComboItem != -1) {
+            return itemList.get(selectComboItem);
+        } else {
+            return null;
+        }
+    }
+
+    public int getSelectedIndex() {
+        return selectComboItem;
+    }
+
     public void clearAll() {
         int end = Math.max(0, itemList.size() - 1);
         itemList.clear();
