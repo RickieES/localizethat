@@ -52,7 +52,7 @@ public class Main {
     public static EntityManagerFactory emf;
 
     /**
-     * @param args the command line arguments
+     * @param args the command line arguments (not used for now)
      */
     public static void main(String[] args) {
        // Process parameters
@@ -95,6 +95,9 @@ public class Main {
         // Nothing to do at the moment
     }
 
+    /**
+     * Cleans up the resources used by the application before closing the system
+     */
     public static void cleanUpResources() {
         emf.close();
     }
