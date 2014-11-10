@@ -5,6 +5,12 @@
  */
 package net.localizethat.gui.dialogs;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.localizethat.Main;
 
 /**
@@ -12,12 +18,26 @@ import net.localizethat.Main;
  * @author rpalomares
  */
 public class AboutDialog extends javax.swing.JDialog {
+    private static final String website = "http://www.localizethat.net/";
+    private final URI productHomeUri;
 
-    /** Creates new form AboutDialog */
-    public AboutDialog() {
+    /** Creates new form AboutDialog
+     * @throws java.net.URISyntaxException */
+    public AboutDialog() throws URISyntaxException {
         super(Main.mainWindow, "", true);
+        productHomeUri = new URI(website);
         initComponents();
         // setTitle("MozillaTranslator " + Kernel.settings.getString("system.version", "(Unknown version)"));
+    }
+
+    private void openWebsite() {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(productHomeUri);
+            } catch (IOException ex) {
+                Logger.getLogger(AboutDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -40,7 +60,8 @@ public class AboutDialog extends javax.swing.JDialog {
         javax.swing.JPanel licencePanel = new javax.swing.JPanel();
         licenceArea = new javax.swing.JTextArea();
         javax.swing.JPanel addressPanel = new javax.swing.JPanel();
-        adressArea = new javax.swing.JTextArea();
+        wommLogo = new javax.swing.JLabel();
+        websiteLinkButton = new javax.swing.JButton();
         okButtonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
 
@@ -121,17 +142,26 @@ public class AboutDialog extends javax.swing.JDialog {
         licenceArea.setOpaque(false);
         licencePanel.add(licenceArea, java.awt.BorderLayout.CENTER);
 
-        aboutTabbedPane.addTab("Licence", null, licencePanel, "");
+        aboutTabbedPane.addTab("License", null, licencePanel, "");
 
         addressPanel.setLayout(new java.awt.BorderLayout());
 
-        adressArea.setEditable(false);
-        adressArea.setBackground(new java.awt.Color(184, 207, 229));
-        adressArea.setColumns(15);
-        adressArea.setRows(12);
-        adressArea.setText("\nPostcards should be sent to:\n\nHenrik Lynggaard\nBakkesvinget 22\nTulstrup\n3400 Hilleroed\nDenmark\n");
-        adressArea.setOpaque(false);
-        addressPanel.add(adressArea, java.awt.BorderLayout.CENTER);
+        wommLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        wommLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/womm.png"))); // NOI18N
+        addressPanel.add(wommLogo, java.awt.BorderLayout.PAGE_START);
+
+        websiteLinkButton.setBackground(java.awt.Color.white);
+        websiteLinkButton.setForeground(java.awt.Color.blue);
+        websiteLinkButton.setText("http://www.localizethat.net/");
+        websiteLinkButton.setBorder(null);
+        websiteLinkButton.setBorderPainted(false);
+        websiteLinkButton.setOpaque(false);
+        websiteLinkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                websiteLinkButtonActionPerformed(evt);
+            }
+        });
+        addressPanel.add(websiteLinkButton, java.awt.BorderLayout.CENTER);
 
         aboutTabbedPane.addTab("Quality Assurance", null, addressPanel, "");
 
@@ -171,8 +201,11 @@ public class AboutDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
+    private void websiteLinkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_websiteLinkButtonActionPerformed
+        openWebsite();
+    }//GEN-LAST:event_websiteLinkButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea adressArea;
     private javax.swing.JLabel freeMemLabel;
     private javax.swing.JTextArea licenceArea;
     private javax.swing.JLabel maxMemLabel;
@@ -181,5 +214,7 @@ public class AboutDialog extends javax.swing.JDialog {
     private javax.swing.JLabel productNameLabel;
     private javax.swing.JLabel totalMemLabel;
     private javax.swing.JLabel versionNumberLabel;
+    private javax.swing.JButton websiteLinkButton;
+    private javax.swing.JLabel wommLogo;
     // End of variables declaration//GEN-END:variables
 }
