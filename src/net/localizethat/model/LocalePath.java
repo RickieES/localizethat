@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -38,15 +39,23 @@ import javax.xml.bind.annotation.XmlRootElement;
     @UniqueConstraint(columnNames = {"L10NPATH"})})
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "LocalePath.countAll", query = "SELECT COUNT(pp) FROM LocalePath pp"),
-    @NamedQuery(name = "LocalePath.countById", query = "SELECT COUNT(pp) FROM LocalePath pp WHERE pp.id = :id"),
+    @NamedQuery(name = "LocalePath.countAll", query = "SELECT COUNT(lp) FROM LocalePath lp"),
+    @NamedQuery(name = "LocalePath.countById", query = "SELECT COUNT(lp) FROM LocalePath lp WHERE lp.id = :id"),
+    @NamedQuery(name = "LocalePath.countByPath", query = "SELECT COUNT(lp) FROM LocalePath lp WHERE lp.path = :path"),
+    @NamedQuery(name = "LocalePath.findByL10n", query = "SELECT lp FROM LocalePath lp WHERE lp.l10nId = :l10nid ORDER by lp.path"),
+    @NamedQuery(name = "LocalePath.findByProductAndL10n",
+            query = "SELECT lp FROM Product p JOIN p.pathList lp WHERE p.id = :productid AND lp.l10nId = :l10nid ORDER BY lp.path"),
+    @NamedQuery(name = "LocalePath.findByProductAndNotL10n",
+            query = "SELECT lp FROM Product p JOIN p.pathList lp WHERE p.id = :productid AND lp.l10nId != :l10nid ORDER BY lp.path"),
+    @NamedQuery(name = "LocalePath.findByLocaleContainer",
+            query = "SELECT lp FROM LocalePath lp WHERE lp.localeContainer.defLocaleTwin = :localecontainer "
+                    + "ORDER by lp.l10nId, lp.path"),
     /*
     @NamedQuery(name = "LocalePath.countByProduct", query = "SELECT COUNT(pl) FROM LocalePath pl WHERE pl.productId = :productid"),
     @NamedQuery(name = "LocalePath.countByLocale", query = "SELECT COUNT(pl) FROM LocalePath pl WHERE pl.l10nId = :l10nid"),
     @NamedQuery(name = "LocalePath.findAll", query = "SELECT pl FROM LocalePath pl"),
     @NamedQuery(name = "LocalePath.findById", query = "SELECT pl FROM LocalePath pl WHERE pl.id = :id"),
     @NamedQuery(name = "LocalePath.findByProduct", query = "SELECT pl FROM LocalePath pl WHERE pl.productId = :productid"),
-    @NamedQuery(name = "LocalePath.findByL10n", query = "SELECT pl FROM LocalePath pl WHERE pl.l10nId = :l10nid"),
     @NamedQuery(name = "LocalePath.findByCreationDate", query = "SELECT pl FROM LocalePath pl WHERE pl.creationDate = :prodcreationdate"),
     @NamedQuery(name = "LocalePath.findByLastUpdate", query = "SELECT pl FROM LocalePath pl WHERE pl.lastUpdate = :prodlastupdate") */
 })
@@ -82,20 +91,21 @@ public class LocalePath implements Serializable {
     private Date lastUpdate;
 
     public LocalePath() {
+        productList = new ArrayList<>(5);
     }
 
     public LocalePath(Integer id) {
+        this();
         this.id = id;
     }
 
     public LocalePath(Integer id, String path) {
-        this.id = id;
+        this(id);
         this.path = path;
     }
 
     public LocalePath(Integer id, String path, LocaleContainer localeContainer) {
-        this.id = id;
-        this.path = path;
+        this(id, path);
         this.localeContainer = localeContainer;
     }
 
@@ -119,8 +129,17 @@ public class LocalePath implements Serializable {
         return path;
     }
 
+    public String getPathLastComponent() {
+        int i = path.lastIndexOf(System.getProperty("file.separator"));
+        if (i != -1) {
+            return path.substring(i + 1);
+        } else {
+            return path;
+        }
+    }
+
     public void setPath(String path) {
-        this.path = path.substring(0, LPATHPATH_LENGTH);
+        this.path = path.substring(0, Math.min(path.length(), LPATHPATH_LENGTH));
     }
 
     public L10n getL10nId() {
@@ -203,6 +222,14 @@ public class LocalePath implements Serializable {
         return null;
     }
 
+    public Collection<Product> getChildren() {
+        return getProductList();
+    }
+
+    public Collection<Product> getProductList() {
+        return productList;
+    }
+
     public Product removeChild(String productName) {
         return removeProduct(productName, false);
     }
@@ -234,10 +261,10 @@ public class LocalePath implements Serializable {
     }
 
     public boolean clearChildren() {
-        return clearPaths();
+        return clearProducts();
     }
 
-    public boolean clearPaths() {
+    public boolean clearProducts() {
         try {
             productList.clear();
             return true;
@@ -287,6 +314,11 @@ public class LocalePath implements Serializable {
             return false;
         }
         return Objects.equals(this.lastUpdate, other.lastUpdate);
+    }
+
+    @Override
+    public String toString() {
+        return this.getPath();
     }
 
 }

@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,6 +26,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 
 public class LocaleContainer extends AbstractLocaleNode<LocaleContainer, LocaleContainer, LocaleContainer> implements Serializable {
+
+    public LocaleContainer() {
+      super();
+      children = new ArrayList<>(5);
+    }
 
     @Override
     public boolean addChild(LocaleContainer node) {

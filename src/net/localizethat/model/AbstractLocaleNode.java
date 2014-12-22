@@ -17,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,13 +50,17 @@ public abstract class AbstractLocaleNode<P extends LocaleNode, S extends LocaleN
     @ManyToOne(optional = false)
     private P parent;
     @JoinColumn(name = "LNODETWIN", referencedColumnName = "ID", nullable = true)
-    @OneToOne(optional = true)
+    @ManyToOne(optional = true)
     private S defLocaleTwin;
+    @OneToMany(mappedBy="defLocaleTwin")
+    private Collection<S> twins;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     Collection<D> children;
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LNODECREATIONDATE", nullable = false)
     private Date creationDate;
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LNODELASTUPDATE", nullable = false)
     private Date lastUpdate;
 
     public Integer getId() {
@@ -79,7 +82,7 @@ public abstract class AbstractLocaleNode<P extends LocaleNode, S extends LocaleN
 
     @Override
     public void setName(String name) {
-        this.name = name.substring(0, LOCALENODENAME_LENGTH);
+        this.name = name.substring(0, Math.min(name.length(), LOCALENODENAME_LENGTH));
     }
 
     @Override
@@ -135,6 +138,11 @@ public abstract class AbstractLocaleNode<P extends LocaleNode, S extends LocaleN
     }
 
     @Override
+    public Collection<D> getChildren() {
+        return children;
+    }
+
+    @Override
     public D removeChild(String name) {
         return removeChild(name, false);
     }
@@ -167,13 +175,58 @@ public abstract class AbstractLocaleNode<P extends LocaleNode, S extends LocaleN
     }
 
     @Override
-    public void setDefLocaleTwinId(S twin) {
-        this.defLocaleTwin = twin;
+    public void setDefLocaleTwin(S twin) {
+        if (twin != null) {
+            this.defLocaleTwin = twin;
+            twin.addTwin(this);
+        } else {
+            S defLT = this.defLocaleTwin;
+            this.defLocaleTwin = null;
+            // defLT.removeTwin(this);
+        }
     }
 
     @Override
     public S getDefLocaleTwin() {
         return defLocaleTwin;
+    }
+    
+    @Override
+    public boolean addTwin(S twin) {
+        boolean result;
+
+        result = (twin.getDefLocaleTwin() == this);
+
+        if (result) {
+            this.twins.add(twin);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean removeTwin(S twin) {
+        boolean result;
+
+        result = (twin.getDefLocaleTwin() == null)
+                && (twins.contains(twin))
+                && twins.remove(twin);
+        return result;
+    }
+
+    @Override
+    public boolean isATwin(S possibleTwin) {
+        for(S s : twins) {
+            if (s.equals(possibleTwin)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public Collection<S> getTwins() {
+        return twins;
     }
 
     public Date getCreationDate() {

@@ -7,6 +7,7 @@ package net.localizethat.model;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -61,7 +62,7 @@ public class Product implements Serializable {
     private static final int PRODNOTES_LENGTH = 32700;
     private static final int PRODCOLOR_LENGTH = 10;
     @TableGenerator(name="PRODUCT", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
-            valueColumnName="COUNTERVALUE", allocationSize = 5)
+            valueColumnName="COUNTERVALUE", allocationSize = 2)
     @Id
     @GeneratedValue(strategy= GenerationType.TABLE, generator="PRODUCT")
     @Basic(optional = false)
@@ -177,37 +178,9 @@ public class Product implements Serializable {
         this.color = color.substring(0, Math.min(color.length(), Product.PRODCOLOR_LENGTH));
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
     public Color returnAwtColor() {
-        // TODO Refactor this parsing from color hexadecimal representation into a common function
-        int rColor;
-        int gColor;
-        int bColor;
-        try {
-            rColor = Integer.parseInt(getColor().substring(0, 2), 16);
-            gColor = Integer.parseInt(getColor().substring(2, 4), 16);
-            bColor = Integer.parseInt(getColor().substring(4, 6), 16);
-        } catch (NumberFormatException numberFormatException) {
-            rColor = Color.LIGHT_GRAY.getRed();
-            gColor = Color.LIGHT_GRAY.getGreen();
-            bColor = Color.LIGHT_GRAY.getBlue();
-        }
-        return new Color(rColor, gColor, bColor);
+        int colorValue = new BigInteger(getColor(), 16).intValue();
+        return new Color(colorValue);
     }
 
     public boolean addChild(LocalePath lp) {
@@ -219,19 +192,6 @@ public class Product implements Serializable {
             pathList.add(lp);
             return true;
         } else {
-            return false;
-        }
-    }
-
-    public boolean clearChildren() {
-        return clearLocalePathCollection();
-    }
-
-    public boolean clearLocalePathCollection() {
-        try {
-            pathList.clear();
-            return true;
-        } catch (UnsupportedOperationException e) {
             return false;
         }
     }
@@ -288,13 +248,72 @@ public class Product implements Serializable {
         return null;
     }
 
+    public Collection<LocalePath> getChildren() {
+        return getPathList();
+    }
+
     @XmlTransient
     public Collection<LocalePath> getPathList() {
         return pathList;
     }
 
-    public void setPathList(Collection<LocalePath> pathList) {
-        this.pathList = pathList;
+    public LocalePath removeChild(String path) {
+        return removeLocalePath(path, false);
+    }
+
+    public LocalePath removeLocalePath(String path) {
+        return removeLocalePath(path, false);
+    }
+
+    public LocalePath removeChild(String path, boolean matchCase) {
+        return removeLocalePath(path, matchCase);
+    }
+
+    public LocalePath removeLocalePath(String path, boolean matchCase) {
+        LocalePath lp = getLocalePath(path, matchCase);
+
+        if ((lp != null) && (removeLocalePath(lp))) {
+            return lp;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean removeChild(LocalePath lp) {
+        return removeLocalePath(lp);
+    }
+
+    public boolean removeLocalePath(LocalePath lp) {
+        return pathList.remove(lp);
+    }
+
+    public boolean clearChildren() {
+        return clearLocalePathCollection();
+    }
+
+    public boolean clearLocalePathCollection() {
+        try {
+            pathList.clear();
+            return true;
+        } catch (UnsupportedOperationException e) {
+            return false;
+        }
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     @Override

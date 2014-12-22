@@ -5,6 +5,8 @@
  */
 package net.localizethat.model;
 
+import java.util.Collection;
+
 /**
  * A class representing a node in the hierarchical representation of a localization project.
  * The root node is still to be decided, and it extends to the different elements of a
@@ -101,6 +103,12 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
     D getChildByName(String name, boolean matchCase);
 
     /**
+     * Returns the list of children of this LocaleNode
+     * @return A list of LocaleNode items that represent the children of this one
+     */
+    Collection<D> getChildren();
+
+    /**
      * Finds and removes the first LocaleNode child whose name property matches the parameter
      * passed (case insensitive)
      * @param name the name property that should have the child we are looking for
@@ -151,7 +159,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * </ul>
      * @param twin the LocaleNode instance equivalent of this in the default locale of the Product
      */
-    void setDefLocaleTwinId(S twin);
+    void setDefLocaleTwin(S twin);
 
     /**
      * Returns the "twin" node of this for the default locale of the Product.
@@ -174,4 +182,38 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return the LocaleNode instance equivalent of this in the default locale of the Product
      */
     S getDefLocaleTwin();
+
+    /**
+     * Adds a twin other than the default locale twin. The list of twins is automatically
+     * maintained by using twin.setDefLocaleTwin(this), so addTwin() does not need to be
+     * called independently
+     * @param twin a twin of this object
+     * @return true if the twin was added successfully; false if it wasn't added because the twin
+     * had not set this object as default locale twin
+     */
+    boolean addTwin(S twin);
+
+    /**
+     * Removes a twin from the list of twins of this object. This list is automatically
+     * maintained by using twin.setDefLocaleTwin(null), so removeTwin() does not need to be
+     * called independently
+     * @param twin a twin of this object
+     * @return true if the twin was added successfully; false if it wasn't added because the twin
+     * had not set this object as default locale twin
+     */
+    boolean removeTwin(S twin);
+
+    /**
+     * Checks if a object is a twin of this
+     * @param possibleTwin the candidate to twin we want to check
+     * @return true if possibleTwin is indeed a twin of this, false otherwise
+     */
+    boolean isATwin(S possibleTwin);
+
+    /**
+     * Returns a list of twins of this object. The list is automatically maintained by using
+     * setDefLocaleTwin()
+     * @return a list of twins of this object
+     */
+    Collection<S> getTwins();
 }
