@@ -65,7 +65,9 @@ public class JStatusBar extends javax.swing.JPanel {
         lngMsgText.setEditable(false);
         lngMsgText.setColumns(20);
         lngMsgText.setFont(new java.awt.Font("DialogInput", 0, 12)); // NOI18N
+        lngMsgText.setLineWrap(true);
         lngMsgText.setRows(5);
+        lngMsgText.setWrapStyleWord(true);
         jScrollPane1.setViewportView(lngMsgText);
 
         longMsgDlg.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
