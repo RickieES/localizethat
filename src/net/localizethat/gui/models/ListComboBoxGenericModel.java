@@ -91,6 +91,14 @@ public class ListComboBoxGenericModel<T> extends AbstractListModel<T> implements
         }
     }
 
+    public void setSelectedIndex(int index) {
+        if ((index >= 0) && (index < itemList.size())) {
+            selectComboItem = index;
+        } else {
+            selectComboItem = -1;
+        }
+    }
+
     @Override
     public Object getSelectedItem() {
         if (selectComboItem != -1) {
