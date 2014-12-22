@@ -50,7 +50,7 @@ public class Channel implements Serializable {
     private static final int CHNLREPLACEMENTTAG_LENGTH = 16;
     private static final int CHNLREPLACEMENTTEXT_LENGTH = 64;
     @TableGenerator(name="CHANNEL", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
-            valueColumnName="COUNTERVALUE", allocationSize = 5)
+            valueColumnName="COUNTERVALUE", allocationSize = 2)
     @Id
     @GeneratedValue(strategy= GenerationType.TABLE, generator="CHANNEL")
     @Basic(optional = false)

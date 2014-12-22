@@ -56,7 +56,7 @@ public class L10n implements Serializable, Comparable<L10n> {
     @Transient
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     @TableGenerator(name="L10N", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
-            valueColumnName="COUNTERVALUE", allocationSize = 5)
+            valueColumnName="COUNTERVALUE", allocationSize = 2)
     @Id
     @GeneratedValue(strategy= GenerationType.TABLE, generator="L10N")
     @Basic(optional = false)
