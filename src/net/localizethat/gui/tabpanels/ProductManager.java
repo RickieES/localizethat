@@ -1091,7 +1091,7 @@ public class ProductManager extends javax.swing.JPanel {
 
         if (lc != null) {
             TypedQuery<LocalePath> localePathQuery = entityManager.createNamedQuery(
-                    "LocalePath.findByLocaleContainer", LocalePath.class);
+                    "LocalePath.findByAssociatedLocaleContainer", LocalePath.class);
             localePathQuery.setParameter("localecontainer", lc);
             importTargetPathTableModel.addAll(localePathQuery.getResultList());
         }

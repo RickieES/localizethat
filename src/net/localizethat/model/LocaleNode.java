@@ -45,6 +45,15 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
     P getParent();
 
     /**
+     * Returns the operational path, ie. after replacing possible channel or base directory tags.
+     * Since this method can be called for LocaleObjects, it may NOT represent a real path in the
+     * user filesystem, but it is guaranteed that it will be a valid path up to (and including)
+     * the LocaleFile name
+     * @return the operational path
+     */
+    String getFilePath();
+
+    /**
      * Adds a child to this node. Each implementation must control which LocaleNode subclasses
      * allows. For instance, a LocaleContainer (which represents a folder) should only contain
      * LocaleContainer and LocaleFile (and subclasses of these) nodes.

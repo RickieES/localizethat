@@ -101,6 +101,28 @@ public abstract class AbstractLocaleNode<P extends LocaleNode, S extends LocaleN
     }
 
     @Override
+    public String getFilePath() {
+        StringBuilder sb = new StringBuilder(64);
+        P p = getParent();
+
+        if (p != null) {
+            sb.append(p.getFilePath());
+        }
+        // We use the "/" literal instead of file.separator to avoid mixing of separators
+        sb.append("/").append(getName());
+        return sb.toString();
+    }
+
+    @Override
+    public boolean addChild(D node) {
+        if (!hasChild(node)) {
+            children.add(node);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean hasChild(D node) {
         return children.contains(node);
     }

@@ -30,7 +30,7 @@ public class LocaleContainerJPAHelper {
             isTransactionOpen = false;
         } else {
             this.em = em;
-            // has the passed EntityManager a transaction open?
+            // Does the passed EntityManager have a transaction open?
             isTransactionOpen = this.em.isJoinedToTransaction();
         }
         this.transactMaxCount = transactMaxCount;

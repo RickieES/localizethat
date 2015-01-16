@@ -48,7 +48,7 @@ public class PathTableModel extends AbstractTableModel {
         }
         switch (columnIndex) {
             case COLUMN_HEADER_PATH:
-                return itemList.get(rowIndex).getPath();
+                return itemList.get(rowIndex).getRawPath();
             case COLUMN_HEADER_LOCALE:
                 return itemList.get(rowIndex).getL10nId().toString();
             default:

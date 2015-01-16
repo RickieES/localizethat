@@ -220,7 +220,7 @@ public class Product implements Serializable {
         boolean found = false;
 
         for (LocalePath lp : pathList) {
-            found = (matchCase) ? (lp.getPath().equals(path)) : (lp.getPath().equalsIgnoreCase(path));
+            found = (matchCase) ? (lp.getRawPath().equals(path)) : (lp.getRawPath().equalsIgnoreCase(path));
         }
         return found;
     }
@@ -239,8 +239,8 @@ public class Product implements Serializable {
 
     public LocalePath getLocalePath(String path, boolean matchCase) {
         for(LocalePath lp : pathList) {
-            boolean found = (matchCase) ? (lp.getPath().equals(path))
-                                        : (lp.getPath().equalsIgnoreCase(path));
+            boolean found = (matchCase) ? (lp.getRawPath().equals(path))
+                                        : (lp.getRawPath().equalsIgnoreCase(path));
             if (found) {
                 return lp;
             }

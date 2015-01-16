@@ -48,6 +48,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LocalePath.findByProductAndNotL10n",
             query = "SELECT lp FROM Product p JOIN p.pathList lp WHERE p.id = :productid AND lp.l10nId != :l10nid ORDER BY lp.path"),
     @NamedQuery(name = "LocalePath.findByLocaleContainer",
+            query = "SELECT lp FROM LocalePath lp WHERE lp.localeContainer = :localecontainer"),
+    @NamedQuery(name = "LocalePath.findByAssociatedLocaleContainer",
             query = "SELECT lp FROM LocalePath lp WHERE lp.localeContainer.defLocaleTwin = :localecontainer "
                     + "ORDER by lp.l10nId, lp.path"),
     /*
@@ -125,8 +127,26 @@ public class LocalePath implements Serializable {
         this.entityVersion = entityVersion;
     }
 
-    public String getPath() {
+    /**
+     * Returns the path "as is", without any processing, ie. without replacing channel or base
+     * directory tags
+     * @return the path value without any processing
+     */
+    public String getRawPath() {
         return path;
+    }
+
+    /**
+     * Returns the operational path, ie. after replacing possible channel or base directory tags.
+     * In other words, a path that represents a real file path in the user filesystem.
+     * @return the operational path
+     */
+    public String getFilePath() {
+        StringBuilder sb = new StringBuilder(64);
+        sb.append(getRawPath());
+
+        // TODO process channel and base directory substitutions before returning the value
+        return sb.toString();
     }
 
     public String getPathLastComponent() {
@@ -318,7 +338,7 @@ public class LocalePath implements Serializable {
 
     @Override
     public String toString() {
-        return this.getPath();
+        return this.getRawPath();
     }
 
 }
