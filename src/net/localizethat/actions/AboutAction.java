@@ -8,7 +8,9 @@ package net.localizethat.actions;
 import java.awt.event.ActionEvent;
 import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
+import net.localizethat.Main;
 import net.localizethat.gui.dialogs.AboutDialog;
+import net.localizethat.util.gui.JStatusBar;
 
 /**
  * Implements an about action that display an About...
@@ -18,6 +20,7 @@ public class AboutAction extends AbstractAction {
     private static final String TITLE = "About...";
     private static final String DESCRIPTION = "Opens About... dialog" + TITLE;
     private AboutDialog aboutDialog;
+    private JStatusBar statusBar;
 
     public AboutAction() {
         super(TITLE);
@@ -31,7 +34,8 @@ public class AboutAction extends AbstractAction {
                 aboutDialog = new AboutDialog();
                 aboutDialog.setVisible(true);
             } catch (URISyntaxException ex) {
-                // TODO Add message stating why we can't open the dialogs
+                statusBar = Main.mainWindow.getStatusBar();
+                statusBar.setErrorText("Can't open About dialog, there is a problem with the URL");
             }
         }
 
