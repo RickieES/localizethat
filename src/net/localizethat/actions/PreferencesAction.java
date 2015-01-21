@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import net.localizethat.gui.dialogs.PreferencesDialog;
+import net.localizethat.tasks.SavePreferencesWorker;
 
 /**
  * Implements a preference action that display the Preferences dialog
@@ -35,7 +36,9 @@ public class PreferencesAction extends AbstractAction {
             prefDialog = new PreferencesDialog();
         }
 
-        prefDialog.setVisible(true);
+        prefDialog.showDialog();
+        SavePreferencesWorker spw = new SavePreferencesWorker();
+        spw.execute();
     }
 
 }

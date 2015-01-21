@@ -58,16 +58,16 @@ public void showDialog() {
         tableViewFontLabel.setFont(f);
         editPhraseFontLabel.repaint();
         tableViewFontLabel.repaint();
-        // guiShowWhatCheck.setSelected(appSettings.getBoolean(AppSettings.GUI_SHOW_WHAT_DIALOG));
         lookAndFeelCombo.setSelectedItem(appSettings.getString(AppSettings.PREF_GUI_LOOK_AND_FEEL));
-        /*
-        tsclUntranslated.setBackground(appSettings.getColor(AppSettings.TRNS_STATUS_COLOR + ".untranslated"));
-        tsclModified.setBackground(appSettings.getColor(AppSettings.TRNS_STATUS_COLOR + ".modified"));
-        tsclApproximated.setBackground(appSettings.getColor(AppSettings.TRNS_STATUS_COLOR + ".approximated"));
-        tsclProposed.setBackground(appSettings.getColor(AppSettings.TRNS_STATUS_COLOR + ".proposed"));
-        tsclCopied.setBackground(appSettings.getColor(AppSettings.TRNS_STATUS_COLOR + ".copied"));
-        tsclTranslated.setBackground(appSettings.getColor(AppSettings.TRNS_STATUS_COLOR + ".translated"));
 
+        tsclUntranslated.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_UNTRANSLATED));
+        tsclModified.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_MODIFIED));
+        tsclApproximated.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_APPROXIMATED));
+        tsclProposed.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_PROPOSED));
+        tsclCopied.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_COPIED));
+        tsclTranslated.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_TRANSLATED));
+
+        /*
         // Input/Output Tab
         replaceEnUSCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_REPLACE_ENUS));
         useExtZipCheck.setSelected(appSettings.getBoolean(AppSettings.USE_EXTERNAL_ZIP));
@@ -117,16 +117,15 @@ public void showDialog() {
             appSettings.setString(AppSettings.PREF_FONT_TABLEVIEW_NAME, f.getFontName());
             appSettings.setInteger(AppSettings.PREF_FONT_TABLEVIEW_SIZE, f.getSize());
             appSettings.setInteger(AppSettings.PREF_FONT_TABLEVIEW_STYLE, f.getStyle());
-            // appSettings.setBoolean(AppSettings.GUI_SHOW_WHAT_DIALOG, guiShowWhatCheck.isSelected());
             appSettings.setString(AppSettings.PREF_GUI_LOOK_AND_FEEL, lookAndFeelCombo.getSelectedItem().toString());
-            /*
-            appSettings.setColor(AppSettings.TRNS_STATUS_COLOR + ".untranslated", tsclUntranslated.getBackground());
-            appSettings.setColor(AppSettings.TRNS_STATUS_COLOR + ".modified", tsclModified.getBackground());
-            appSettings.setColor(AppSettings.TRNS_STATUS_COLOR + ".approximated", tsclApproximated.getBackground());
-            appSettings.setColor(AppSettings.TRNS_STATUS_COLOR + ".proposed", tsclProposed.getBackground());
-            appSettings.setColor(AppSettings.TRNS_STATUS_COLOR + ".copied", tsclCopied.getBackground());
-            appSettings.setColor(AppSettings.TRNS_STATUS_COLOR + ".translated", tsclTranslated.getBackground());
+            appSettings.setColor(AppSettings.PREF_TRNS_STATUS_UNTRANSLATED, tsclUntranslated.getBackground());
+            appSettings.setColor(AppSettings.PREF_TRNS_STATUS_MODIFIED, tsclModified.getBackground());
+            appSettings.setColor(AppSettings.PREF_TRNS_STATUS_APPROXIMATED, tsclApproximated.getBackground());
+            appSettings.setColor(AppSettings.PREF_TRNS_STATUS_PROPOSED, tsclProposed.getBackground());
+            appSettings.setColor(AppSettings.PREF_TRNS_STATUS_COPIED, tsclCopied.getBackground());
+            appSettings.setColor(AppSettings.PREF_TRNS_STATUS_TRANSLATED, tsclTranslated.getBackground());
 
+            /*
             // Input/Output Tab
             appSettings.setBoolean(AppSettings.EXPORT_REPLACE_ENUS, replaceEnUSCheck.isSelected());
             appSettings.setBoolean(AppSettings.USE_EXTERNAL_ZIP, useExtZipCheck.isSelected());
@@ -183,8 +182,6 @@ public void showDialog() {
         editPhraseChooseButton = new javax.swing.JButton();
         tableViewFontLabel = new javax.swing.JLabel();
         tableViewChooseButton = new javax.swing.JButton();
-        behaviourLabel = new javax.swing.JLabel();
-        guiShowWhatCheck = new javax.swing.JCheckBox();
         lookAndFeelLabel = new javax.swing.JLabel();
         lookAndFeelCombo = new javax.swing.JComboBox();
         tsColorsLabel = new javax.swing.JLabel();
@@ -204,8 +201,6 @@ public void showDialog() {
         unzipPathLabel = new javax.swing.JLabel();
         unzipPathTextField = new javax.swing.JTextField();
         unzipPathButton = new javax.swing.JButton();
-        defContributorLabel = new javax.swing.JLabel();
-        defContributorTextField = new javax.swing.JTextField();
         exportOnlyModifFilesCheck = new javax.swing.JCheckBox();
         emptyTrnsAsOriginalCheck = new javax.swing.JCheckBox();
         baseDirForReposLabel = new javax.swing.JLabel();
@@ -297,13 +292,6 @@ public void showDialog() {
             }
         });
 
-        behaviourLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
-        behaviourLabel.setText("Behavior");
-
-        guiShowWhatCheck.setMnemonic('M');
-        guiShowWhatCheck.setText("Make ShowWhat dialog visible");
-        guiShowWhatCheck.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
         lookAndFeelLabel.setDisplayedMnemonic('L');
         lookAndFeelLabel.setLabelFor(lookAndFeelCombo);
         lookAndFeelLabel.setText("Look And Feel");
@@ -388,9 +376,6 @@ public void showDialog() {
                 .addContainerGap()
                 .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(prefDisplayPanelLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(guiShowWhatCheck))
-                    .addGroup(prefDisplayPanelLayout.createSequentialGroup()
                         .addGap(272, 272, 272)
                         .addComponent(tsColorsLabel))
                     .addGroup(prefDisplayPanelLayout.createSequentialGroup()
@@ -410,8 +395,7 @@ public void showDialog() {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(editPhraseChooseButton)
-                                            .addComponent(tableViewChooseButton)))))
-                            .addComponent(behaviourLabel))
+                                            .addComponent(tableViewChooseButton))))))
                         .addGap(18, 18, 18)
                         .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tsclApproximated, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
@@ -441,12 +425,11 @@ public void showDialog() {
                         .addComponent(editPhraseFontLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(editPhraseChooseButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tableViewFontLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tableViewChooseButton)
-                    .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(tsclApproximated)
-                        .addComponent(tsclProposed))
-                    .addComponent(tableViewFontLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tsclApproximated)
+                    .addComponent(tsclProposed))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -455,11 +438,7 @@ public void showDialog() {
                     .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lookAndFeelLabel)
                         .addComponent(lookAndFeelCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(behaviourLabel)
-                .addGap(12, 12, 12)
-                .addComponent(guiShowWhatCheck)
-                .addGap(72, 72, 72))
+                .addGap(154, 154, 154))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-display.png")), prefDisplayPanel, "Display"); // NOI18N
@@ -504,10 +483,6 @@ public void showDialog() {
             }
         });
 
-        defContributorLabel.setDisplayedMnemonic('D');
-        defContributorLabel.setLabelFor(defContributorTextField);
-        defContributorLabel.setText("Default contributor:");
-
         exportOnlyModifFilesCheck.setMnemonic('E');
         exportOnlyModifFilesCheck.setText("Export only modified files");
 
@@ -530,18 +505,9 @@ public void showDialog() {
         prefIOPanel.setLayout(prefIOPanelLayout);
         prefIOPanelLayout.setHorizontalGroup(
             prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(prefIOPanelLayout.createSequentialGroup()
-                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(prefIOPanelLayout.createSequentialGroup()
-                        .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(importExportLabel))
-                            .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(replaceEnUSCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 45, Short.MAX_VALUE))
-                    .addGroup(prefIOPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, prefIOPanelLayout.createSequentialGroup()
+                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(prefIOPanelLayout.createSequentialGroup()
@@ -560,10 +526,6 @@ public void showDialog() {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(unzipPathButton))))
                             .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addComponent(defContributorLabel)
-                                .addGap(14, 14, 14)
-                                .addComponent(defContributorTextField))
-                            .addGroup(prefIOPanelLayout.createSequentialGroup()
                                 .addComponent(baseDirForReposLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(baseDirForReposField)
@@ -571,11 +533,20 @@ public void showDialog() {
                                 .addComponent(baseDirForReposButton))
                             .addGroup(prefIOPanelLayout.createSequentialGroup()
                                 .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(exportOnlyModifFilesCheck)
                                     .addComponent(useExtZipCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(exportOnlyModifFilesCheck)
                                     .addComponent(emptyTrnsAsOriginalCheck))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addContainerGap(37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 121, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
+                        .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(importExportLabel))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(replaceEnUSCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap(13, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         prefIOPanelLayout.setVerticalGroup(
             prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -597,10 +568,6 @@ public void showDialog() {
                     .addComponent(unzipPathLabel)
                     .addComponent(unzipPathButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(defContributorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(defContributorLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(exportOnlyModifFilesCheck)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(emptyTrnsAsOriginalCheck)
@@ -609,10 +576,10 @@ public void showDialog() {
                     .addComponent(baseDirForReposLabel)
                     .addComponent(baseDirForReposField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(baseDirForReposButton))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
-        prefIOPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {defContributorTextField, unzipPathTextField, zipPathTextField});
+        prefIOPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {unzipPathTextField, zipPathTextField});
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-io.png")), prefIOPanel, "Input/Output"); // NOI18N
 
@@ -1090,14 +1057,11 @@ public void showDialog() {
     private javax.swing.JButton baseDirForReposButton;
     private javax.swing.JTextField baseDirForReposField;
     private javax.swing.JLabel baseDirForReposLabel;
-    private javax.swing.JLabel behaviourLabel;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JCheckBox ckeyCaseCheck;
     private javax.swing.JTextField ckeyPatternField;
     private javax.swing.JLabel ckeyPatternLabel;
-    private javax.swing.JLabel defContributorLabel;
-    private javax.swing.JTextField defContributorTextField;
     private javax.swing.JLabel descripLabel;
     private javax.swing.JButton editPhraseChooseButton;
     private javax.swing.JLabel editPhraseFontLabel;
@@ -1105,7 +1069,6 @@ public void showDialog() {
     private javax.swing.JTextField endingCheckedCharsField;
     private javax.swing.JLabel endingCheckedCharsLabel;
     private javax.swing.JCheckBox exportOnlyModifFilesCheck;
-    private javax.swing.JCheckBox guiShowWhatCheck;
     private javax.swing.JLabel ignoredOrigEntLabel;
     private javax.swing.JLabel ignoredTrnsEntLabel;
     private javax.swing.JLabel importExportLabel;

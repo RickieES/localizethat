@@ -6,6 +6,7 @@
 package net.localizethat.system;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -68,6 +69,18 @@ public class AppSettings {
      */
     public static final String PREF_LOGGING_FILENAME = "logging.filename";
     public static final String PREF_LOGGING_LOGLEVEL = "logging.loglevel";
+
+    /**
+     * Keys for colors used for string translation status
+     */
+    public static final String PREF_TRNS_STATUS = "gui.trnscolor.";
+    public static final String PREF_TRNS_STATUS_APPROXIMATED = PREF_TRNS_STATUS + "approximated";
+    public static final String PREF_TRNS_STATUS_COPIED = PREF_TRNS_STATUS + "copied";
+    public static final String PREF_TRNS_STATUS_MODIFIED = PREF_TRNS_STATUS + "modified";
+    public static final String PREF_TRNS_STATUS_PROPOSED = PREF_TRNS_STATUS + "proposed";
+    public static final String PREF_TRNS_STATUS_TRANSLATED = PREF_TRNS_STATUS + "translated";
+    public static final String PREF_TRNS_STATUS_UNTRANSLATED = PREF_TRNS_STATUS + "untranslated";
+
 
     private Properties prefValues;
     private String pathToPrefsFile;
@@ -276,12 +289,12 @@ public class AppSettings {
 
         // Set the default font for Edit translation font
         defaultPrefs.setProperty(PREF_FONT_EDITPHRASE_NAME, "Sans Serif");
-        defaultPrefs.setProperty(PREF_FONT_EDITPHRASE_STYLE, "Plain");
+        defaultPrefs.setProperty(PREF_FONT_EDITPHRASE_STYLE, Integer.toString(Font.PLAIN));
         defaultPrefs.setProperty(PREF_FONT_EDITPHRASE_SIZE, "12");
 
         // Set the default font for overall row results
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_NAME, "Sans Serif");
-        defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_STYLE, "Plain");
+        defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_STYLE, Integer.toString(Font.PLAIN));
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_SIZE, "12");
 
         return defaultPrefs;
