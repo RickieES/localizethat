@@ -35,10 +35,10 @@
                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblL10nTeamName" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblL10nURL" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblL10nURL" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblL10nTeamName" min="-2" pref="99" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="l10nUrlField" max="32767" attributes="0"/>
                           <Component id="l10nTeamNameField" max="32767" attributes="0"/>
@@ -196,7 +196,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="38" max="32767" attributes="0"/>
+                  <EmptySpace pref="101" max="32767" attributes="0"/>
                   <Component id="newButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="saveButton" min="-2" max="-2" attributes="0"/>

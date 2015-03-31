@@ -25,7 +25,7 @@ import net.localizethat.util.gui.JStatusBar;
  * L10n GUI Manager form as a JPanel that can be embedded in a TabPane or a JDialog
  * @author rpalomares
  */
-public class L10nGUIManager extends javax.swing.JPanel {
+public class L10nGUIManager extends AbstractTabPanel {
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
@@ -45,7 +45,6 @@ public class L10nGUIManager extends javax.swing.JPanel {
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
-        refreshL10nList();
         l10nTable.getSelectionModel().addListSelectionListener(new L10nTableRowListener());
     }
 
@@ -203,7 +202,7 @@ public class L10nGUIManager extends javax.swing.JPanel {
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addComponent(refreshButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                 .addComponent(newButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveButton)
@@ -233,9 +232,9 @@ public class L10nGUIManager extends javax.swing.JPanel {
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblL10nTeamName)
-                            .addComponent(lblL10nURL))
-                        .addGap(29, 29, 29)
+                            .addComponent(lblL10nURL)
+                            .addComponent(lblL10nTeamName, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(l10nUrlField)
                             .addComponent(l10nTeamNameField)))
@@ -396,6 +395,23 @@ public class L10nGUIManager extends javax.swing.JPanel {
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onTabPanelAdded() {
+        refreshL10nList();
+        selectedL10n = null;
+        l10nCodeField.setText("");
+        l10nDescriptionField.setText("");
+        l10nTeamNameField.setText("");
+        l10nUrlField.setText("");
+        l10nCreationDateField.setText("");
+        l10nLastUpdatedField.setText("");
+    }
+
+    @Override
+    public void onTabPanelRemoved() {
+        // Nothing to do here
+    }
 
     private class L10nTableRowListener implements ListSelectionListener {
         @Override

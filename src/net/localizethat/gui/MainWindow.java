@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import net.localizethat.Main;
+import net.localizethat.gui.tabpanels.AbstractTabPanel;
 import net.localizethat.util.gui.JStatusBar;
 
 /**
@@ -43,13 +44,20 @@ public class MainWindow extends javax.swing.JFrame {
         return statusBar;
     }
 
-    public void addTab(JPanel content, String title, int order) {
+    public void addTab(AbstractTabPanel content, String title, int order) {
         // TODO: change addClosableTab to allow order positioning
         addClosableTab(tabPanel, content, title, null);
     }
 
-    public void addTab(JPanel content, String title) {
+    public void addTab(AbstractTabPanel content, String title) {
+        content.onTabPanelAdded();
         addClosableTab(tabPanel, content, title, null);
+    }
+
+    public void removeTab(AbstractTabPanel content) {
+        tabPanel.remove(content);
+        content.setVisible(false);
+        content.onTabPanelRemoved();
     }
 
     /**
@@ -60,7 +68,7 @@ public class MainWindow extends javax.swing.JFrame {
      * @param title the title for the tab
      * @param icon the icon for the tab, if desired
      */
-    public void addClosableTab(final JTabbedPane tabbedPane, final JComponent c,
+    private void addClosableTab(final JTabbedPane tabbedPane, final AbstractTabPanel c,
             final String title, final Icon icon) {
 
         // Add the tab to the pane without any label
@@ -110,8 +118,7 @@ public class MainWindow extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 // The component parameter must be declared "final" so that it can be
                 // referenced in the anonymous listener class like this.
-                tabbedPane.remove(c);
-                c.setVisible(false);
+                removeTab(c);
             }
         };
         btnClose.addActionListener(listener);
@@ -119,20 +126,20 @@ public class MainWindow extends javax.swing.JFrame {
         // Optionally bring the new tab to the front
         tabbedPane.setSelectedComponent(c);
 
-    //-------------------------------------------------------------
+        //-------------------------------------------------------------
         // Bonus: Adding a <Ctrl-W> keystroke binding to close the tab
         //-------------------------------------------------------------
         AbstractAction closeTabAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tabbedPane.remove(c);
+                removeTab(c);
             }
         };
 
         // Create a keystroke
         KeyStroke controlW = KeyStroke.getKeyStroke("control W");
 
-    // Get the appropriate input map using the JComponent constants.
+        // Get the appropriate input map using the JComponent constants.
         // This one works well when the component is a container.
         InputMap inputMap = c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
@@ -156,9 +163,13 @@ public class MainWindow extends javax.swing.JFrame {
         localeManagerAction = new net.localizethat.actions.LocaleManagerAction();
         channelManagerAction = new net.localizethat.actions.ChannelManagerAction();
         productManagerAction = new net.localizethat.actions.ProductManagerAction();
+        updateProductAction = new net.localizethat.actions.UpdateProductAction();
+        editContentAction = new net.localizethat.actions.EditContentAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
+        updateProductsButton = new javax.swing.JButton();
+        editContentButton = new javax.swing.JButton();
         contentPanel = new javax.swing.JPanel();
         tabPanel = new javax.swing.JTabbedPane();
         menuBar = new javax.swing.JMenuBar();
@@ -173,6 +184,7 @@ public class MainWindow extends javax.swing.JFrame {
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
         pasteMenuItem = new javax.swing.JMenuItem();
+        editContentMenuItem = new javax.swing.JMenuItem();
         preferencesMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
@@ -191,6 +203,21 @@ public class MainWindow extends javax.swing.JFrame {
         preferencesButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         mainToolBar.add(preferencesButton);
 
+        updateProductsButton.setAction(updateProductAction);
+        updateProductsButton.setFocusable(false);
+        updateProductsButton.setHideActionText(true);
+        updateProductsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        updateProductsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mainToolBar.add(updateProductsButton);
+
+        editContentButton.setAction(editContentAction);
+        editContentButton.setToolTipText("");
+        editContentButton.setFocusable(false);
+        editContentButton.setHideActionText(true);
+        editContentButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        editContentButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mainToolBar.add(editContentButton);
+
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
@@ -199,19 +226,18 @@ public class MainWindow extends javax.swing.JFrame {
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+            .addComponent(tabPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE)
         );
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
-        updateProductsMenuItem.setMnemonic('U');
+        updateProductsMenuItem.setAction(updateProductAction);
         updateProductsMenuItem.setText("Update Products");
         fileMenu.add(updateProductsMenuItem);
 
         manageProductsMenuItem.setAction(productManagerAction);
         manageProductsMenuItem.setMnemonic('M');
-        manageProductsMenuItem.setText("Product Manager");
         fileMenu.add(manageProductsMenuItem);
 
         manageLocalesMenuItem.setAction(localeManagerAction);
@@ -244,8 +270,11 @@ public class MainWindow extends javax.swing.JFrame {
         pasteMenuItem.setText("Paste");
         editMenu.add(pasteMenuItem);
 
+        editContentMenuItem.setAction(editContentAction);
+        editMenu.add(editContentMenuItem);
+
         preferencesMenuItem.setAction(preferencesAction);
-        preferencesMenuItem.setMnemonic('P');
+        preferencesMenuItem.setMnemonic('f');
         editMenu.add(preferencesMenuItem);
 
         menuBar.add(editMenu);
@@ -312,6 +341,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
+    private net.localizethat.actions.EditContentAction editContentAction;
+    private javax.swing.JButton editContentButton;
+    private javax.swing.JMenuItem editContentMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -330,6 +362,8 @@ public class MainWindow extends javax.swing.JFrame {
     private net.localizethat.actions.ProductManagerAction productManagerAction;
     private net.localizethat.util.gui.JStatusBar statusBar;
     private javax.swing.JTabbedPane tabPanel;
+    private net.localizethat.actions.UpdateProductAction updateProductAction;
+    private javax.swing.JButton updateProductsButton;
     private javax.swing.JMenuItem updateProductsMenuItem;
     // End of variables declaration//GEN-END:variables
 

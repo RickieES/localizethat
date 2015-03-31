@@ -37,7 +37,7 @@ import net.localizethat.util.gui.JStatusBar;
  *
  * @author rpalomares
  */
-public class ProductManager extends javax.swing.JPanel {
+public class ProductManager extends AbstractTabPanel {
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
@@ -57,17 +57,12 @@ public class ProductManager extends javax.swing.JPanel {
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
-        refreshProductList();
-        refreshL10nList(l10nListModel);
-        refreshL10nList(pathL10nListModel);
-        refreshChannelList();
 
+        // Load values into product source type combo
         for(ProductSourceType pst : ProductSourceType.values()) {
             productSourceTypeListModel.addElement(pst);
         }
         prodSourceTypeCombo.invalidate();
-        clearProductFields();
-        enableProductFields(false);
 
         productList.getSelectionModel().addListSelectionListener(new ProductManager.ProductListRowListener());
     }
@@ -503,6 +498,7 @@ public class ProductManager extends javax.swing.JPanel {
         });
 
         importPathButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-list-import.png"))); // NOI18N
+        importPathButton.setToolTipText("Import existing path into this product");
         importPathButton.setMaximumSize(new java.awt.Dimension(46, 26));
         importPathButton.setMinimumSize(new java.awt.Dimension(46, 26));
         importPathButton.setPreferredSize(new java.awt.Dimension(46, 26));
@@ -520,7 +516,7 @@ public class ProductManager extends javax.swing.JPanel {
         jScrollPane1.setViewportView(targetPathTable);
 
         addTargetPathButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-list-add.png"))); // NOI18N
-        addTargetPathButton.setToolTipText("Add the path in the fields below the table");
+        addTargetPathButton.setToolTipText("Add the path in the fields above the table");
         addTargetPathButton.setMaximumSize(new java.awt.Dimension(46, 26));
         addTargetPathButton.setMinimumSize(new java.awt.Dimension(46, 26));
         addTargetPathButton.setPreferredSize(new java.awt.Dimension(46, 26));
@@ -914,7 +910,7 @@ public class ProductManager extends javax.swing.JPanel {
             lpOrig = origPathTableModel.getElement(origPathIndex);
             lcOrig = (lpOrig.getLocaleContainer().getDefLocaleTwin() == null) ?
                     lpOrig.getLocaleContainer() :
-                    lpOrig.getLocaleContainer().getDefLocaleTwin();
+                    (LocaleContainer) lpOrig.getLocaleContainer().getDefLocaleTwin();
         }
 
         if ((comboPathL10n == null) || (comboPathL10n.equals(selectedProduct.getL10nId()))) {
@@ -1037,18 +1033,35 @@ public class ProductManager extends javax.swing.JPanel {
 
         // For each path to be removed,
         for(LocalePath lp : fullPathList) {
-            // Remove path from this product
-            selectedProduct.removeLocalePath(lp);
-            lp.removeProduct(selectedProduct);
+            // We don't remove the default language LocalePaths until the associated
+            // LocalePaths have been fully removed
+            if (lp.getLocaleContainer() != lc) {
+                // Remove path from this product
+                selectedProduct.removeLocalePath(lp);
+                lp.removeProduct(selectedProduct);
 
-            if (fullDelete == JOptionPane.YES_OPTION) {
-                // Remove associated container (recursively) from DB
-                LocaleContainer linkedLc = lp.getLocaleContainer();
-                // lp.setLocaleContainer(null);
-                lcHelper.removeRecursively(linkedLc);
-                // Remove path from DB
-                entityManager.remove(lp);
+                if (fullDelete == JOptionPane.YES_OPTION) {
+                    // Remove associated container (recursively) from DB
+                    LocaleContainer linkedLc = lp.getLocaleContainer();
+                    // lp.setLocaleContainer(null);
+                    lcHelper.removeRecursively(linkedLc);
+                    // Remove path from DB
+                    entityManager.remove(lp);
+                }
             }
+        }
+
+        // Remove default path from this product
+        selectedProduct.removeLocalePath(lpToRemove);
+        lpToRemove.removeProduct(selectedProduct);
+
+        if (fullDelete == JOptionPane.YES_OPTION) {
+            // Remove associated container (recursively) from DB
+            LocaleContainer linkedLc = lpToRemove.getLocaleContainer();
+            // lp.setLocaleContainer(null);
+            lcHelper.removeRecursively(linkedLc);
+            // Remove path from DB
+            entityManager.remove(lpToRemove);
         }
 
         entityManager.getTransaction().commit();
@@ -1193,6 +1206,24 @@ public class ProductManager extends javax.swing.JPanel {
     private javax.swing.JLabel targetPathsForProductLabel;
     private javax.swing.JLabel targetPathsLabel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onTabPanelAdded() {
+        refreshProductList();
+        refreshL10nList(l10nListModel);
+        refreshL10nList(pathL10nListModel);
+        refreshChannelList();
+        origPathTableModel.clearAll();
+        targetPathTableModel.clearAll();
+
+        clearProductFields();
+        enableProductFields(false);
+    }
+
+    @Override
+    public void onTabPanelRemoved() {
+        // Nothing to do here
+    }
 
 private class ProductListRowListener implements ListSelectionListener {
         @Override

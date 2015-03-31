@@ -25,7 +25,7 @@ import net.localizethat.util.gui.JStatusBar;
  * Channel GUI Manager form as a JPanel that can be embedded in a TabPane or a JDialog
  * @author rpalomares
  */
-public class ChannelGUIManager extends javax.swing.JPanel {
+public class ChannelGUIManager extends AbstractTabPanel {
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
@@ -35,6 +35,7 @@ public class ChannelGUIManager extends javax.swing.JPanel {
      * Creates new form ChannelsManager
      */
     public ChannelGUIManager() {
+        super();
         dateFormat = new SimpleDateFormat("HH:mm:ss");
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
@@ -45,7 +46,6 @@ public class ChannelGUIManager extends javax.swing.JPanel {
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
-        refreshChannelList();
         channelTable.getSelectionModel().addListSelectionListener(new ChannelGUIManager.ChannelTableRowListener());
     }
 
@@ -226,7 +226,7 @@ public class ChannelGUIManager extends javax.swing.JPanel {
                 .addGroup(detailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(detailPanelLayout.createSequentialGroup()
                         .addComponent(refreshButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 380, Short.MAX_VALUE)
                         .addComponent(newButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveButton)
@@ -245,9 +245,9 @@ public class ChannelGUIManager extends javax.swing.JPanel {
                             .addComponent(channelLastUpdatedField)
                             .addComponent(channelCreationDateField)
                             .addComponent(channelNameField)
-                            .addComponent(channelTagField)
-                            .addComponent(channelReplacementTextFieldField)
-                            .addComponent(jScrollPane2))))
+                            .addComponent(jScrollPane2)
+                            .addComponent(channelTagField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(channelReplacementTextFieldField, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         detailPanelLayout.setVerticalGroup(
@@ -416,6 +416,23 @@ public class ChannelGUIManager extends javax.swing.JPanel {
     private javax.swing.JLabel tagLabel;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void onTabPanelAdded() {
+        refreshChannelList();
+        selectedChannel = null;
+        channelNameField.setText("");
+        channelDescriptionField.setText("");
+        channelTagField.setText("");
+        channelReplacementTextFieldField.setText("");
+        channelCreationDateField.setText("");
+        channelLastUpdatedField.setText("");
+    }
+
+    @Override
+    public void onTabPanelRemoved() {
+        // Nothing to do here
+    }
+
     private class ChannelTableRowListener implements ListSelectionListener {
         @Override
         public void valueChanged(ListSelectionEvent e) {
@@ -435,5 +452,4 @@ public class ChannelGUIManager extends javax.swing.JPanel {
             }
         }
     }
-
 }
