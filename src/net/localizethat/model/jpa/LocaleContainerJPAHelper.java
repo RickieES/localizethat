@@ -5,11 +5,13 @@
  */
 package net.localizethat.model.jpa;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import net.localizethat.Main;
 import net.localizethat.model.LocaleContainer;
+import net.localizethat.model.LocaleFile;
 
 /**
  * This class provides helper methods to interact with LocaleContainer persistence.
@@ -22,6 +24,7 @@ public class LocaleContainerJPAHelper {
     private int transactCounter;
     private final EntityManager em;
     private boolean isTransactionOpen;
+    private LocaleFileJPAHelper lfHelper;
     
     public LocaleContainerJPAHelper(EntityManager em, int transactMaxCount) {
         transactCounter = 0;
@@ -34,6 +37,7 @@ public class LocaleContainerJPAHelper {
             isTransactionOpen = this.em.isJoinedToTransaction();
         }
         this.transactMaxCount = transactMaxCount;
+        this.lfHelper = new LocaleFileJPAHelper(this.em, this.transactMaxCount);
     }
 
     public LocaleContainerJPAHelper(EntityManager em) {
@@ -52,21 +56,31 @@ public class LocaleContainerJPAHelper {
                 em.getTransaction().begin();
             }
 
+            lc = em.merge(lc); // Ensure that the EntityManager is managing the LocaleContainer to be removed
+            // for (Iterator<LocaleContainer> iterator = lc.getChildren().iterator(); iterator.hasNext();) {
+            //    LocaleContainer child = iterator.next();
             for(LocaleContainer child : lc.getChildren()) {
                 result = removeRecursively(child, depth + 1);
                 if (!result) {
                     break;
                 }
+                lc = em.merge(lc); // Ensure that the EntityManager is managing the LocaleContainer to be removed
                 lc.removeChild(child);
             }
             
             if (result) {
-                // TODO Iterate and remove LocaleFile children, once defined in LocaleContainer
+                for(LocaleFile lfChild : lc.getFileChildren()) {
+                    result = lfHelper.removeRecursively(lfChild);
+                    // TODO Check if this can be done without affecting the for, as the JPAHelper is changing
+                    // the collection traversed by this for. If this fails, maybe the above for for LocaleContainer
+                    // will fail, too?
+                }
 
                 lc.setDefLocaleTwin(null);
 
-                LocaleContainer parent = lc.getParent();
+                LocaleContainer parent = (LocaleContainer) lc.getParent();
                 if (parent != null) {
+                    // parent = em.merge(parent);
                     parent.removeChild(lc);
                     lc.setParent(null);
                 }
