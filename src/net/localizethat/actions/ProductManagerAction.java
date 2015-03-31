@@ -18,7 +18,7 @@ import net.localizethat.gui.tabpanels.ProductManager;
 public class ProductManagerAction extends AbstractAction {
     private static final String TITLE = "Product Manager";
     private static final String DESCRIPTION = "Opens " + TITLE;
-    private static final int MNEMONIC = java.awt.event.KeyEvent.VK_L;
+    private static final int MNEMONIC = java.awt.event.KeyEvent.VK_P;
     private ProductManager productGuiMgr;
 
     /**
