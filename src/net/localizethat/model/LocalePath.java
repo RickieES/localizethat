@@ -61,7 +61,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LocalePath.findByCreationDate", query = "SELECT pl FROM LocalePath pl WHERE pl.creationDate = :prodcreationdate"),
     @NamedQuery(name = "LocalePath.findByLastUpdate", query = "SELECT pl FROM LocalePath pl WHERE pl.lastUpdate = :prodlastupdate") */
 })
-public class LocalePath implements Serializable {
+public class LocalePath implements Serializable, Comparable<LocalePath> {
     private static final long serialVersionUID = 1L;
     private static final int LPATHPATH_LENGTH = 255;
     @TableGenerator(name="LOCALEPATH", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
@@ -108,6 +108,16 @@ public class LocalePath implements Serializable {
 
     public LocalePath(Integer id, String path, LocaleContainer localeContainer) {
         this(id, path);
+        this.localeContainer = localeContainer;
+    }
+
+    public LocalePath(String path) {
+        this();
+        this.path = path;
+    }
+
+    public LocalePath(String path, LocaleContainer localeContainer) {
+        this(path);
         this.localeContainer = localeContainer;
     }
 
@@ -339,6 +349,11 @@ public class LocalePath implements Serializable {
     @Override
     public String toString() {
         return this.getRawPath();
+    }
+
+    @Override
+    public int compareTo(LocalePath o) {
+        return getRawPath().compareTo(o.getRawPath());
     }
 
 }

@@ -8,6 +8,11 @@
     <class>net.localizethat.model.Product</class>
     <class>net.localizethat.model.LocaleContainer</class>
     <class>net.localizethat.model.LocalePath</class>
+    <class>net.localizethat.model.DtdFile</class>
+    <class>net.localizethat.model.ImageFile</class>
+    <class>net.localizethat.model.LocaleFile</class>
+    <class>net.localizethat.model.PropertiesFile</class>
+    <class>net.localizethat.model.TextFile</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/lt-data"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>

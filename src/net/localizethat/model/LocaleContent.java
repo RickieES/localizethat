@@ -5,39 +5,122 @@
  */
 package net.localizethat.model;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collection;
 
 /**
  *
  * @author rpalomares
  */
-@Entity
-@Table(name = "APP.LOCALECONTENT")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "LocaleContent.countAll", query = "SELECT COUNT(lc) FROM LocaleContent lc"),
-    @NamedQuery(name = "LocaleContentt.count", query = "SELECT COUNT(lc) FROM LocaleContent lc")
-})
-public class LocaleContent extends AbstractLocaleNode<LocaleContainer, LocaleContent, LocaleContent> implements Serializable {
+public class LocaleContent implements LocaleNode {
 
-    public LocaleContent() {
-      super();
-      children = new ArrayList<>(25);
+    @Override
+    public void setName(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public File getFile() {
-        return new File(getFilePath());
+    @Override
+    public String getName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    /**
-     * public List <L10nObject> parse() throws ParseException
-     */
+    @Override
+    public void setParent(LocaleNode parent) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LocaleNode getParent() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getFilePath() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addChild(LocaleNode node) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasChild(LocaleNode node) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasChild(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasChild(String name, boolean matchCase) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LocaleNode getChildByName(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LocaleNode getChildByName(String name, boolean matchCase) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<? extends LocaleNode> getChildren() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LocaleNode removeChild(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LocaleNode removeChild(String name, boolean matchCase) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeChild(LocaleNode node) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean clearChildren() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDefLocaleTwin(LocaleNode twin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public LocaleNode getDefLocaleTwin() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addTwin(LocaleNode twin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeTwin(LocaleNode twin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isATwin(LocaleNode possibleTwin) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<? extends LocaleNode> getTwins() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

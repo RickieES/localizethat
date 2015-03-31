@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ public class DtdFile extends LocaleFile implements ParseableFile {
 
     public DtdFile() {
       super();
-      // children = new ArrayList<>(25);
+      children = new ArrayList<>(25);
     }
 
     @Override

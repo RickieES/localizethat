@@ -11,12 +11,9 @@ import java.util.Collection;
  * A class representing a node in the hierarchical representation of a localization project.
  * The root node is still to be decided, and it extends to the different elements of a
  * localizable file
- * @param <P> the parent class
- * @param <S> the sibling class
- * @param <D> the descendent class
  * @author rpalomares
  */
-public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extends LocaleNode> {
+public interface LocaleNode {
     
     /**
      * Sets the name of the node. What exactly represents the name depends on the specific subtype
@@ -36,13 +33,13 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * Sets the parent of this node. This allows travelling up in the tree
      * @param parent a LocaleNode descendent in whose children list exists this node
      */
-    void setParent(P parent);
+    void setParent(LocaleNode parent);
 
     /**
      * Gets the parent of this node.
      * @return a LocaleNode descendent in whose children list exists this node
      */
-    P getParent();
+    LocaleNode getParent();
 
     /**
      * Returns the operational path, ie. after replacing possible channel or base directory tags.
@@ -64,14 +61,14 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return true if node could be added, false otherwise (mainly, because it already existed
      * as a child)
      */
-    boolean addChild(D node);
+    boolean addChild(LocaleNode node);
 
     /**
      * Checks if the LocaleNode passed is a child of this node
      * @param node the LocaleNode to be checked as a child of this node
      * @return true if it is in the children list of this node
      */
-    boolean hasChild(D node);
+    boolean hasChild(LocaleNode node);
 
     /**
      * Checks if a LocaleNode exists in the children list of this node which name property
@@ -99,7 +96,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return the first LocaleNode child child whose name property matches the parameter
      * passed, case insensitive
      */
-    D getChildByName(String name);
+    LocaleNode getChildByName(String name);
 
     /**
      * Finds and returns the first LocaleNode child whose name property matches the parameter
@@ -109,13 +106,13 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return the first LocaleNode child child whose name property matches the parameter
      * passed
      */
-    D getChildByName(String name, boolean matchCase);
+    LocaleNode getChildByName(String name, boolean matchCase);
 
     /**
      * Returns the list of children of this LocaleNode
      * @return A list of LocaleNode items that represent the children of this one
      */
-    Collection<D> getChildren();
+    Collection<? extends LocaleNode> getChildren();
 
     /**
      * Finds and removes the first LocaleNode child whose name property matches the parameter
@@ -123,7 +120,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @param name the name property that should have the child we are looking for
      * @return the removed LocaleNode, or null if no LocaleNode child could be found with that name
      */
-    D removeChild(String name);
+    LocaleNode removeChild(String name);
 
     /**
      * Finds and removes the first LocaleNode child whose name property matches the parameter
@@ -132,7 +129,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @param matchCase whether the case of the name property and name parameter must match or not
      * @return the removed LocaleNode, or null if no LocaleNode child could be found with that name
      */
-    D removeChild(String name, boolean matchCase);
+    LocaleNode removeChild(String name, boolean matchCase);
 
     /**
      * Finds and removes the passed LocaleNode from the children list of this node
@@ -140,7 +137,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return true if the node was successfully removed, false otherwise (mainly, because it was not
      * a child of this)
      */
-    boolean removeChild(D node);
+    boolean removeChild(LocaleNode node);
 
     /**
      * Removes all the children from this node
@@ -168,7 +165,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * </ul>
      * @param twin the LocaleNode instance equivalent of this in the default locale of the Product
      */
-    void setDefLocaleTwin(S twin);
+    void setDefLocaleTwin(LocaleNode twin);
 
     /**
      * Returns the "twin" node of this for the default locale of the Product.
@@ -190,7 +187,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * </ul>
      * @return the LocaleNode instance equivalent of this in the default locale of the Product
      */
-    S getDefLocaleTwin();
+    LocaleNode getDefLocaleTwin();
 
     /**
      * Adds a twin other than the default locale twin. The list of twins is automatically
@@ -200,7 +197,7 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return true if the twin was added successfully; false if it wasn't added because the twin
      * had not set this object as default locale twin
      */
-    boolean addTwin(S twin);
+    boolean addTwin(LocaleNode twin);
 
     /**
      * Removes a twin from the list of twins of this object. This list is automatically
@@ -210,19 +207,19 @@ public interface LocaleNode<P extends LocaleNode, S extends LocaleNode, D extend
      * @return true if the twin was added successfully; false if it wasn't added because the twin
      * had not set this object as default locale twin
      */
-    boolean removeTwin(S twin);
+    boolean removeTwin(LocaleNode twin);
 
     /**
      * Checks if a object is a twin of this
      * @param possibleTwin the candidate to twin we want to check
      * @return true if possibleTwin is indeed a twin of this, false otherwise
      */
-    boolean isATwin(S possibleTwin);
+    boolean isATwin(LocaleNode possibleTwin);
 
     /**
      * Returns a list of twins of this object. The list is automatically maintained by using
      * setDefLocaleTwin()
      * @return a list of twins of this object
      */
-    Collection<S> getTwins();
+    Collection<? extends LocaleNode> getTwins();
 }
