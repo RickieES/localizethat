@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("ImageFile")
 @XmlRootElement
-@SecondaryTable(name="LFILELOBS",
+@SecondaryTable(name="LFILELOBS", schema = "APP",
         pkJoinColumns=@PrimaryKeyJoinColumn(name="ID"))
 //@NamedQueries({
 //    @NamedQuery(name = "LocaleFile.countAll", query = "SELECT COUNT(lf) FROM LocaleFile lf"),
@@ -32,7 +32,7 @@ public class ImageFile extends LocaleFile {
     private static final int BINARYFILE_LENGTH = 1048576; // We expect files no longer than 1 MBytes
     @Lob
     @Basic(fetch=FetchType.LAZY)
-    @Column(table = "LFILELOBS", name = "LFILEBINARYCONTENT", length = BINARYFILE_LENGTH)
+    @Column(table = "APP.LFILELOBS", name = "LFILEBINARYCONTENT", length = BINARYFILE_LENGTH)
     private byte[] imageData;
 
     @Basic(optional = false)

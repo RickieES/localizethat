@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("TextFile")
 @XmlRootElement
-@SecondaryTable(name="LFILELOBS",
+@SecondaryTable(name="LFILELOBS", schema ="APP",
         pkJoinColumns=@PrimaryKeyJoinColumn(name="ID"))
 //@NamedQueries({
 //    @NamedQuery(name = "LocaleFile.countAll", query = "SELECT COUNT(lf) FROM LocaleFile lf"),
@@ -32,7 +32,7 @@ public class TextFile extends LocaleFile {
     private static final int TEXTFILE_LENGTH = 512*1024; // We expect files no longer than 512 KBytes
     @Lob
     @Basic(fetch=FetchType.LAZY)
-    @Column(table = "LFILELOBS", name="LFILECLOB", length = TEXTFILE_LENGTH)
+    @Column(table = "APP.LFILELOBS", name="LFILECLOB", length = TEXTFILE_LENGTH)
     private String fileContent;
 
 }
