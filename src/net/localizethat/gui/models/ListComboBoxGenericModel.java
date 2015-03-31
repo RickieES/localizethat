@@ -6,6 +6,7 @@
 package net.localizethat.gui.models;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.MutableComboBoxModel;
@@ -16,7 +17,8 @@ import javax.swing.MutableComboBoxModel;
  * @author rpalomares
  * @param <T> The class of objects displayed in the JList or JComboBox
  */
-public class ListComboBoxGenericModel<T> extends AbstractListModel<T> implements MutableComboBoxModel<T> {
+public class ListComboBoxGenericModel<T> extends AbstractListModel<T>
+        implements MutableComboBoxModel<T>, Iterable {
     List<T> itemList;
     int selectComboItem = -1;
 
@@ -121,6 +123,7 @@ public class ListComboBoxGenericModel<T> extends AbstractListModel<T> implements
     }
 
     public void clearAll() {
+        selectComboItem = -1;
         int end = Math.max(0, itemList.size() - 1);
         itemList.clear();
         fireIntervalRemoved(this, 0, end);
@@ -133,5 +136,18 @@ public class ListComboBoxGenericModel<T> extends AbstractListModel<T> implements
         // end marks the last element just added by above addAll
         int end = Math.max(0, itemList.size() - 1);
         fireIntervalAdded(this, start, end);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return itemList.iterator();
+    }
+
+    public boolean contains(T item) {
+        return itemList.contains(item);
+    }
+
+    public void sort() {
+        itemList.sort(null);
     }
 }
