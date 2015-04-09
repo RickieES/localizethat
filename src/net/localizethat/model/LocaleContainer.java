@@ -292,18 +292,22 @@ public class LocaleContainer implements LocaleNode, Serializable {
         return twins;
     }
 
+    @Override
     public Date getCreationDate() {
         return creationDate;
     }
 
+    @Override
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
+    @Override
     public Date getLastUpdate() {
         return lastUpdate;
     }
 
+    @Override
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }

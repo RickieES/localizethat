@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 //    @NamedQuery(name = "LocaleFile.countAll", query = "SELECT COUNT(lf) FROM LocaleFile lf"),
 //    @NamedQuery(name = "LocaleFile.count", query = "SELECT COUNT(lf) FROM LocaleFile lf")
 //})
-public class DtdFile extends LocaleFile implements ParseableFile {
+public class DtdFile extends ParseableFileAdapter {
 
     public DtdFile() {
       super();

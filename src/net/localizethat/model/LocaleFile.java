@@ -6,6 +6,11 @@
 package net.localizethat.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -344,6 +349,28 @@ public class LocaleFile implements LocaleNode, Serializable {
         return new File(getFilePath());
     }
 
+    public InputStream getAsInputStream() {
+        FileInputStream is;
+        try {
+            is = new FileInputStream(getFile());
+        } catch (FileNotFoundException e) {
+            // TODO log the exception
+            is = null;
+        }
+        return is;
+    }
+
+    public Reader getAsReader() {
+        FileReader is;
+        try {
+            is = new FileReader(getFile());
+        } catch (FileNotFoundException e) {
+            // TODO log the exception
+            is = null;
+        }
+        return is;
+    }
+
     public boolean isDontExport() {
         return dontExport;
     }
@@ -352,18 +379,22 @@ public class LocaleFile implements LocaleNode, Serializable {
         this.dontExport = dontExport;
     }
 
+    @Override
     public Date getCreationDate() {
         return creationDate;
     }
 
+    @Override
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
+    @Override
     public Date getLastUpdate() {
         return lastUpdate;
     }
 
+    @Override
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }

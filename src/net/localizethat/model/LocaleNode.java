@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * A class representing a node in the hierarchical representation of a localization project.
@@ -40,6 +41,32 @@ public interface LocaleNode {
      * @return a LocaleNode descendent in whose children list exists this node
      */
     LocaleNode getParent();
+
+    /**
+     * Returns the creation date of this LocaleNode in the database
+     * @return a java.util.Date with the creation timestamp
+     */
+    Date getCreationDate();
+
+    /**
+     * Sets the creation date of this LocaleNode in the database
+     * @param creationDate the creation date to be inserted/updated
+     */
+    void setCreationDate(Date creationDate);
+
+    /**
+     * Returns the last update of this LocaleNode in the database. For LocaleContainers
+     * and LocaleFiles, it is NOT intended to return the folder/file last update in the
+     * disk
+     * @return a java.util.Date with the last update timestamp
+     */
+    Date getLastUpdate();
+
+    /**
+     * Sets the creation date of this LocaleNode in the database
+     * @param lastUpdate the last update to be inserted/updated
+     */
+    void setLastUpdate(Date lastUpdate);
 
     /**
      * Returns the operational path, ie. after replacing possible channel or base directory tags.

@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  *
@@ -120,6 +121,26 @@ public class LocaleContent implements LocaleNode {
 
     @Override
     public Collection<? extends LocaleNode> getTwins() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Date getCreationDate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setCreationDate(Date creationDate) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Date getLastUpdate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setLastUpdate(Date lastUpdate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

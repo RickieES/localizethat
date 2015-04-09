@@ -21,4 +21,10 @@ public interface ParseableFile {
      */
     List<LocaleContent> parse() throws ParseException;
 
+    // LTLicense getLicense();
+    LocaleContent getLicense();
+
+    // List<LObject> getLObjectCollection();
+    List<LocaleContent> getLObjectCollection();
+
 }
