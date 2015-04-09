@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author rpalomares
  */
-public interface ParseableFile {
+public interface ParseableFile extends LocaleNode {
 
     /**
      * Parses a text file (like a DTD file, a Properties file, etc.)
