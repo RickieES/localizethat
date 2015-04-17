@@ -12,9 +12,11 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -129,7 +131,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     private LocaleFile defLocaleTwin;
     @OneToMany(mappedBy="defLocaleTwin")
     private Collection<LocaleFile> twins;
-    // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     transient protected Collection<LocaleContent> children;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODECREATIONDATE", nullable = false)
@@ -144,7 +146,7 @@ public class LocaleFile implements LocaleNode, Serializable {
 
     protected LocaleFile() {
         super();
-        // children = new ArrayList<>(25);
+        children = new ArrayList<>(25);
     }
 
     public Integer getId() {
@@ -202,7 +204,8 @@ public class LocaleFile implements LocaleNode, Serializable {
     @Override
     public boolean addChild(LocaleNode node) {
         if ((node instanceof LocaleContent) && (!hasChild(node))) {
-            children.add((LocaleContent) node);
+            LocaleContent e = (LocaleContent) node;
+            children.add(e);
             return true;
         }
         return false;
@@ -250,7 +253,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
-    public Collection<LocaleContent> getChildren() {
+    public Collection<? extends LocaleContent> getChildren() {
         return children;
     }
 

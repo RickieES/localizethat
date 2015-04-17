@@ -16,7 +16,7 @@ import javax.persistence.SecondaryTable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Image file, as a binary file representing an image in JPEG, PNG or GIF formats.
  * @author rpalomares
  */
 @Entity

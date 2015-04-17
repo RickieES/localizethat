@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 //    @NamedQuery(name = "LocaleFile.countAll", query = "SELECT COUNT(lf) FROM LocaleFile lf"),
 //    @NamedQuery(name = "LocaleFile.count", query = "SELECT COUNT(lf) FROM LocaleFile lf")
 //})
-public class PropertiesFile extends LocaleFile implements ParseableFile {
+public class PropertiesFile extends ParseableFileAdapter {
 
     public PropertiesFile() {
       super();
@@ -32,11 +32,6 @@ public class PropertiesFile extends LocaleFile implements ParseableFile {
     @Override
     public List<LocaleContent> parse() throws ParseException {
         return null;
-    }
-
-    @Override
-    public LocaleContent getLicense() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

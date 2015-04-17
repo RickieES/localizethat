@@ -27,7 +27,7 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Represents both a locale code and a localization team
  * @author rpalomares
  */
 @Entity

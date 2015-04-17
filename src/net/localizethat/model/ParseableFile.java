@@ -21,8 +21,7 @@ public interface ParseableFile extends LocaleNode {
      */
     List<LocaleContent> parse() throws ParseException;
 
-    // LTLicense getLicense();
-    LocaleContent getLicense();
+    LTLicense getLicense();
 
     // List<LObject> getLObjectCollection();
     List<LocaleContent> getLObjectCollection();

@@ -5,38 +5,155 @@
  */
 package net.localizethat.model;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Superclass of all file contents, except images and non parseable files. This class defines the
+ * entity and the main JPA mapping
  * @author rpalomares
  */
-public class LocaleContent implements LocaleNode {
+@Entity
+@Table(name = "APP.LOCALECONTENT")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="LC_TYPE")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "LocaleContent.countAll", query = "SELECT COUNT(lc) FROM LocaleContent lc"),
+    @NamedQuery(name = "LocaleContent.count", query = "SELECT COUNT(lc) FROM LocaleContent lc")
+})
+public class LocaleContent implements LocaleNode, Serializable {
+    private static final int LOCALENODENAME_LENGTH = 128;
 
-    @Override
-    public void setName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Comparator based in the position of the LocaleContent objects in a file
+     */
+    public static Comparator<LocaleContent> orderInFileComparator = new Comparator<LocaleContent>() {
+            @Override
+            public int compare(LocaleContent o1, LocaleContent o2) {
+                return o2.getOrderInFile() - o1.getOrderInFile();
+            }
+    };
+
+    @TableGenerator(name="LOCALENODE", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
+            valueColumnName="COUNTERVALUE", allocationSize = 5)
+    @Id
+    @GeneratedValue(strategy= GenerationType.TABLE, generator="LOCALENODE")
+    @Basic(optional = false)
+    @Column(name = "ID", nullable = false)
+    private Integer id;
+    @Version
+    @Column(name = "ENTITYVERSION")
+    private int entityVersion;
+    @Basic(optional = false)
+    @Column(name = "LNODENAME", nullable = false, length = LOCALENODENAME_LENGTH)
+    private String name;
+    @JoinColumn(name = "LNODEPARENT", referencedColumnName = "ID", nullable = true)
+    @ManyToOne(optional = false)
+    private LocaleFile parent;
+    @JoinColumn(name = "LNODETWIN", referencedColumnName = "ID", nullable = true)
+    @ManyToOne(optional = true)
+    private LocaleContent defLocaleTwin;
+    @OneToMany(mappedBy="defLocaleTwin")
+    private Collection<LocaleContent> twins;
+    @Basic(optional = false)
+    @Column(name = "LCONTENTDONTEXPORT", nullable = false)
+    private boolean dontExport;
+    @Basic(optional = false)
+    @Column(name = "LCONTENTORDERINFILE", nullable = false)
+    private int orderInFile;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LNODECREATIONDATE", nullable = false)
+    private Date creationDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LNODELASTUPDATE", nullable = false)
+    private Date lastUpdate;
+
+    // TODO Add all remaining properties and entity information
+
+
+    public LocaleContent() {
+        super();
+        this.orderInFile = 0;
+        this.dontExport = false; // So, by default, we want to export content
+    }
+
+    public LocaleContent(int orderInFile) {
+        super();
+        this.orderInFile = orderInFile;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getEntityVersion() {
+        return entityVersion;
+    }
+
+    public void setEntityVersion(int entityVersion) {
+        this.entityVersion = entityVersion;
     }
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name.substring(0, Math.min(name.length(), LOCALENODENAME_LENGTH));
+    }
+
+    @Override
+    public LocaleFile getParent() {
+        return parent;
     }
 
     @Override
     public void setParent(LocaleNode parent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public LocaleNode getParent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (parent instanceof LocaleFile) {
+            this.parent = (LocaleFile) parent;
+        }
     }
 
     @Override
     public String getFilePath() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        StringBuilder sb = new StringBuilder(64);
+        LocaleFile p = getParent();
+
+        if (p != null) {
+            sb.append(p.getFilePath());
+        }
+        // We use the "/" literal instead of file.separator to avoid mixing of separators
+        sb.append("/").append(getName());
+        return sb.toString();
     }
 
     @Override
@@ -96,52 +213,96 @@ public class LocaleContent implements LocaleNode {
 
     @Override
     public void setDefLocaleTwin(LocaleNode twin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if ((twin != null) && (twin instanceof LocaleContent)) {
+            this.defLocaleTwin = (LocaleContent) twin;
+            twin.addTwin(this);
+        } else {
+            this.defLocaleTwin = null;
+        }
     }
 
     @Override
     public LocaleNode getDefLocaleTwin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return defLocaleTwin;
     }
 
     @Override
     public boolean addTwin(LocaleNode twin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean result;
+
+        result = (twin.getDefLocaleTwin() == this);
+
+        if (result) {
+            this.twins.add((LocaleContent) twin);
+        }
+        return result;
     }
 
     @Override
     public boolean removeTwin(LocaleNode twin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean result;
+
+        result = (twin != null)
+                && (twin instanceof LocaleFile)
+                && (twin.getDefLocaleTwin() == null)
+                && (twins.contains((LocaleContent) twin))
+                && twins.remove((LocaleContent) twin);
+        return result;
     }
 
     @Override
     public boolean isATwin(LocaleNode possibleTwin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for(LocaleNode s : twins) {
+            if (s.equals(possibleTwin)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    public Collection<? extends LocaleNode> getTwins() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Collection<LocaleContent> getTwins() {
+        return twins;
     }
 
     @Override
     public Date getCreationDate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return creationDate;
     }
 
     @Override
     public void setCreationDate(Date creationDate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.creationDate = creationDate;
     }
 
     @Override
     public Date getLastUpdate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lastUpdate;
     }
 
     @Override
     public void setLastUpdate(Date lastUpdate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.lastUpdate = lastUpdate;
     }
 
+    public int getOrderInFile() {
+        return orderInFile;
+    }
+
+    public void setOrderInFile(int orderInFile) {
+        this.orderInFile = orderInFile;
+    }
+
+    public boolean isDontExport() {
+        return dontExport;
+    }
+
+    public void setDontExport(boolean dontExport) {
+        this.dontExport = dontExport;
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }
