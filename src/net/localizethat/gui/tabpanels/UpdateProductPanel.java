@@ -28,7 +28,7 @@ import net.localizethat.util.gui.JStatusBar;
 public class UpdateProductPanel extends AbstractTabPanel {
     private final EntityManagerFactory emf;
     private final JStatusBar statusBar;
-
+    private UpdateProductWorker upw;
     /**
      * Creates new form UpdateProductPanel
      */
@@ -189,6 +189,11 @@ public class UpdateProductPanel extends AbstractTabPanel {
         editChangesButton.setText("Edit changes");
         editChangesButton.setToolTipText("Open new and updated content in Edit View");
         editChangesButton.setEnabled(false);
+        editChangesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editChangesButtonActionPerformed(evt);
+            }
+        });
         buttonPanel.add(editChangesButton);
 
         cancelButton.setText("Cancel");
@@ -283,17 +288,27 @@ public class UpdateProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_productListKeyTyped
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO if there is task running, cancel it
+        if (upw != null) {
+            upw.cancel(true);
+        }
 
+        statusBar.endProgress();
         Main.mainWindow.removeTab(this);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        UpdateProductWorker upw = new UpdateProductWorker(updateOutputArea, editChangesButton,
+        if (upw != null) {
+            upw.cancel(true);
+        }
+        upw = new UpdateProductWorker(updateOutputArea, editChangesButton,
                 originalPathsListModel.iterator());
-
+        statusBar.startUndefProgress();
         upw.execute();
     }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void editChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editChangesButtonActionPerformed
+        // TODO launch edit window with new and modified content
+    }//GEN-LAST:event_editChangesButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
