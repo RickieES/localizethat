@@ -5,6 +5,8 @@
  */
 package net.localizethat.model;
 
+import java.io.File;
+import java.io.LineNumberReader;
 import java.text.ParseException;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
@@ -30,12 +32,22 @@ public class PropertiesFile extends ParseableFileAdapter {
     }
 
     @Override
-    public List<LocaleContent> parse() throws ParseException {
-        return null;
+    public List<LocaleContent> getLObjectCollection() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<LocaleContent> getLObjectCollection() {
+    protected List<LocaleContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void afterParsingHook(LineNumberReader fileReader) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<LocaleContent> importFromFile(File f) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

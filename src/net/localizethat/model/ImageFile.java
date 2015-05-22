@@ -39,4 +39,26 @@ public class ImageFile extends LocaleFile {
     @Column(name = "LFILEMD5HASH", nullable = false)
     private String md5Hash;
 
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    public void clearImageData() {
+        this.imageData = null;
+        md5Hash = "";
+    }
+
+    public String getMd5Hash() {
+        return md5Hash;
+    }
+
+    public void setMd5Hash(String md5Hash) {
+        this.md5Hash = md5Hash;
+    }
+
+    
 }

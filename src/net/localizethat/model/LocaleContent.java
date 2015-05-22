@@ -90,6 +90,9 @@ public class LocaleContent implements LocaleNode, Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODELASTUPDATE", nullable = false)
     private Date lastUpdate;
+    
+    // Used during parsing of files to put apart LocaleContent no longer present in the file
+    private transient boolean markedForDeletion;
 
     // TODO Add all remaining properties and entity information
 
@@ -299,6 +302,14 @@ public class LocaleContent implements LocaleNode, Serializable {
 
     public void setDontExport(boolean dontExport) {
         this.dontExport = dontExport;
+    }
+
+    public boolean isMarkedForDeletion() {
+        return markedForDeletion;
+    }
+
+    public void setMarkedForDeletion(boolean markedForDeletion) {
+        this.markedForDeletion = markedForDeletion;
     }
 
     @Override

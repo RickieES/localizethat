@@ -9,6 +9,8 @@ import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -30,6 +32,11 @@ public class LTKeyValuePair extends LocaleContent {
 
     @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
     private String textValue;
+    
+    @JoinColumn(name = "LCONTENTCOMMENT", referencedColumnName = "ID", nullable = true)
+    @OneToOne(optional = true)
+    private LTComment ltComment;
+
 
     public String getTextValue() {
         return textValue;
@@ -38,4 +45,13 @@ public class LTKeyValuePair extends LocaleContent {
     public void setTextValue(String textValue) {
         this.textValue = textValue.substring(0, Math.min(textValue.length(), LTKeyValuePair.TEXTVALUE_LENGTH));
     }
+
+    public LTComment getLtComment() {
+        return ltComment;
+    }
+
+    public void setLtComment(LTComment ltComment) {
+        this.ltComment = ltComment;
+    }
+
 }

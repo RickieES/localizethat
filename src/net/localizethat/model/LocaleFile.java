@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
-import java.io.Reader;
+import java.io.LineNumberReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -132,7 +132,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     @OneToMany(mappedBy="defLocaleTwin")
     private Collection<LocaleFile> twins;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    transient protected Collection<LocaleContent> children;
+    protected Collection<LocaleContent> children;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODECREATIONDATE", nullable = false)
     private Date creationDate;
@@ -236,15 +236,29 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
-    public LocaleNode getChildByName(String name) {
+    public LocaleContent getChildByName(String name) {
         return getChildByName(name, false);
     }
 
     @Override
-    public LocaleNode getChildByName(String name, boolean matchCase) {
-        for(LocaleNode l : children) {
-            boolean found = (matchCase) ? (l.getName().equals(name))
-                                        : (l.getName().equalsIgnoreCase(name));
+    public LocaleContent getChildByName(String name, boolean matchCase) {
+        if (name == null) {
+            return null;
+        }
+
+        for(LocaleContent l : children) {
+            boolean found = (matchCase) ? (name.equals(l.getName()))
+                                        : (name.equalsIgnoreCase(l.getName()));
+            if (found) {
+                return l;
+            }
+        }
+        return null;
+    }
+
+    public LocaleContent getChildByOrderInFile(int orderInFile) {
+        for(LocaleContent l : children) {
+            boolean found = (l.getOrderInFile() == orderInFile);
             if (found) {
                 return l;
             }
@@ -253,19 +267,19 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
-    public Collection<? extends LocaleContent> getChildren() {
+    public Collection<LocaleContent> getChildren() {
         return children;
     }
 
     @Override
-    public LocaleNode removeChild(String name) {
+    public LocaleContent removeChild(String name) {
         return removeChild(name, false);
     }
 
 
     @Override
-    public LocaleNode removeChild(String name, boolean matchCase) {
-        LocaleContent l = (LocaleContent) getChildByName(name, matchCase);
+    public LocaleContent removeChild(String name, boolean matchCase) {
+        LocaleContent l = getChildByName(name, matchCase);
 
         if ((l != null) && (removeChild(l))) {
             return l;
@@ -304,7 +318,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
-    public LocaleNode getDefLocaleTwin() {
+    public LocaleFile getDefLocaleTwin() {
         return defLocaleTwin;
     }
     
@@ -349,7 +363,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     public File getFile() {
-        return new File(getFilePath());
+            return new File(getFilePath());
     }
 
     public InputStream getAsInputStream() {
@@ -363,10 +377,10 @@ public class LocaleFile implements LocaleNode, Serializable {
         return is;
     }
 
-    public Reader getAsReader() {
-        FileReader is;
+    public LineNumberReader getAsLineNumberReader() {
+        LineNumberReader is;
         try {
-            is = new FileReader(getFile());
+            is = new LineNumberReader(new FileReader(getFile()));
         } catch (FileNotFoundException e) {
             // TODO log the exception
             is = null;

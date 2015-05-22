@@ -186,9 +186,13 @@ public class LocaleContainer implements LocaleNode, Serializable {
 
     @Override
     public LocaleContainer getChildByName(String name, boolean matchCase) {
+        if (name == null) {
+            return null;
+        }
+
         for(LocaleContainer l : children) {
-            boolean found = (matchCase) ? (l.getName().equals(name))
-                                        : (l.getName().equalsIgnoreCase(name));
+            boolean found = (matchCase) ? (name.equals(l.getName()))
+                                        : (name.equalsIgnoreCase(l.getName()));
             if (found) {
                 return l;
             }
@@ -319,17 +323,17 @@ public class LocaleContainer implements LocaleNode, Serializable {
 
         if (lc != null) {
             sb.append(lc.getFilePath());
+            // We use the "/" literal instead of file.separator to avoid mixing of separators
+            sb.append("/").append(getName());
         } else {
             // TODO how can we do this without creating an EntityManager here?
             EntityManager entityManager = Main.emf.createEntityManager();
             TypedQuery<LocalePath> localePathQuery = entityManager.createNamedQuery(
                     "LocalePath.findByLocaleContainer", LocalePath.class);
-            localePathQuery.setParameter("localecontainer", lc);
+            localePathQuery.setParameter("localecontainer", this);
             LocalePath lp = localePathQuery.getSingleResult();
             sb.append(lp.getFilePath());
         }
-        // We use the "/" literal instead of file.separator to avoid mixing of separators
-        sb.append("/").append(getName());
         return sb.toString();
     }
 
@@ -373,7 +377,7 @@ public class LocaleContainer implements LocaleNode, Serializable {
         return null;
     }
 
-    public Collection<? extends LocaleFile> getFileChildren() {
+    public Collection<LocaleFile> getFileChildren() {
         return fileChildren;
     }
 

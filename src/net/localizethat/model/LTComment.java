@@ -28,6 +28,7 @@ public class LTComment extends LocaleContent {
     public static final int COMMENTTEXTVALUE_LENGTH = 32672;
 
     transient protected Collection<Void> children;
+    transient private String entityName;
     @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = COMMENTTEXTVALUE_LENGTH)
     private String textValue;
     @Basic(optional = false)
@@ -88,6 +89,14 @@ public class LTComment extends LocaleContent {
     @Override
     public boolean clearChildren() {
         return false;
+    }
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 
     public String getTextValue() {

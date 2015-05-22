@@ -34,7 +34,7 @@ public class LTIniSection extends LocaleContent {
     public LTIniSection() {
         super();
         children = new ArrayList<>(5);
-        buildChildrenOnTheFly();
+        // buildChildrenOnTheFly();
     }
     
     /**

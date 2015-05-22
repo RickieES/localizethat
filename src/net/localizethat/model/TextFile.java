@@ -35,4 +35,18 @@ public class TextFile extends LocaleFile {
     @Column(table = "APP.LFILELOBS", name="LFILECLOB", length = TEXTFILE_LENGTH)
     private String fileContent;
 
+    public String getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
+    }
+
+    public void clearFileContent() {
+        this.fileContent = "";
+    }
+
+
+
 }
