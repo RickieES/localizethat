@@ -6,6 +6,8 @@
 package net.localizethat.tasks;
 
 import java.io.File;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -14,21 +16,26 @@ import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import net.localizethat.Main;
+import net.localizethat.model.DtdFile;
 import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocaleNode;
 import net.localizethat.model.LocalePath;
+import net.localizethat.model.ParseableFile;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
 import net.localizethat.model.jpa.LocaleFileJPAHelper;
+import net.localizethat.util.gui.JStatusBar;
 
 /**
- *
+ * SwingWorker task that performs an update process in the locale paths passed in the constructor
  * @author rpalomares
  */
 public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, String> {
     private final JTextArea feedbackArea;
     private final JButton editChangesButton;
+    private final JStatusBar statusBar;
     private final Iterator<LocalePath> localePathIterator;
+    private final Collection<LocaleNode> newAndModifiedList;
     private final EntityManager em;
     private int filesAdded;
     private int filesModified;
@@ -42,7 +49,9 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
         this.feedbackArea = feedbackArea;
         this.editChangesButton = editChangesButton;
         this.localePathIterator = localePathIterator;
+        this.statusBar = Main.mainWindow.getStatusBar();
         this.em = Main.emf.createEntityManager();
+        this.newAndModifiedList = new ArrayList<>(10);
     }
 
     @Override
@@ -56,27 +65,38 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
 
         em.getTransaction().begin();
         while (localePathIterator.hasNext()) {
+            if (isCancelled()) {
+                break;
+            }
             LocalePath lp = localePathIterator.next();
-            
+
             publish("Processing " + lp.getFilePath());
 
             processPath(lp);
-            totalFilesAdded += filesAdded;
-            totalFilesModified += filesModified;
-            totalFilesDeleted += filesDeleted;
-            totalFoldersAdded += foldersAdded;
-            totalFoldersModified += foldersModified;
-            totalFoldersDeleted += foldersDeleted;
+            if (isCancelled()) {
+                publish("Update process cancelled, work done until now can't be undone");
+                if (em.isJoinedToTransaction()) {
+                    em.getTransaction().rollback();
+                }
+                break;
+            } else {
+                totalFilesAdded += filesAdded;
+                totalFilesModified += filesModified;
+                totalFilesDeleted += filesDeleted;
+                totalFoldersAdded += foldersAdded;
+                totalFoldersModified += foldersModified;
+                totalFoldersDeleted += foldersDeleted;
 
-            publish("  Files... Added: " + filesAdded + "; Modified: " + filesModified + "; Deleted: " + filesDeleted);
-            publish("  Folders... Added: " + foldersAdded + "; Modified: " + foldersModified + "; Deleted: " + foldersDeleted);
+                publish("  Files... Added: " + filesAdded + "; Modified: " + filesModified + "; Deleted: " + filesDeleted);
+                publish("  Folders... Added: " + foldersAdded + "; Modified: " + foldersModified + "; Deleted: " + foldersDeleted);
+            }
         }
 
         if (em.isJoinedToTransaction()) {
             em.getTransaction().commit();
         }
         em.close();
-        return null; // TODO return a real collection
+        return newAndModifiedList;
     }
 
     @Override
@@ -89,6 +109,7 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
 
     @Override
     protected void done() {
+        statusBar.endProgress();
         editChangesButton.setEnabled(true);
     }
 
@@ -112,12 +133,23 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
         LocaleContainerJPAHelper lcHelper = new LocaleContainerJPAHelper(em);
         LocaleFileJPAHelper lfHelper = new LocaleFileJPAHelper(em);
 
+        if (isCancelled()) {
+            return;
+        }
+
         // Take the real files & dirs in the disk and add those missing in the datamodel
         try {
             if (!em.isJoinedToTransaction()) {
                 em.getTransaction().begin();
             }
             for (File curFile : childFiles) {
+                if (isCancelled()) {
+                    if (em.isJoinedToTransaction()) {
+                        em.getTransaction().rollback();
+                    }
+                    return;
+                }
+
                 if (curFile.isDirectory()) {
                     boolean exists = (lc.hasChild(curFile.getName(), true));
                     if (!exists) {
@@ -141,12 +173,27 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
             }
+            return;
+        }
+
+        if (isCancelled()) {
+            if (em.isJoinedToTransaction()) {
+                em.getTransaction().rollback();
+            }
+            return;
         }
 
         // Remove directories (LocaleContainer items) no longer present in the disk
         try {
             em.getTransaction().begin();
             for (Iterator<LocaleContainer> iterator = lc.getChildren().iterator(); iterator.hasNext();) {
+                if (isCancelled()) {
+                    if (em.isJoinedToTransaction()) {
+                        em.getTransaction().rollback();
+                    }
+                    return;
+                }
+
                 LocaleContainer lcChild = iterator.next();
                 lcChild = em.merge(lcChild);
                 File result = fileExistsInArray(childFiles, lcChild.getName());
@@ -157,6 +204,7 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
                     lcHelper.removeRecursively(lcChild);
                     foldersDeleted++;
                 } else {
+                    // Remove the entry in the directory entries array to mark it as processed
                     removeFileFromArray(childFiles, result);
                 }
             }
@@ -167,12 +215,27 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
             }
+            return;
+        }
+
+        if (isCancelled()) {
+            if (em.isJoinedToTransaction()) {
+                em.getTransaction().rollback();
+            }
+            return;
         }
 
         // Remove files (LocaleFiles items) no longer present in the disk
         try {
             em.getTransaction().begin();
             for(Iterator<? extends LocaleFile> iterator = lc.getFileChildren().iterator(); iterator.hasNext();) {
+                if (isCancelled()) {
+                    if (em.isJoinedToTransaction()) {
+                        em.getTransaction().rollback();
+                    }
+                    return;
+                }
+
                 LocaleFile lfChild = iterator.next();
                 em.merge(lfChild);
                 File result = fileExistsInArray(childFiles, lfChild.getName());
@@ -193,6 +256,14 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
             }
+            return;
+        }
+
+        if (isCancelled()) {
+            if (em.isJoinedToTransaction()) {
+                em.getTransaction().rollback();
+            }
+            return;
         }
 
         // At this point, the datamodel for currentPath matches the disk contents
@@ -204,21 +275,29 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
 
         // Traverse the datamodel LocaleFiles (files)
         for(LocaleFile lfChild : lc.getFileChildren()) {
+            if (isCancelled()) {
+                if (em.isJoinedToTransaction()) {
+                    em.getTransaction().rollback();
+                }
+                return;
+            }
+
             processFile(currentPath + "/" + lfChild.getName(), lfChild);
         }
-
-
-        /*
-        - Compare the lc children list with the real children list in the disk
-        - Delete the no longer existing nodes and create the new ones
-        - Compare the last updated timestamp of every File child with the real
-          file in the disk (dummy test; later, it will be replaced by a full
-          parse and comparison)
-        */
     }
 
     private boolean processFile(String filePath, LocaleFile lf) {
-        return true;
+        try {
+            // if (lf instanceof ParseableFile) {
+            if (lf instanceof DtdFile) {
+                ParseableFile pf = (ParseableFile) lf;
+                newAndModifiedList.addAll(pf.update(this.em));
+            }
+            filesModified++;
+            return true;
+        } catch (ParseException ex) {
+            return false;
+        }
     }
 
     private File fileExistsInArray(File[] fileArray, String filename) {
@@ -245,5 +324,4 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
         }
         return result;
     }
-
 }
