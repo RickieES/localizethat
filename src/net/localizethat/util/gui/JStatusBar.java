@@ -227,6 +227,7 @@ public class JStatusBar extends javax.swing.JPanel {
      */
 
     public void endProgress() {
+        statusPgBar.setIndeterminate(false);
         statusPgBar.setValue(100);
     }
 
