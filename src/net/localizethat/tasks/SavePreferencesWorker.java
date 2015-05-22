@@ -12,7 +12,8 @@ import net.localizethat.system.AppSettings;
 import net.localizethat.util.gui.JStatusBar;
 
 /**
- *
+ * Task that saves the preferences in the background (created as task more as an exercise
+ * than for real necessity)
  * @author rpalomares
  */
 public class SavePreferencesWorker extends SwingWorker<Boolean, Void> {
