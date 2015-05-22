@@ -56,32 +56,40 @@ public class LocaleContainerJPAHelper {
                 em.getTransaction().begin();
             }
 
-            lc = em.merge(lc); // Ensure that the EntityManager is managing the LocaleContainer to be removed
-            // for (Iterator<LocaleContainer> iterator = lc.getChildren().iterator(); iterator.hasNext();) {
-            //    LocaleContainer child = iterator.next();
-            for(LocaleContainer child : lc.getChildren()) {
+            // Ensure that the EntityManager is managing the LocaleContainer to be removed
+            lc = em.merge(lc);
+            for (Iterator<LocaleContainer> iterator = lc.getChildren().iterator(); iterator.hasNext();) {
+                LocaleContainer child = iterator.next();
+                child = em.merge(child);
+                iterator.remove();
                 result = removeRecursively(child, depth + 1);
                 if (!result) {
                     break;
                 }
-                lc = em.merge(lc); // Ensure that the EntityManager is managing the LocaleContainer to be removed
-                lc.removeChild(child);
             }
             
             if (result) {
-                for(LocaleFile lfChild : lc.getFileChildren()) {
+                for(Iterator<LocaleFile> iterator = lc.getFileChildren().iterator(); iterator.hasNext(); ) {
+                    LocaleFile lfChild = iterator.next();
+                    lfChild = em.merge(lfChild);
+                    iterator.remove();
                     result = lfHelper.removeRecursively(lfChild);
-                    // TODO Check if this can be done without affecting the for, as the JPAHelper is changing
-                    // the collection traversed by this for. If this fails, maybe the above for for LocaleContainer
-                    // will fail, too?
+                    if (!result) {
+                        break;
+                    }
                 }
 
                 lc.setDefLocaleTwin(null);
-
                 LocaleContainer parent = (LocaleContainer) lc.getParent();
                 if (parent != null) {
                     // parent = em.merge(parent);
-                    parent.removeChild(lc);
+                    
+                    // Only if the node has a parent that it is not being removed, we
+                    // remove this container as a child from it: if not, the upper call
+                    // will take care of it
+                    if (depth == 0) {
+                        parent.removeChild(lc);
+                    }
                     lc.setParent(null);
                 }
 
