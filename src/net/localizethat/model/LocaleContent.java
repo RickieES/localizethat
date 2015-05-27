@@ -313,6 +313,11 @@ public class LocaleContent implements LocaleNode, Serializable {
     }
 
     @Override
+    public int compareTo(LocaleNode o) {
+        return this.getName().compareTo(o.getName());
+    }
+
+    @Override
     public String toString() {
         return this.getName();
     }

@@ -9,7 +9,9 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,7 +58,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Product.findByChannel", query = "SELECT p FROM Product p WHERE p.channelId = :channelid"),
     @NamedQuery(name = "Product.findByCreationDate", query = "SELECT p FROM Product p WHERE p.creationDate = :prodcreationdate"),
     @NamedQuery(name = "Product.findByLastUpdate", query = "SELECT p FROM Product p WHERE p.lastUpdate = :prodlastupdate")})
-public class Product implements Serializable {
+public class Product implements Serializable, Comparable<Product> {
     private static final long serialVersionUID = 1L;
     private static final int PRODNAME_LENGTH = 32;
     private static final int PRODNOTES_LENGTH = 32700;
@@ -99,7 +101,7 @@ public class Product implements Serializable {
     @JoinTable(name="APP.PRODUCT_PATH",
             joinColumns=@JoinColumn(name="PRODUCT_ID"),
             inverseJoinColumns=@JoinColumn(name="LOCALEPATH_ID"))
-    private Collection<LocalePath> pathList;
+    private List<LocalePath> pathList;
 
     public Product() {
     }
@@ -190,6 +192,7 @@ public class Product implements Serializable {
     public boolean addLocalePath(LocalePath lp) {
         if (!Product.this.hasChild(lp)) {
             pathList.add(lp);
+            Collections.sort(pathList);
             return true;
         } else {
             return false;
@@ -333,8 +336,16 @@ public class Product implements Serializable {
     }
 
     @Override
+    public int compareTo(Product o) {
+        if (this.equals(o)) {
+            return 0;
+        } else {
+            return this.getName().compareTo(o.getName());
+        }
+    }
+
+    @Override
     public String toString() {
         return name;
     }
-
 }

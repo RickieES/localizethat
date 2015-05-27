@@ -8,7 +8,9 @@ package net.localizethat.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -84,7 +86,7 @@ public class LocalePath implements Serializable, Comparable<LocalePath> {
     @OneToOne(optional = true)
     private LocaleContainer localeContainer;
     @ManyToMany(mappedBy="pathList")
-    private Collection<Product> productList;
+    private List<Product> productList;
     @Column(name = "PRODPCREATIONDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -195,6 +197,7 @@ public class LocalePath implements Serializable, Comparable<LocalePath> {
     public boolean addProduct(Product product) {
         if (!hasProduct(product)) {
             productList.add(product);
+            Collections.sort(productList);
             return true;
         } else {
             return false;
@@ -355,5 +358,4 @@ public class LocalePath implements Serializable, Comparable<LocalePath> {
     public int compareTo(LocalePath o) {
         return getRawPath().compareTo(o.getRawPath());
     }
-
 }

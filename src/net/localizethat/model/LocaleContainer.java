@@ -409,6 +409,11 @@ public class LocaleContainer implements LocaleNode, Serializable {
     }
 
     @Override
+    public int compareTo(LocaleNode o) {
+        return this.toString().compareTo(o.getName());
+    }
+
+    @Override
     public String toString() {
         return getName();
     }

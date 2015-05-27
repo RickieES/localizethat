@@ -276,7 +276,6 @@ public class LocaleFile implements LocaleNode, Serializable {
         return removeChild(name, false);
     }
 
-
     @Override
     public LocaleContent removeChild(String name, boolean matchCase) {
         LocaleContent l = getChildByName(name, matchCase);
@@ -353,7 +352,6 @@ public class LocaleFile implements LocaleNode, Serializable {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -414,6 +412,11 @@ public class LocaleFile implements LocaleNode, Serializable {
     @Override
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    @Override
+    public int compareTo(LocaleNode o) {
+        return this.getName().compareTo(o.getName());
     }
 
     @Override

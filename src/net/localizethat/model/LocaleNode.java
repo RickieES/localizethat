@@ -14,7 +14,7 @@ import java.util.Date;
  * localizable file
  * @author rpalomares
  */
-public interface LocaleNode {
+public interface LocaleNode extends Comparable<LocaleNode> {
     
     /**
      * Sets the name of the node. What exactly represents the name depends on the specific subtype
