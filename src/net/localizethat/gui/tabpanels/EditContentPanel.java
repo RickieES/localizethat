@@ -207,7 +207,7 @@ public class EditContentPanel extends AbstractTabPanel {
             if (node == null) {
                 return;
             }
-            
+
             LocaleNode nodeObject = (LocaleNode) node.getUserObject();
             if (node.isLeaf()) {
                 if (nodeObject instanceof LocaleFile) {
@@ -220,12 +220,11 @@ public class EditContentPanel extends AbstractTabPanel {
         public void treeExpanded(TreeExpansionEvent event) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                     event.getPath().getLastPathComponent();
-            
+
             if (node == null) {
                 return;
             }
-            
-            // LocaleNode nodeObject = (LocaleNode) node.getUserObject();
+
             for(Enumeration e = node.children(); e.hasMoreElements();) {
                 DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) e.nextElement();
                 LocaleNode nodeObject = (LocaleNode) childNode.getUserObject();
@@ -240,16 +239,9 @@ public class EditContentPanel extends AbstractTabPanel {
         public void treeCollapsed(TreeExpansionEvent event) {
             // Nothing to do here
         }
-        
+
         private void loadGrandChildNodes(DefaultMutableTreeNode childNode, LocaleContainer childNodeObject) {
-            for(LocaleNode grandChildNodeObject : childNodeObject.getChildren()) {
-                DefaultMutableTreeNode grandChildNode = new DefaultMutableTreeNode(grandChildNodeObject);
-                childNode.add(grandChildNode);
-            }
-            for(LocaleFile grandChildNodeObject : childNodeObject.getFileChildren()) {
-                DefaultMutableTreeNode grandChildNode = new DefaultMutableTreeNode(grandChildNodeObject);
-                childNode.add(grandChildNode);
-            }
+            lntm.loadGrandChildNodes(childNode, childNodeObject);
         }
     }
 }

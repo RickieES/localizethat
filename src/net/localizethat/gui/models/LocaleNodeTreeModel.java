@@ -5,7 +5,11 @@
  */
 package net.localizethat.gui.models;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -24,10 +28,13 @@ public class LocaleNodeTreeModel extends DefaultTreeModel {
 
     public static LocaleNodeTreeModel createFromProduct(Product p) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Paths for " + p.getName());
+        List<LocalePath> lpList = new ArrayList<>(p.getChildren().size());
 
+        lpList.addAll(p.getChildren());
+        Collections.sort(lpList);
         L10n l = p.getL10nId();
 
-        for(LocalePath lp : p.getChildren()) {
+        for(LocalePath lp : lpList) {
             // Let's add only the default locale paths
             if (lp.getL10nId().equals(l)) {
                 // Not really the paths, but the associated locale containers
@@ -40,8 +47,10 @@ public class LocaleNodeTreeModel extends DefaultTreeModel {
 
     public static LocaleNodeTreeModel createFromLocalePath(LocalePath... lpArray) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
+        List<LocalePath> lpList = Arrays.asList(lpArray);
 
-        for(LocalePath lp : lpArray) {
+        Collections.sort(lpList);
+        for(LocalePath lp : lpList) {
             DefaultMutableTreeNode child = new DefaultMutableTreeNode(lp.getLocaleContainer());
             root.add(child);
         }
@@ -64,12 +73,18 @@ public class LocaleNodeTreeModel extends DefaultTreeModel {
         super(root, asksAllowsChildren);
     }
 
-    private void loadGrandChildNodes(DefaultMutableTreeNode childNode, LocaleContainer childNodeObject) {
-        for(LocaleNode grandChildNodeObject : childNodeObject.getChildren()) {
+    public final void loadGrandChildNodes(DefaultMutableTreeNode childNode, LocaleContainer childNodeObject) {
+        List<LocaleNode> lcList = new ArrayList<>(childNodeObject.getChildren());
+        List<LocaleFile> lfList = new ArrayList<>(childNodeObject.getFileChildren());
+
+        Collections.sort(lcList);
+        Collections.sort(lfList);
+
+        for(LocaleNode grandChildNodeObject : lcList) {
             DefaultMutableTreeNode grandChildNode = new DefaultMutableTreeNode(grandChildNodeObject);
             childNode.add(grandChildNode);
         }
-        for(LocaleFile grandChildNodeObject : childNodeObject.getFileChildren()) {
+        for(LocaleFile grandChildNodeObject : lfList) {
             DefaultMutableTreeNode grandChildNode = new DefaultMutableTreeNode(grandChildNodeObject);
             childNode.add(grandChildNode);
         }
