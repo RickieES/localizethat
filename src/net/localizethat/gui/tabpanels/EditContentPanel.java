@@ -6,8 +6,8 @@
 package net.localizethat.gui.tabpanels;
 
 import java.util.Enumeration;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -15,9 +15,11 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import net.localizethat.Main;
 import net.localizethat.gui.models.LocaleNodeTreeModel;
+import net.localizethat.model.L10n;
 import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocaleNode;
+import net.localizethat.model.LocalePath;
 import net.localizethat.model.Product;
 import net.localizethat.util.gui.JStatusBar;
 
@@ -30,6 +32,7 @@ public class EditContentPanel extends AbstractTabPanel {
     private final EntityManagerFactory emf;
     private final JStatusBar statusBar;
     private final TreeListeners tl;
+    private L10n targetLocale;
 
     /**
      * Creates new form EditContentPanel
@@ -43,22 +46,33 @@ public class EditContentPanel extends AbstractTabPanel {
         // entityManager = emf.createEntityManager();
         initComponents();
         tl = new TreeListeners();
-
-        TypedQuery<Product> productQuery = entityManager.createNamedQuery("Product.findByName",
-                Product.class);
-        productQuery.setParameter("name", "Thunderbird Central");
-        p = productQuery.getSingleResult();
-
-        refreshTree(p);
         dataTree.addTreeSelectionListener(tl);
         dataTree.addTreeExpansionListener(tl);
     }
 
-    private void refreshTree(Product p) {
-        entityManager.refresh(p);
+    public void refreshTree(Product p) {
+        p = entityManager.merge(p);
         lntm = LocaleNodeTreeModel.createFromProduct(p);
         dataTree.setModel(lntm);
     }
+
+    public void refreshTree(List<LocalePath> pathList) {
+        for(LocalePath lp : pathList) {
+            lp = entityManager.merge(lp);
+        }
+        lntm = LocaleNodeTreeModel.createFromLocalePath(pathList.toArray(new LocalePath[pathList.size()]));
+        dataTree.setModel(lntm);
+    }
+
+    public L10n getTargetLocale() {
+        return targetLocale;
+    }
+
+    public void setTargetLocale(L10n targetLocale) {
+        this.targetLocale = targetLocale;
+    }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
@@ -74,20 +88,20 @@ public class EditContentPanel extends AbstractTabPanel {
         dataTree = new javax.swing.JTree();
         rightSidePanel = new javax.swing.JPanel();
         nodeInfoPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        pathLabel = new javax.swing.JLabel();
+        pathText = new javax.swing.JTextField();
         jSplitPane2 = new javax.swing.JSplitPane();
-        nodeContentPanel = new javax.swing.JPanel();
-        lObjectDetailPanel = new javax.swing.JPanel();
+        contentEditionPanel2 = new net.localizethat.gui.components.ContentEditionPanel();
+        contentListTable2 = new net.localizethat.gui.components.ContentListTable();
 
         jScrollPane1.setViewportView(dataTree);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
-        jLabel1.setText("Path:");
+        pathLabel.setText("Path:");
 
-        jTextField1.setEditable(false);
-        jTextField1.setText("jTextField1");
+        pathText.setEditable(false);
+        pathText.setEnabled(false);
 
         javax.swing.GroupLayout nodeInfoPanelLayout = new javax.swing.GroupLayout(nodeInfoPanel);
         nodeInfoPanel.setLayout(nodeInfoPanelLayout);
@@ -95,9 +109,9 @@ public class EditContentPanel extends AbstractTabPanel {
             nodeInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(nodeInfoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(pathLabel)
                 .addGap(4, 4, 4)
-                .addComponent(jTextField1)
+                .addComponent(pathText)
                 .addContainerGap())
         );
         nodeInfoPanelLayout.setVerticalGroup(
@@ -105,45 +119,21 @@ public class EditContentPanel extends AbstractTabPanel {
             .addGroup(nodeInfoPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(nodeInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(73, Short.MAX_VALUE))
+                    .addComponent(pathLabel)
+                    .addComponent(pathText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        javax.swing.GroupLayout nodeContentPanelLayout = new javax.swing.GroupLayout(nodeContentPanel);
-        nodeContentPanel.setLayout(nodeContentPanelLayout);
-        nodeContentPanelLayout.setHorizontalGroup(
-            nodeContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 509, Short.MAX_VALUE)
-        );
-        nodeContentPanelLayout.setVerticalGroup(
-            nodeContentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
-        jSplitPane2.setTopComponent(nodeContentPanel);
-
-        javax.swing.GroupLayout lObjectDetailPanelLayout = new javax.swing.GroupLayout(lObjectDetailPanel);
-        lObjectDetailPanel.setLayout(lObjectDetailPanelLayout);
-        lObjectDetailPanelLayout.setHorizontalGroup(
-            lObjectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 509, Short.MAX_VALUE)
-        );
-        lObjectDetailPanelLayout.setVerticalGroup(
-            lObjectDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 226, Short.MAX_VALUE)
-        );
-
-        jSplitPane2.setRightComponent(lObjectDetailPanel);
+        jSplitPane2.setRightComponent(contentEditionPanel2);
+        jSplitPane2.setLeftComponent(contentListTable2);
 
         javax.swing.GroupLayout rightSidePanelLayout = new javax.swing.GroupLayout(rightSidePanel);
         rightSidePanel.setLayout(rightSidePanelLayout);
         rightSidePanelLayout.setHorizontalGroup(
             rightSidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(nodeInfoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+            .addComponent(jSplitPane2)
         );
         rightSidePanelLayout.setVerticalGroup(
             rightSidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,27 +159,27 @@ public class EditContentPanel extends AbstractTabPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private net.localizethat.gui.components.ContentEditionPanel contentEditionPanel2;
+    private net.localizethat.gui.components.ContentListTable contentListTable2;
     private javax.swing.JTree dataTree;
     private javax.persistence.EntityManager entityManager;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JPanel lObjectDetailPanel;
-    private javax.swing.JPanel nodeContentPanel;
     private javax.swing.JPanel nodeInfoPanel;
+    private javax.swing.JLabel pathLabel;
+    private javax.swing.JTextField pathText;
     private javax.swing.JPanel rightSidePanel;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void onTabPanelAdded() {
-        Product p;
-        TypedQuery<Product> productQuery = entityManager.createNamedQuery("Product.findByName",
-                Product.class);
-        productQuery.setParameter("name", "Thunderbird Central");
-        p = productQuery.getSingleResult();
-        refreshTree(p);
+//        Product p;
+//        TypedQuery<Product> productQuery = entityManager.createNamedQuery("Product.findByName",
+//                Product.class);
+//        productQuery.setParameter("name", "Thunderbird Central");
+//        p = productQuery.getSingleResult();
+//        refreshTree(p);
     }
 
     @Override
@@ -209,9 +199,11 @@ public class EditContentPanel extends AbstractTabPanel {
             }
 
             LocaleNode nodeObject = (LocaleNode) node.getUserObject();
+            pathText.setText(nodeObject.getFilePath());
             if (node.isLeaf()) {
                 if (nodeObject instanceof LocaleFile) {
-                    // TODO Send signal to update panels
+                    LocaleFile lf = (LocaleFile) nodeObject;
+                    lf.getChildren();
                 }
             }
         }

@@ -138,6 +138,10 @@ public class ListComboBoxGenericModel<T> extends AbstractListModel<T>
         fireIntervalAdded(this, start, end);
     }
 
+    public List<T> getAll() {
+        return itemList;
+    }
+
     @Override
     public Iterator<T> iterator() {
         return itemList.iterator();

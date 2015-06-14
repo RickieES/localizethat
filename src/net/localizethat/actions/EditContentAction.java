@@ -7,11 +7,16 @@
 package net.localizethat.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.LARGE_ICON_KEY;
 import javax.swing.ImageIcon;
 import net.localizethat.Main;
+import net.localizethat.gui.dialogs.ChooseTreePanel;
+import net.localizethat.gui.dialogs.DialogDataObjects.ChooseTreeDDO;
 import net.localizethat.gui.tabpanels.EditContentPanel;
+import net.localizethat.util.gui.ModalDialog;
 
 /**
  * Opens a tab with the general edit view, that shows a tree view of the paths,
@@ -24,6 +29,8 @@ public class EditContentAction extends AbstractAction {
     private static final String ICON = "show-in-chrome.png";
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_H;
     private EditContentPanel editContentPanel;
+    private ChooseTreePanel chooseTreePanel;
+    private ChooseTreeDDO chooseTreeDDO;
 
     /**
      * Action representing the launching of LocaleManager panel as a tab in main window
@@ -41,9 +48,45 @@ public class EditContentAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         Main.mainWindow.getStatusBar().setInfoText("Creating window, please wait...");
-        if (editContentPanel == null) {
-            editContentPanel = new EditContentPanel();
+        Thread tarea = new Thread(new Runnable() {
+            @Override
+            public void run(){
+                if (editContentPanel == null) {
+                    editContentPanel = new EditContentPanel();
+                }
+                Main.mainWindow.addTab(editContentPanel, TITLE);
+                Main.mainWindow.getStatusBar().clearText();
+            }
+        });
+
+        chooseTreePanel = new ChooseTreePanel();
+        chooseTreeDDO = new ChooseTreeDDO();
+        ModalDialog<ChooseTreePanel, ChooseTreeDDO> ctpDialog = new ModalDialog<>(chooseTreePanel);
+        ctpDialog.initDialog(chooseTreeDDO);
+        tarea.start();
+        ctpDialog.showDialog();
+        chooseTreePanel = null;
+
+        if (ctpDialog.getResult()) {
+            // Not really needed, since ctpDialog uses the referenced object
+            chooseTreeDDO = ctpDialog.getCollectedData();
+
+            try {
+                tarea.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(EditContentAction.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            editContentPanel.setTargetLocale(chooseTreeDDO.getLocale());
+            if (chooseTreeDDO.getProduct() != null) {
+                editContentPanel.refreshTree(chooseTreeDDO.getProduct());
+            } else {
+                editContentPanel.refreshTree(chooseTreeDDO.getColPaths());
+            }
         }
-        Main.mainWindow.addTab(editContentPanel, TITLE);
-    }
+
+        }
+        
+
+
 }
