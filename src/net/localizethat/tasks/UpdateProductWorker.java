@@ -8,7 +8,6 @@ package net.localizethat.tasks;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -18,8 +17,8 @@ import javax.swing.SwingWorker;
 import net.localizethat.Main;
 import net.localizethat.model.DtdFile;
 import net.localizethat.model.LocaleContainer;
+import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
-import net.localizethat.model.LocaleNode;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
@@ -30,12 +29,12 @@ import net.localizethat.util.gui.JStatusBar;
  * SwingWorker task that performs an update process in the locale paths passed in the constructor
  * @author rpalomares
  */
-public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, String> {
+public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String> {
     private final JTextArea feedbackArea;
     private final JButton editChangesButton;
     private final JStatusBar statusBar;
     private final Iterator<LocalePath> localePathIterator;
-    private final Collection<LocaleNode> newAndModifiedList;
+    private final List<LocaleContent> newAndModifiedList;
     private final EntityManager em;
     private int filesAdded;
     private int filesModified;
@@ -55,7 +54,7 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
     }
 
     @Override
-    protected Collection<LocaleNode> doInBackground() {
+    protected List<LocaleContent> doInBackground() {
         int totalFilesAdded = 0;
         int totalFilesModified = 0;
         int totalFilesDeleted = 0;
@@ -87,8 +86,10 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
                 totalFoldersModified += foldersModified;
                 totalFoldersDeleted += foldersDeleted;
 
-                publish("  Files... Added: " + filesAdded + "; Modified: " + filesModified + "; Deleted: " + filesDeleted);
-                publish("  Folders... Added: " + foldersAdded + "; Modified: " + foldersModified + "; Deleted: " + foldersDeleted);
+                publish("  Files... Added: " + filesAdded + "; Modified: " + filesModified
+                        + "; Deleted: " + filesDeleted);
+                publish("  Folders... Added: " + foldersAdded + "; Modified: " + foldersModified
+                        + "; Deleted: " + foldersDeleted);
             }
         }
 
@@ -96,6 +97,10 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
             em.getTransaction().commit();
         }
         em.close();
+        publish("Total Files... Added: " + totalFilesAdded + "; Modified: " + totalFilesModified
+                + "; Deleted: " + totalFilesDeleted);
+        publish("Total Folders... Added: " + totalFoldersAdded + "; Modified: " + totalFoldersModified
+                + "; Deleted: " + totalFoldersDeleted);
         return newAndModifiedList;
     }
 
@@ -123,7 +128,6 @@ public class UpdateProductWorker extends SwingWorker<Collection<LocaleNode>, Str
         foldersDeleted = 0;
 
         LocaleContainer lc = lp.getLocaleContainer();
-
         processContainer(lp.getFilePath(), lc);
     }
 
