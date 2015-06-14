@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import net.localizethat.Main;
 
 /**
- *
+ * LocaleNode implementation representing a LocaleContainer (a directory/folder)
  * @author rpalomares
  */
 @Entity
@@ -69,6 +69,9 @@ public class LocaleContainer implements LocaleNode, Serializable {
     protected Collection<LocaleContainer> children;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     private Collection<LocaleFile> fileChildren;
+    @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(optional = false)
+    private L10n l10nId;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODECREATIONDATE", nullable = false)
     private Date creationDate;
@@ -292,8 +295,28 @@ public class LocaleContainer implements LocaleNode, Serializable {
     }
 
     @Override
+    public LocaleNode getTwinByLocale(L10n locale) {
+        for(LocaleNode s : twins) {
+            if (s.getL10nId().equals(locale)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Collection<LocaleContainer> getTwins() {
         return twins;
+    }
+
+    @Override
+    public L10n getL10nId() {
+        return l10nId;
+    }
+
+    @Override
+    public void setL10nId(L10n l10nId) {
+        this.l10nId = l10nId;
     }
 
     @Override

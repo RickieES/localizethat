@@ -133,6 +133,9 @@ public class LocaleFile implements LocaleNode, Serializable {
     private Collection<LocaleFile> twins;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     protected Collection<LocaleContent> children;
+    @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(optional = false)
+    private L10n l10nId;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODECREATIONDATE", nullable = false)
     private Date creationDate;
@@ -356,8 +359,28 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
+    public LocaleNode getTwinByLocale(L10n locale) {
+        for(LocaleNode s : twins) {
+            if (s.getL10nId().equals(locale)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Collection<LocaleFile> getTwins() {
         return twins;
+    }
+
+    @Override
+    public L10n getL10nId() {
+        return l10nId;
+    }
+
+    @Override
+    public void setL10nId(L10n l10nId) {
+        this.l10nId = l10nId;
     }
 
     public File getFile() {

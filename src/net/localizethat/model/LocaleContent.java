@@ -84,6 +84,9 @@ public class LocaleContent implements LocaleNode, Serializable {
     @Basic(optional = false)
     @Column(name = "LCONTENTORDERINFILE", nullable = false)
     private int orderInFile;
+    @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
+    @ManyToOne(optional = false)
+    private L10n l10nId;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODECREATIONDATE", nullable = false)
     private Date creationDate;
@@ -264,8 +267,28 @@ public class LocaleContent implements LocaleNode, Serializable {
     }
 
     @Override
+    public LocaleContent getTwinByLocale(L10n locale) {
+        for(LocaleContent s : twins) {
+            if (s.getL10nId().equals(locale)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Collection<LocaleContent> getTwins() {
         return twins;
+    }
+
+    @Override
+    public L10n getL10nId() {
+        return l10nId;
+    }
+
+    @Override
+    public void setL10nId(L10n l10nId) {
+        this.l10nId = l10nId;
     }
 
     @Override

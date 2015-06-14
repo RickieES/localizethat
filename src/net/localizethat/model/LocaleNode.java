@@ -244,6 +244,27 @@ public interface LocaleNode extends Comparable<LocaleNode> {
     boolean isATwin(LocaleNode possibleTwin);
 
     /**
+     * Returns the twin of this node for the supplied Locale
+     * @param locale the L10n for which we are looking a twin
+     * @return the LocaleNode twin for L10n locale, or null if there is no twin for that L10n
+     */
+    LocaleNode getTwinByLocale(L10n locale);
+
+    /**
+     * Sets the L10n to which this node belongs
+     * @param l10nId The L10n object representing the locale for which this node exists
+     */
+    public void setL10nId(L10n l10nId);
+
+    /**
+     * Returns the L10n to which this node belongs
+     * @return the L10n object, which should never be null
+     */
+    public L10n getL10nId();
+
+
+
+    /**
      * Returns a list of twins of this object. The list is automatically maintained by using
      * setDefLocaleTwin()
      * @return a list of twins of this object

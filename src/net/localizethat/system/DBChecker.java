@@ -31,7 +31,8 @@ public final class DBChecker {
      */
     public static final String DB_NAME = "lt-data";
     private static final String[] scriptList = {"script-0.0.a1.sql", "script-0.0.a2.sql",
-                                                "script-0.0.a3.sql", "script-0.3.a1.sql", "script-0.3.a2.sql",};
+                                                "script-0.0.a3.sql", "script-0.3.a1.sql",
+                                                "script-0.3.a2.sql", "script-0.3.a3.sql",};
     private final String pathToDB; // Base dir for Derby databases; the actual database dir lives inside this one
     private final String login;
     private final String passwd;
