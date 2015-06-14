@@ -20,11 +20,14 @@ import net.localizethat.Main;
 /**
  * Class to build JDialogs that can return true or false (like in OK / Cancel)
  * @author rpalomares
+ * @param <C> a Component subclass instance, usually a JPanel, that will be displayed as the
+ *              content of the Dialog
+ * @param <D> a DialogDataObject subclass instance used to transfer data to and from C instance
  */
-public class ModalDialog extends JDialog {
-    private final Component dlgContent;
+public class ModalDialog<C extends Component, D extends DialogDataObject> extends JDialog {
+    private final C dlgContent;
     private boolean result;
-    private DialogDataObject ddo;
+    private D ddo;
 
     /**
      * Default constructor for ModalDialog. It asks for Component, usually a JPanel with
@@ -32,11 +35,11 @@ public class ModalDialog extends JDialog {
      * OK / Cancel buttons (this allows to the caller provide customized buttons)
      * @param c a Component that will be the displayed content inside the JDialog
      */
-    public ModalDialog(Component c) {
+    public ModalDialog(C c) {
         this(c, false);
     }
     
-    public ModalDialog(Component c, boolean createOkCancelPanel) {
+    public ModalDialog(C c, boolean createOkCancelPanel) {
         super(Main.mainWindow, true);
         dlgContent = c;
         this.getContentPane().setLayout(new BorderLayout());
@@ -62,7 +65,6 @@ public class ModalDialog extends JDialog {
         if (c instanceof ModalDialogComponent) {
             ((ModalDialogComponent) c).setModalDialogReference(this);
         }
-        
     }
 
 
@@ -73,7 +75,7 @@ public class ModalDialog extends JDialog {
      *
      * @param ddo a DialogDataObject that can hold data to be transferred to dlgContent
      */
-    public void initDialog(DialogDataObject ddo) {
+    public void initDialog(D ddo) {
         this.ddo = ddo;
     }
 
@@ -115,7 +117,7 @@ public class ModalDialog extends JDialog {
      * @return the Component provided in the constructor that will be displayed
      */
 
-    public final Component getDlgContent() {
+    public final C getDlgContent() {
         return dlgContent;
     }
     
@@ -125,7 +127,7 @@ public class ModalDialog extends JDialog {
      * Component
      * @return
      */
-    public final DialogDataObject getCollectedData() {
+    public final D getCollectedData() {
         return ddo;
     }
 
@@ -138,6 +140,14 @@ public class ModalDialog extends JDialog {
         this.result = result;
         dlgContent.setVisible(false);
         setVisible(false);
+    }
+
+    /**
+     * Returns the execution result of the dialog
+     * @return true if the user clicked OK, false if the user clicked Cancel or closed the dialog
+     */
+    public final boolean getResult() {
+        return this.result;
     }
 
     private void createOkCancelPanel() {
