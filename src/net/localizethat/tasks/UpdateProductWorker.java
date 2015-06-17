@@ -158,6 +158,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
                     boolean exists = (lc.hasChild(curFile.getName(), true));
                     if (!exists) {
                         LocaleContainer newLc = new LocaleContainer(curFile.getName(), lc);
+                        newLc.setL10nId(lc.getL10nId());
                         lc.addChild(newLc);
                         foldersAdded++;
                         em.persist(newLc);
