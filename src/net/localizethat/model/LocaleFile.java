@@ -108,6 +108,7 @@ public class LocaleFile implements LocaleNode, Serializable {
         newFile.setLastUpdate(creationDate);
         newFile.setName(fileName);
         newFile.setParent(parent);
+        newFile.setL10nId(parent.getL10nId());
         return newFile;
     }
     @TableGenerator(name="LOCALENODE", schema="APP", table="COUNTERS", pkColumnName="ENTITY",

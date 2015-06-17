@@ -51,6 +51,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
 
             for (LocaleContent lcObject : parsedContentList) {
                 lcObject.setParent(this);
+                lcObject.setL10nId(this.getL10nId());
                 if (lcObject instanceof LTLicense) {
                     LTLicense lt = (LTLicense) lcObject;
                     LTLicense thisLicense = this.getFileLicense();
