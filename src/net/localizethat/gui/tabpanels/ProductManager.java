@@ -877,6 +877,7 @@ public class ProductManager extends AbstractTabPanel {
         lp.setLastUpdate(lp.getCreationDate());
 
         lc.setName(lp.getPathLastComponent());
+        lc.setL10nId(comboPathL10n);
         lc.setCreationDate(new Date());
         lc.setLastUpdate(lc.getCreationDate());
 
@@ -959,6 +960,7 @@ public class ProductManager extends AbstractTabPanel {
         lp.setLastUpdate(lp.getCreationDate());
 
         lc.setName(lp.getPathLastComponent());
+        lc.setL10nId(comboPathL10n);
         lc.setDefLocaleTwin(lcOrig);
         lc.setCreationDate(new Date());
         lc.setLastUpdate(lc.getCreationDate());
