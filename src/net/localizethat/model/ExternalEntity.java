@@ -59,4 +59,13 @@ public class ExternalEntity extends LocaleContent {
         this.systemId = systemId;
     }
 
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
+
+    @Override
+    public String getTextValue() {
+        return getPublicId();
+    }
 }

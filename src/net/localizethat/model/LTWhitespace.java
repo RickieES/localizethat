@@ -81,11 +81,17 @@ public class LTWhitespace extends LocaleContent {
         return false;
     }
 
+    @Override
     public String getTextValue() {
         return textValue;
     }
 
     public void setTextValue(String textValue) {
         this.textValue = textValue.substring(0, Math.min(textValue.length(), TEXTVALUE_LENGTH));
+    }
+
+    @Override
+    public boolean isEditable() {
+        return false;
     }
 }

@@ -38,6 +38,7 @@ public class LTKeyValuePair extends LocaleContent {
     private LTComment ltComment;
 
 
+    @Override
     public String getTextValue() {
         return textValue;
     }

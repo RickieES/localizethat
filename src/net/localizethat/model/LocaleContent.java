@@ -97,9 +97,6 @@ public class LocaleContent implements LocaleNode, Serializable {
     // Used during parsing of files to put apart LocaleContent no longer present in the file
     private transient boolean markedForDeletion;
 
-    // TODO Add all remaining properties and entity information
-
-
     public LocaleContent() {
         super();
         this.orderInFile = 0;
@@ -333,6 +330,25 @@ public class LocaleContent implements LocaleNode, Serializable {
 
     public void setMarkedForDeletion(boolean markedForDeletion) {
         this.markedForDeletion = markedForDeletion;
+    }
+
+    /**
+     * This method returns true if the instance of LocaleContent can be edited/localized
+     * (by default it is). Subclasses of LocaleContent should override this method returning
+     * the appropiate value
+     * @return true if the LocaleContent is intended to be editable/localizable
+     */
+    public boolean isEditable() {
+        return true;
+    }
+
+    /**
+     * This method is intended to be overriden by all descendents that actually have a
+     * meaningful text value (persisted in DB)
+     * @return an empty string if there is no saved text value, or the actual text value
+     */
+    public String getTextValue() {
+        return "";
     }
 
     @Override

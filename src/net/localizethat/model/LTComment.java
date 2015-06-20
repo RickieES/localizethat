@@ -99,6 +99,7 @@ public class LTComment extends LocaleContent {
         this.entityName = entityName;
     }
 
+    @Override
     public String getTextValue() {
         return textValue;
     }
@@ -117,5 +118,10 @@ public class LTComment extends LocaleContent {
 
     public boolean isL10NNote() {
         return (this.commentType == CommentType.LOCALIZATION_NOTE);
+    }
+
+    @Override
+    public boolean isEditable() {
+        return false;
     }
 }

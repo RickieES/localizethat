@@ -117,4 +117,9 @@ public class LTIniSection extends LocaleContent {
         children.clear();
         return true;
     }
+
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
 }
