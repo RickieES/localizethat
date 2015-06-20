@@ -5,6 +5,8 @@
  */
 package net.localizethat.gui.components;
 
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.models.XTableColumnModel;
 import net.localizethat.model.L10n;
@@ -14,11 +16,11 @@ import net.localizethat.model.L10n;
  * @author rpalomares
  */
 public class ContentListTable extends javax.swing.JPanel {
-    XTableColumnModel xColumnModel;
+    private final XTableColumnModel xColumnModel;
+    private L10n locale;
 
     /**
      * Creates new form ContentListTable
-     * @param locale
      */
     public ContentListTable() {
         super();
@@ -27,6 +29,12 @@ public class ContentListTable extends javax.swing.JPanel {
         initComponents();
         contentTable.setColumnModel(xColumnModel);
         contentTable.createDefaultColumnsFromModel();
+        tableModel.addTableModelListener(contentTable);
+        tableModel.addTableModelListener(new ContentTableModelListener());
+    }
+
+    public void setLocale(L10n locale) {
+        this.locale = locale;
     }
 
     public ContentListTableModel getTableModel() {
@@ -56,11 +64,17 @@ public class ContentListTable extends javax.swing.JPanel {
 
         filterField.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
         filterField.setText("(filter on key/entity or text)");
+        filterField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                filterFieldFocusGained(evt);
+            }
+        });
 
-        rowsInfoLabel.setText("Rows (T/D)");
+        rowsInfoLabel.setText("Rows:");
         rowsInfoLabel.setToolTipText("Rows (total / displayed)");
 
-        rowsInfoText.setText("0 / 0");
+        rowsInfoText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        rowsInfoText.setText("0");
 
         columnsButton.setText("Columns");
 
@@ -79,8 +93,8 @@ public class ContentListTable extends javax.swing.JPanel {
                         .addComponent(columnsButton))
                     .addGroup(auxPanelLayout.createSequentialGroup()
                         .addComponent(rowsInfoLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rowsInfoText)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rowsInfoText, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -99,6 +113,7 @@ public class ContentListTable extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        contentTable.setAutoCreateRowSorter(true);
         contentTable.setModel(tableModel);
         jScrollPane1.setViewportView(contentTable);
 
@@ -114,9 +129,13 @@ public class ContentListTable extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(auxPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void filterFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_filterFieldFocusGained
+        filterField.selectAll();
+    }//GEN-LAST:event_filterFieldFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -130,4 +149,14 @@ public class ContentListTable extends javax.swing.JPanel {
     private javax.swing.JLabel rowsInfoText;
     private net.localizethat.gui.models.ContentListTableModel tableModel;
     // End of variables declaration//GEN-END:variables
+
+    class ContentTableModelListener implements TableModelListener {
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            String totalRows = Integer.toString(tableModel.getRowCount());
+            rowsInfoText.setText(totalRows);
+        }
+
+    }
 }

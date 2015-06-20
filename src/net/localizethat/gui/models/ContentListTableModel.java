@@ -6,6 +6,7 @@
 package net.localizethat.gui.models;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import net.localizethat.model.L10n;
@@ -22,8 +23,8 @@ public class ContentListTableModel extends AbstractTableModel {
     private L10n localizationCode;
     private final List<ContentListObject> list;
     private XTableColumnModel columnModel;
-    private final String[] columnHeaders = {"Filename", "Content Type", "Key/Entity",
-                                            "Original value", "Translated value"};
+    private final String[] columnHeaders = {"Filename", "Order/Line", "Content Type",
+                                            "Key/Entity", "Original value", "Translated value"};
 
     public ContentListTableModel() {
         super();
@@ -47,7 +48,7 @@ public class ContentListTableModel extends AbstractTableModel {
         }
     }
 
-    public void replaceData(List<LocaleContent> newSource) {
+    public void replaceData(Collection<LocaleContent> newSource) {
         this.list.clear();
         for(LocaleContent lc : newSource) {
             ContentListObject clo = new ContentListObject(lc);
@@ -84,6 +85,26 @@ public class ContentListTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        ContentListObject clo = list.get(rowIndex);
+
+        switch (columnIndex) {
+            case 0: // Filename
+                return clo.getParentFile().getName();
+            case 1: // Order/Line
+                return clo.getOriginalNode().getOrderInFile();
+            case 2: // Content Type
+                return clo.getOriginalNode().getClass().getSimpleName();
+            case 3: // Key/Entity
+                return clo.getOriginalNode().getName();
+            case 4: // Original value
+                return clo.getOriginalNode().getTextValue();
+            case 5: // Translated value
+                if (clo.getSiblingNode() != null) {
+                    return clo.getSiblingNode().getTextValue();
+                } else {
+                    return "";
+                }
+        }
         return "";
     }
 
@@ -94,7 +115,12 @@ public class ContentListTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return String.class;
+        switch (columnIndex) {
+            case 1:
+                return Integer.class;
+            default:
+                return String.class;
+        }
     }
 
     @Override

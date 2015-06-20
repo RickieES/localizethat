@@ -14,6 +14,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import net.localizethat.Main;
+import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.models.LocaleNodeTreeModel;
 import net.localizethat.model.L10n;
 import net.localizethat.model.LocaleContainer;
@@ -91,8 +92,8 @@ public class EditContentPanel extends AbstractTabPanel {
         pathLabel = new javax.swing.JLabel();
         pathText = new javax.swing.JTextField();
         jSplitPane2 = new javax.swing.JSplitPane();
-        contentEditionPanel2 = new net.localizethat.gui.components.ContentEditionPanel();
-        contentListTable2 = new net.localizethat.gui.components.ContentListTable();
+        contentListTable = new net.localizethat.gui.components.ContentListTable();
+        contentEditionPanel = new net.localizethat.gui.components.ContentEditionPanel();
 
         jScrollPane1.setViewportView(dataTree);
 
@@ -125,8 +126,8 @@ public class EditContentPanel extends AbstractTabPanel {
         );
 
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane2.setRightComponent(contentEditionPanel2);
-        jSplitPane2.setLeftComponent(contentListTable2);
+        jSplitPane2.setLeftComponent(contentListTable);
+        jSplitPane2.setRightComponent(contentEditionPanel);
 
         javax.swing.GroupLayout rightSidePanelLayout = new javax.swing.GroupLayout(rightSidePanel);
         rightSidePanel.setLayout(rightSidePanelLayout);
@@ -159,8 +160,8 @@ public class EditContentPanel extends AbstractTabPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private net.localizethat.gui.components.ContentEditionPanel contentEditionPanel2;
-    private net.localizethat.gui.components.ContentListTable contentListTable2;
+    private net.localizethat.gui.components.ContentEditionPanel contentEditionPanel;
+    private net.localizethat.gui.components.ContentListTable contentListTable;
     private javax.swing.JTree dataTree;
     private javax.persistence.EntityManager entityManager;
     private javax.swing.JScrollPane jScrollPane1;
@@ -174,12 +175,7 @@ public class EditContentPanel extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
-//        Product p;
-//        TypedQuery<Product> productQuery = entityManager.createNamedQuery("Product.findByName",
-//                Product.class);
-//        productQuery.setParameter("name", "Thunderbird Central");
-//        p = productQuery.getSingleResult();
-//        refreshTree(p);
+        // Nothing to do here
     }
 
     @Override
@@ -203,7 +199,8 @@ public class EditContentPanel extends AbstractTabPanel {
             if (node.isLeaf()) {
                 if (nodeObject instanceof LocaleFile) {
                     LocaleFile lf = (LocaleFile) nodeObject;
-                    lf.getChildren();
+                    ContentListTableModel tableModel = contentListTable.getTableModel();
+                    tableModel.replaceData(lf.getChildren());
                 }
             }
         }
