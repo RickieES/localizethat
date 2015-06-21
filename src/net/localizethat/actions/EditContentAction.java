@@ -61,7 +61,8 @@ public class EditContentAction extends AbstractAction {
 
         chooseTreePanel = new ChooseTreePanel();
         chooseTreeDDO = new ChooseTreeDDO();
-        ModalDialog<ChooseTreePanel, ChooseTreeDDO> ctpDialog = new ModalDialog<>(chooseTreePanel);
+        ModalDialog<ChooseTreePanel, ChooseTreeDDO> ctpDialog = new ModalDialog<>(Main.mainWindow,
+                chooseTreePanel, true);
         ctpDialog.initDialog(chooseTreeDDO);
         tarea.start();
         ctpDialog.showDialog();

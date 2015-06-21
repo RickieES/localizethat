@@ -13,9 +13,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import net.localizethat.Main;
 
 /**
  * Class to build JDialogs that can return true or false (like in OK / Cancel)
@@ -33,14 +33,15 @@ public class ModalDialog<C extends Component, D extends DialogDataObject> extend
      * Default constructor for ModalDialog. It asks for Component, usually a JPanel with
      * everything that must be displayed inside the JDialog contentPane, including the
      * OK / Cancel buttons (this allows to the caller provide customized buttons)
+     * @param owner the JFrame that owns this dialog
      * @param c a Component that will be the displayed content inside the JDialog
      */
-    public ModalDialog(C c) {
-        this(c, false);
+    public ModalDialog(JFrame owner, C c) {
+        this(owner, c, false);
     }
     
-    public ModalDialog(C c, boolean createOkCancelPanel) {
-        super(Main.mainWindow, true);
+    public ModalDialog(JFrame owner, C c, boolean createOkCancelPanel) {
+        super(owner, true);
         dlgContent = c;
         this.getContentPane().setLayout(new BorderLayout());
         this.getContentPane().add(c, BorderLayout.NORTH);
