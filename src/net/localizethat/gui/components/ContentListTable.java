@@ -5,8 +5,14 @@
  */
 package net.localizethat.gui.components;
 
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.models.XTableColumnModel;
 import net.localizethat.model.L10n;
@@ -17,6 +23,7 @@ import net.localizethat.model.L10n;
  */
 public class ContentListTable extends javax.swing.JPanel {
     private final XTableColumnModel xColumnModel;
+    private final TableRowSorter<ContentListTableModel> tableRowSorter;
     private L10n locale;
 
     /**
@@ -31,6 +38,10 @@ public class ContentListTable extends javax.swing.JPanel {
         contentTable.createDefaultColumnsFromModel();
         tableModel.addTableModelListener(contentTable);
         tableModel.addTableModelListener(new ContentTableModelListener());
+        tableRowSorter = new TableRowSorter<>(tableModel);
+        contentTable.setRowSorter(tableRowSorter);
+        filterField.getDocument().addDocumentListener(
+                new FilterDocumentListener(tableModel, tableRowSorter, filterField));
     }
 
     public void setLocale(L10n locale) {
@@ -39,6 +50,18 @@ public class ContentListTable extends javax.swing.JPanel {
 
     public ContentListTableModel getTableModel() {
         return tableModel;
+    }
+
+    private void applyFilter(TableModel tm, TableRowSorter trs, String filter) {
+        RowFilter<TableModel, Object> rf;
+        //If current expression doesn't parse, don't update.
+        try {
+            // (?i) adds case insensitive flag to the RegEx
+            rf = RowFilter.regexFilter("(?i)" + filter, 3, 4, 5);
+        } catch (java.util.regex.PatternSyntaxException e) {
+            return;
+        }
+        trs.setRowFilter(rf);
     }
 
     /**
@@ -113,7 +136,6 @@ public class ContentListTable extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        contentTable.setAutoCreateRowSorter(true);
         contentTable.setModel(tableModel);
         jScrollPane1.setViewportView(contentTable);
 
@@ -150,7 +172,7 @@ public class ContentListTable extends javax.swing.JPanel {
     private net.localizethat.gui.models.ContentListTableModel tableModel;
     // End of variables declaration//GEN-END:variables
 
-    class ContentTableModelListener implements TableModelListener {
+    private class ContentTableModelListener implements TableModelListener {
 
         @Override
         public void tableChanged(TableModelEvent e) {
@@ -158,5 +180,32 @@ public class ContentListTable extends javax.swing.JPanel {
             rowsInfoText.setText(totalRows);
         }
 
+    }
+
+    private class FilterDocumentListener implements DocumentListener {
+        private final TableModel tm;
+        private final TableRowSorter trs;
+        private final JTextField filter;
+
+        protected FilterDocumentListener(TableModel tm, TableRowSorter trs, JTextField filter) {
+            this.tm = tm;
+            this.trs = trs;
+            this.filter = filter;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            applyFilter(tm, trs, filter.getText());
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            applyFilter(tm, trs, filter.getText());
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            applyFilter(tm, trs, filter.getText());
+        }
     }
 }
