@@ -746,6 +746,7 @@ public class ProductManager extends AbstractTabPanel {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             refreshProductList();
+            productListModel.setSelectedItem(p);
             statusBar.setText(JStatusBar.LogMsgType.INFO, "Changes saved");
         } catch (Exception ex) {
             Logger.getLogger(ProductManager.class.getName()).log(Level.SEVERE, null, ex);
