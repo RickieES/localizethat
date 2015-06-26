@@ -151,6 +151,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     protected LocaleFile() {
         super();
         children = new ArrayList<>(25);
+        twins = new ArrayList<>(1); // Most of the time, there will be just one twin
     }
 
     public Integer getId() {

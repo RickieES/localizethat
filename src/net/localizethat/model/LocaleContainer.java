@@ -80,9 +80,10 @@ public class LocaleContainer implements LocaleNode, Serializable {
     private Date lastUpdate;
 
     public LocaleContainer() {
-      super();
-      children = new ArrayList<>(5);
-      fileChildren = new ArrayList<>(5);
+        super();
+        children = new ArrayList<>(5);
+        fileChildren = new ArrayList<>(5);
+        twins = new ArrayList<>(1); // Most of the time, there will be just one twin
     }
 
     public LocaleContainer(Integer id) {

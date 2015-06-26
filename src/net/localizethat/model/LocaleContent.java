@@ -6,6 +6,7 @@
 package net.localizethat.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -101,6 +102,7 @@ public class LocaleContent implements LocaleNode, Serializable {
         super();
         this.orderInFile = 0;
         this.dontExport = false; // So, by default, we want to export content
+        twins = new ArrayList<>(1); // Most of the time, there will be just one twin
     }
 
     public LocaleContent(int orderInFile) {
