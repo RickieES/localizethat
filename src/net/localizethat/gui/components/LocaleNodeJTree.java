@@ -13,7 +13,7 @@ import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocaleNode;
 
 /**
- *
+ * This class is not used anyhwere at this moment
  * @author rpalomares
  */
 public class LocaleNodeJTree extends JTree {
