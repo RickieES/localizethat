@@ -7,11 +7,14 @@
 package net.localizethat.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.LARGE_ICON_KEY;
 import javax.swing.ImageIcon;
 import net.localizethat.Main;
 import net.localizethat.gui.tabpanels.UpdateProductPanel;
+import net.localizethat.tasks.CreateEntityManagerTask;
 
 /**
  * Opens a tab with the Update product panel in the main window
@@ -39,12 +42,23 @@ public class UpdateProductAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        CreateEntityManagerTask cemt = new CreateEntityManagerTask();
+        Thread t = new Thread(cemt);
+
         Main.mainWindow.getStatusBar().setInfoText("Creating window, please wait...");
-        Main.mainWindow.getStatusBar().repaint();
-        if (updateProductPanel == null) {
-            updateProductPanel = new UpdateProductPanel();
+        t.start();
+
+        try {
+            t.join();
+            if (updateProductPanel == null) {
+                updateProductPanel = new UpdateProductPanel(cemt.getEntityManager());
+            } else {
+                updateProductPanel.setEntityManager(cemt.getEntityManager());
+            }
+            Main.mainWindow.addTab(updateProductPanel, TITLE);
+            Main.mainWindow.getStatusBar().clearText();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(UpdateProductAction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Main.mainWindow.addTab(updateProductPanel, TITLE);
-        Main.mainWindow.getStatusBar().setInfoText("Ready");
     }
 }

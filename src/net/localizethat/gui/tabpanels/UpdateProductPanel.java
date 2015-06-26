@@ -10,25 +10,35 @@ import java.awt.event.KeyEvent;
 import java.beans.Beans;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.swing.JList;
 import net.localizethat.Main;
+import net.localizethat.gui.components.ContentListEditPanel;
+import net.localizethat.gui.models.ListComboBoxGenericModel;
 import net.localizethat.gui.models.SelectableItem;
 import net.localizethat.gui.renderers.SelectableListItem;
+import net.localizethat.model.L10n;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.Product;
 import net.localizethat.tasks.UpdateProductWorker;
 import net.localizethat.util.gui.JStatusBar;
 
 /**
- *
+ * Update Product panel, providing the GUI interaction to perform an
+ * UpdateProductWorker execution
  * @author rpalomares
  */
 public class UpdateProductPanel extends AbstractTabPanel {
     private final EntityManagerFactory emf;
     private final JStatusBar statusBar;
     private UpdateProductWorker upw;
+    private boolean isResultTabOpened;
+
     /**
      * Creates new form UpdateProductPanel
      */
@@ -36,12 +46,28 @@ public class UpdateProductPanel extends AbstractTabPanel {
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
         // The following code is executed inside initComponents()
-        // entityManager = emf.createEntityManager();
-
+        // if (!Beans.isDesignTime() && entityManager == null) {
+        //     entityManager = emf.createEntityManager();
+        // }
         initComponents();
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
+    }
+    
+    public UpdateProductPanel(EntityManager entityManager) {
+        statusBar = Main.mainWindow.getStatusBar();
+        emf = Main.emf;
+        this.entityManager = entityManager;
+        initComponents();
+
+        if (!Beans.isDesignTime()) {
+            entityManager.getTransaction().begin();
+        }
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     private void refreshProductList() {
@@ -53,6 +79,13 @@ public class UpdateProductPanel extends AbstractTabPanel {
         for(Product p : collProduct) {
             productListModel.addElement(new SelectableItem<>(p, false));
         }
+    }
+
+    private void refreshL10nList(ListComboBoxGenericModel<L10n> listModel) {
+        TypedQuery<L10n> l10nQuery = entityManager.createNamedQuery("L10n.findAll",
+                L10n.class);
+        listModel.clearAll();
+        listModel.addAll(l10nQuery.getResultList());
     }
 
     private void changeProductItemSelectedState(int index) {
@@ -123,9 +156,12 @@ public class UpdateProductPanel extends AbstractTabPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        entityManager = emf.createEntityManager();
+        if (!Beans.isDesignTime() && entityManager == null) {
+            entityManager = emf.createEntityManager();
+        }
         productListModel = new net.localizethat.gui.models.ListComboBoxGenericModel<SelectableItem<Product>>();
         originalPathsListModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath>();
+        listL10nModel = new net.localizethat.gui.models.ListComboBoxGenericModel<L10n>();
         selectProductsLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         productList = new javax.swing.JList();
@@ -139,6 +175,8 @@ public class UpdateProductPanel extends AbstractTabPanel {
         updateButton = new javax.swing.JButton();
         editChangesButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        targetLocaleLabel = new javax.swing.JLabel();
+        targetLocaleCombo = new javax.swing.JComboBox<L10n>();
 
         selectProductsLabel.setText("Select products to update:");
 
@@ -162,6 +200,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
         originalpathsList.setEnabled(false);
         jScrollPane2.setViewportView(originalpathsList);
 
+        selectAllProductsCheck.setMnemonic('C');
         selectAllProductsCheck.setText("(Un)Check  to (de)select all products");
         selectAllProductsCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,6 +244,12 @@ public class UpdateProductPanel extends AbstractTabPanel {
         });
         buttonPanel.add(cancelButton);
 
+        targetLocaleLabel.setDisplayedMnemonic('S');
+        targetLocaleLabel.setLabelFor(targetLocaleCombo);
+        targetLocaleLabel.setText("Select target locale:");
+
+        targetLocaleCombo.setModel(listL10nModel);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -213,19 +258,22 @@ public class UpdateProductPanel extends AbstractTabPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE))
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(selectAllProductsCheck)
+                            .addComponent(selectProductsLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(selectProductsLabel)
-                                .addGap(160, 160, 160)
-                                .addComponent(originalPathsLabel)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(targetLocaleLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(targetLocaleCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(originalPathsLabel)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -239,11 +287,14 @@ public class UpdateProductPanel extends AbstractTabPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2)
                     .addComponent(jScrollPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selectAllProductsCheck)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(selectAllProductsCheck)
+                    .addComponent(targetLocaleCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(targetLocaleLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -297,6 +348,19 @@ public class UpdateProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        L10n l = listL10nModel.getSelectedTypedItem();
+        boolean isL10nValid = (l != null);
+
+        for(LocalePath lp : originalPathsListModel.getAll()) {
+            L10n ll = lp.getL10nId();
+            isL10nValid = isL10nValid && (!l.equals(ll));
+        }
+
+        if (!isL10nValid) {
+            statusBar.setErrorText("Please, select a valid locale different from used in original paths");
+            targetLocaleCombo.requestFocusInWindow();
+            return;
+        }
         if (upw != null) {
             upw.cancel(true);
         }
@@ -307,7 +371,20 @@ public class UpdateProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void editChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editChangesButtonActionPerformed
-        // TODO launch edit window with new and modified content
+        ContentListEditPanel clePanel;
+        try {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            clePanel = new ContentListEditPanel(entityManager, upw.get(), listL10nModel.getSelectedTypedItem());
+            Main.mainWindow.addTab(clePanel, "Last Update Product result");
+            Main.mainWindow.getStatusBar().clearText();
+            clePanel.requestFocusInWindow();
+            isResultTabOpened = true;
+            Main.mainWindow.removeTab(this);
+        } catch (InterruptedException | ExecutionException ex) {
+            Logger.getLogger(UpdateProductPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_editChangesButtonActionPerformed
 
 
@@ -319,6 +396,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private net.localizethat.gui.models.ListComboBoxGenericModel<L10n> listL10nModel;
     private javax.swing.JLabel originalPathsLabel;
     private net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath> originalPathsListModel;
     private javax.swing.JList originalpathsList;
@@ -326,6 +404,8 @@ public class UpdateProductPanel extends AbstractTabPanel {
     private net.localizethat.gui.models.ListComboBoxGenericModel<SelectableItem<Product>> productListModel;
     private javax.swing.JCheckBox selectAllProductsCheck;
     private javax.swing.JLabel selectProductsLabel;
+    private javax.swing.JComboBox<L10n> targetLocaleCombo;
+    private javax.swing.JLabel targetLocaleLabel;
     private javax.swing.JButton updateButton;
     private javax.swing.JTextArea updateOutputArea;
     // End of variables declaration//GEN-END:variables
@@ -333,11 +413,15 @@ public class UpdateProductPanel extends AbstractTabPanel {
     @Override
     public void onTabPanelAdded() {
         refreshProductList();
+        refreshL10nList(listL10nModel);
         originalPathsListModel.clearAll();
         updateOutputArea.setText("");
     }
 
     @Override
     public void onTabPanelRemoved() {
+        if (!isResultTabOpened) {
+            entityManager.close();
+        }
     }
 }
