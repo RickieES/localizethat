@@ -5,16 +5,22 @@
  */
 package net.localizethat.gui.components;
 
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.localizethat.gui.models.ContentListTableModel;
+import net.localizethat.gui.models.SelectableItem;
 import net.localizethat.gui.models.XTableColumnModel;
+import net.localizethat.gui.renderers.SelectableListItem;
 import net.localizethat.model.L10n;
 
 /**
@@ -34,6 +40,8 @@ public class ContentListTable extends javax.swing.JPanel {
         xColumnModel = new XTableColumnModel();
 
         initComponents();
+        columnChooserDialog.pack();
+        columnChooserDialog.setLocationRelativeTo(null);
         contentTable.setColumnModel(xColumnModel);
         contentTable.createDefaultColumnsFromModel();
         tableModel.addTableModelListener(contentTable);
@@ -42,6 +50,11 @@ public class ContentListTable extends javax.swing.JPanel {
         contentTable.setRowSorter(tableRowSorter);
         filterField.getDocument().addDocumentListener(
                 new FilterDocumentListener(tableModel, tableRowSorter, filterField));
+
+        for(TableColumn tc : xColumnModel.getColumnsAsList(false)) {
+            columnChooserModel.addElement(new SelectableItem<>(tc,
+                    xColumnModel.isColumnVisible(tc)));
+        }
     }
 
     public void setLocale(L10n locale) {
@@ -73,6 +86,14 @@ public class ContentListTable extends javax.swing.JPanel {
     private void initComponents() {
 
         tableModel = new net.localizethat.gui.models.ContentListTableModel();
+        tableColumnModel = new net.localizethat.gui.models.XTableColumnModel();
+        columnChooserDialog = new javax.swing.JDialog();
+        selectColumnsLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        columnsList = new javax.swing.JList();
+        columnsOkButton = new javax.swing.JButton();
+        columnsCancelButton = new javax.swing.JButton();
+        columnChooserModel = new net.localizethat.gui.models.ListComboBoxGenericModel<SelectableItem<TableColumn>>();
         auxPanel = new javax.swing.JPanel();
         filterLabel = new javax.swing.JLabel();
         filterField = new javax.swing.JTextField();
@@ -81,6 +102,79 @@ public class ContentListTable extends javax.swing.JPanel {
         columnsButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         contentTable = new javax.swing.JTable();
+
+        columnChooserDialog.setTitle("Select columns");
+        columnChooserDialog.setLocationByPlatform(true);
+        columnChooserDialog.setMinimumSize(new java.awt.Dimension(150, 100));
+
+        selectColumnsLabel.setText("Select columns to display");
+
+        columnsList.setModel(columnChooserModel);
+        columnsList.setCellRenderer(new SelectableListItem() {
+            @Override
+            public String printableText(Object item) {
+                return ((TableColumn) item).getHeaderValue().toString();
+            }
+        });
+        columnsList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                columnsListMouseClicked(evt);
+            }
+        });
+        columnsList.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                columnsListKeyTyped(evt);
+            }
+        });
+        jScrollPane2.setViewportView(columnsList);
+
+        columnsOkButton.setText("OK");
+        columnsOkButton.setMaximumSize(new java.awt.Dimension(81, 25));
+        columnsOkButton.setMinimumSize(new java.awt.Dimension(81, 25));
+        columnsOkButton.setPreferredSize(new java.awt.Dimension(81, 25));
+        columnsOkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                columnsOkButtonActionPerformed(evt);
+            }
+        });
+
+        columnsCancelButton.setText("Cancel");
+        columnsCancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                columnsCancelButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout columnChooserDialogLayout = new javax.swing.GroupLayout(columnChooserDialog.getContentPane());
+        columnChooserDialog.getContentPane().setLayout(columnChooserDialogLayout);
+        columnChooserDialogLayout.setHorizontalGroup(
+            columnChooserDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(columnChooserDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(columnChooserDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addGroup(columnChooserDialogLayout.createSequentialGroup()
+                        .addComponent(selectColumnsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(columnChooserDialogLayout.createSequentialGroup()
+                        .addComponent(columnsOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(columnsCancelButton)))
+                .addContainerGap())
+        );
+        columnChooserDialogLayout.setVerticalGroup(
+            columnChooserDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(columnChooserDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(selectColumnsLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(columnChooserDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(columnsOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(columnsCancelButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         filterLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         filterLabel.setText("Filter:");
@@ -99,7 +193,14 @@ public class ContentListTable extends javax.swing.JPanel {
         rowsInfoText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         rowsInfoText.setText("0");
 
+        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/choose-columns.png"))); // NOI18N
         columnsButton.setText("Columns");
+        columnsButton.setToolTipText("Choose columns");
+        columnsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                columnsButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout auxPanelLayout = new javax.swing.GroupLayout(auxPanel);
         auxPanel.setLayout(auxPanelLayout);
@@ -136,7 +237,10 @@ public class ContentListTable extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(22, 48));
+
         contentTable.setModel(tableModel);
+        contentTable.setMinimumSize(new java.awt.Dimension(90, 48));
         jScrollPane1.setViewportView(contentTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -144,7 +248,7 @@ public class ContentListTable extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(auxPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,16 +263,69 @@ public class ContentListTable extends javax.swing.JPanel {
         filterField.selectAll();
     }//GEN-LAST:event_filterFieldFocusGained
 
+    private void columnsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_columnsButtonActionPerformed
+        columnChooserDialog.setVisible(true);
+    }//GEN-LAST:event_columnsButtonActionPerformed
+
+    private void columnsCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_columnsCancelButtonActionPerformed
+        columnChooserDialog.setVisible(false);
+        // Restore the previous value of visible/hidden columns
+        for(SelectableItem<TableColumn> stc : columnChooserModel.getAll()) {
+            TableColumn tc = stc.getItem();
+            stc.setSelected(tableColumnModel.isColumnVisible(tc));
+        }
+    }//GEN-LAST:event_columnsCancelButtonActionPerformed
+
+    private void columnsOkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_columnsOkButtonActionPerformed
+        columnChooserDialog.setVisible(false);
+        for(SelectableItem<TableColumn> stc : columnChooserModel.getAll()) {
+            TableColumn tc = stc.getItem();
+            tableColumnModel.setColumnVisible(tc, stc.isSelected());
+        }
+    }//GEN-LAST:event_columnsOkButtonActionPerformed
+
+    private void columnsListKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnsListKeyTyped
+        JList c = (JList) evt.getComponent();
+        char keyCode = evt.getKeyChar();
+        int index = c.getLeadSelectionIndex();
+
+        if ((keyCode == KeyEvent.VK_SPACE) || (keyCode == KeyEvent.VK_ENTER)) {
+            SelectableItem<TableColumn> item = (SelectableItem<TableColumn>) columnChooserModel
+                .getElementAt(index);
+            item.setSelected(!item.isSelected());
+            Rectangle rect = columnsList.getCellBounds(index, index);
+            columnsList.repaint(rect);
+        }
+
+    }//GEN-LAST:event_columnsListKeyTyped
+
+    private void columnsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnsListMouseClicked
+        int index = columnsList.locationToIndex(evt.getPoint());
+        SelectableItem<TableColumn> item = (SelectableItem<TableColumn>) columnChooserModel
+            .getElementAt(index);
+        item.setSelected(!item.isSelected());
+        Rectangle rect = columnsList.getCellBounds(index, index);
+        columnsList.repaint(rect);
+    }//GEN-LAST:event_columnsListMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel auxPanel;
+    private javax.swing.JDialog columnChooserDialog;
+    private net.localizethat.gui.models.ListComboBoxGenericModel<SelectableItem<TableColumn>> columnChooserModel;
     private javax.swing.JButton columnsButton;
+    private javax.swing.JButton columnsCancelButton;
+    private javax.swing.JList columnsList;
+    private javax.swing.JButton columnsOkButton;
     private javax.swing.JTable contentTable;
     private javax.swing.JTextField filterField;
     private javax.swing.JLabel filterLabel;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel rowsInfoLabel;
     private javax.swing.JLabel rowsInfoText;
+    private javax.swing.JLabel selectColumnsLabel;
+    private net.localizethat.gui.models.XTableColumnModel tableColumnModel;
     private net.localizethat.gui.models.ContentListTableModel tableModel;
     // End of variables declaration//GEN-END:variables
 

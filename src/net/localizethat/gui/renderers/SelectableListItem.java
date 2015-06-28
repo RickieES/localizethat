@@ -31,13 +31,17 @@ public class SelectableListItem extends JCheckBox
         setEnabled(list.isEnabled());
         setSelected(item.isSelected());
         setFont(list.getFont());
-        setText(value.toString());
+        setText(printableText(item.getItem()));
         if (item.isSelected()) {
             this.setBackground(UIManager.getColor("List.selectionBackground"));
         } else {
             this.setBackground(UIManager.getColor("List.background"));
         }
       return this;
+    }
+
+    public String printableText(Object item) {
+        return item.toString();
     }
 
 }

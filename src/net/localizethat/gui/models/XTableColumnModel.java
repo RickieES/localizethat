@@ -224,6 +224,18 @@ public class XTableColumnModel extends DefaultTableColumnModel {
     }
 
     /**
+     * Returns an <code>List</code> of all the columns in the model.
+     *
+     * @param onlyVisible if set all invisible columns will be missing from the enumeration.
+     * @return an <code>Enumeration</code> of the columns in the model
+     */
+    public List<TableColumn> getColumnsAsList(boolean onlyVisible) {
+        List<TableColumn> columns = (onlyVisible ? tableColumns : allTableColumns);
+
+        return columns;
+    }
+
+    /**
      * Returns the position of the first column whose identifier equals <code>identifier</code>. Position is the the
      * index in all visible columns if <code>onlyVisible</code> is true or else the index in all columns.
      *

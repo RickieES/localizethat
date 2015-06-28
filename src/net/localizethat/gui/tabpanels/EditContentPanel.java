@@ -93,6 +93,9 @@ public class EditContentPanel extends AbstractTabPanel {
         contentListTable = new net.localizethat.gui.components.ContentListTable();
         contentEditionPanel = new net.localizethat.gui.components.ContentEditionPanel();
 
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(86, 48));
+
+        dataTree.setMinimumSize(new java.awt.Dimension(83, 48));
         jScrollPane1.setViewportView(dataTree);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
