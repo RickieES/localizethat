@@ -30,6 +30,7 @@ import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.Product;
 import net.localizethat.model.ProductSourceType;
+import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
 import net.localizethat.util.gui.JStatusBar;
 
@@ -42,6 +43,7 @@ public class ProductManager extends AbstractTabPanel {
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
     Product selectedProduct;
+    JPAHelperBundle jhb;
 
     /**
      * Creates new form ProductManager
@@ -57,6 +59,8 @@ public class ProductManager extends AbstractTabPanel {
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
+
+        jhb = JPAHelperBundle.getInstance(entityManager);
 
         // Load values into product source type combo
         for(ProductSourceType pst : ProductSourceType.values()) {
@@ -769,7 +773,7 @@ public class ProductManager extends AbstractTabPanel {
         if (answer == JOptionPane.YES_OPTION) {
             Product p = productListModel.getSelectedTypedItem();
 
-            LocaleContainerJPAHelper lcHelper = new LocaleContainerJPAHelper(entityManager);
+            LocaleContainerJPAHelper lcHelper = jhb.getLocaleContainerJPAHelper();
 
             // First we remove the locale paths whose locale container has a default
             // locale twin, since this means that the neither the locale container nor
@@ -995,7 +999,7 @@ public class ProductManager extends AbstractTabPanel {
 
         lpToRemove = origPathTableModel.getElement(origPathIndex);
         lc = lpToRemove.getLocaleContainer();
-        lcHelper = new LocaleContainerJPAHelper(entityManager);
+        lcHelper = jhb.getLocaleContainerJPAHelper();
 
         int answer = JOptionPane.showConfirmDialog(this.getParent(),
                 "Really delete the selected path from this product?",

@@ -5,11 +5,13 @@
  */
 package net.localizethat.model.jpa;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import net.localizethat.Main;
+import net.localizethat.model.L10n;
 import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleFile;
 
@@ -19,14 +21,19 @@ import net.localizethat.model.LocaleFile;
  * @author rpalomares
  */
 public class LocaleContainerJPAHelper {
-    private static final int DEFAULT_TRANSACT_MAX_COUNT = 50;
     private int transactMaxCount;
     private int transactCounter;
-    private final EntityManager em;
+    private EntityManager em;
     private boolean isTransactionOpen;
     private LocaleFileJPAHelper lfHelper;
+    private LocaleContentJPAHelper lcntHelper;
+
+    private LocaleContainerJPAHelper() {
+        // Empty private constructor to avoid isolated construction, instead of using
+        // the JPAHelperBundle methods
+    }
     
-    public LocaleContainerJPAHelper(EntityManager em, int transactMaxCount) {
+    LocaleContainerJPAHelper(EntityManager em, int transactMaxCount) {
         transactCounter = 0;
         if (em == null) {
             this.em = Main.emf.createEntityManager();
@@ -37,11 +44,92 @@ public class LocaleContainerJPAHelper {
             isTransactionOpen = this.em.isJoinedToTransaction();
         }
         this.transactMaxCount = transactMaxCount;
-        this.lfHelper = new LocaleFileJPAHelper(this.em, this.transactMaxCount);
     }
 
-    public LocaleContainerJPAHelper(EntityManager em) {
-        this(em, LocaleContainerJPAHelper.DEFAULT_TRANSACT_MAX_COUNT);
+    void setLocaleFileJPAHelper(LocaleFileJPAHelper lfjh) {
+        this.lfHelper = lfjh;
+    }
+
+    void setLocaleContentJPAHelper(LocaleContentJPAHelper lcntjh) {
+        this.lcntHelper = lcntjh;
+    }
+
+    /**
+     * Creates a sibling of defaultTwin for the targetLocale, including all needed
+     * parents up to either an existing LocaleContainer or to the base, referencing it
+     * in that case from the associated LocalePath.
+     * @param defaultTwin the LocaleContainer of the original locale
+     * @param targetLocale the L10n for which we want to create the sibling
+     * @param commitOnSuccess if true, sends a commit for the current transaction
+     * @return true on success (this includes the case that a LocaleContainer for the
+     * targetLocale already exists), false if something went wrong (like the defaultTwin
+     * not being really the defaultTwin, ie., having itself a not null defaultTwin
+     * property)
+     */
+    public boolean createRecursively(LocaleContainer defaultTwin, L10n targetLocale,
+            boolean commitOnSuccess) {
+        boolean result;
+        LocaleContainer sibling;
+        LocaleContainer defaultParent;
+        LocaleContainer newSibling;
+
+
+        // Only the real defaultTwin has no DefLocaleTwin; we can only process defaultTwins
+        result = (defaultTwin.getDefLocaleTwin() == null);
+
+        if (result) {
+            // Let's find out the sibling of this level defaultTwin
+            sibling = defaultTwin.getTwinByLocale(targetLocale);
+            defaultParent = defaultTwin.getParent();
+            // If no sibling
+            if (sibling == null) {
+                if (defaultParent != null) {
+                    result = result && createRecursively(defaultParent, targetLocale,
+                            false);
+                } else {
+                    // We have reached the base LocaleContainer, and if it does not
+                    // have a sibling of targetLocale is because there is no LocalePath
+                    // for that locale, and therefore we can't create the associated
+                    // LocaleContainer
+                    result = false;
+                }
+
+                if (result) {
+                    // At this point, we know that defaultTwin is really the default
+                    // twin, that it has no sibling of the targetLocale and that we have
+                    // both a parent of defaultTwin and a parent for the targetLocale
+                    // (otherwise, ther recursive call would have returned false)
+                    newSibling = new LocaleContainer(defaultTwin.getName(),
+                            defaultParent.getTwinByLocale(targetLocale));
+                    newSibling.setCreationDate(new Date());
+                    newSibling.setDefLocaleTwin(defaultTwin);
+                    newSibling.setL10nId(targetLocale);
+                    newSibling.setLastUpdate(newSibling.getCreationDate());
+                    em.persist(newSibling);
+                    if (commitOnSuccess) {
+                        em.getTransaction().commit();
+                    }
+                }
+            }
+        }
+
+        /*
+         * check if there is already a sibling of targetLocale
+         * if not,
+         *     if there is a not null parent,
+         *         result = result && call createRecursively with the parent of defaultTwin
+         *     else
+         *         // we have reached the base LocaleContainer, and if it does not have a sibling
+         *         // of targetLocale is because there is no LocalePath for it, and therefore we
+         *         // can't create the associated LocaleContainer
+         *         return false;
+         *     endif
+         *     find the sibling for targetLocale of the parent
+         *     create a new LocaleContainer with the targetLocale and the parent sibling
+         * endif
+         *
+        */
+        return result;
     }
 
     public boolean removeRecursively(LocaleContainer lc) {
@@ -49,7 +137,11 @@ public class LocaleContainerJPAHelper {
     }
 
     private boolean removeRecursively(LocaleContainer lc, int depth) {
-        boolean result = true;
+        boolean result = (lc.getTwins().isEmpty());
+
+        if (!result) {
+            return result;
+        }
 
         try {
             if (transactCounter == 0 && !em.isJoinedToTransaction()) {
@@ -119,5 +211,4 @@ public class LocaleContainerJPAHelper {
         }
         return result;
     }
-
 }

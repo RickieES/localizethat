@@ -146,7 +146,7 @@ public class LocaleContainer implements LocaleNode, Serializable {
     }
 
     @Override
-    public LocaleNode getParent() {
+    public LocaleContainer getParent() {
         return parent;
     }
 
@@ -256,7 +256,7 @@ public class LocaleContainer implements LocaleNode, Serializable {
     }
 
     @Override
-    public LocaleNode getDefLocaleTwin() {
+    public LocaleContainer getDefLocaleTwin() {
         return defLocaleTwin;
     }
     
@@ -296,8 +296,8 @@ public class LocaleContainer implements LocaleNode, Serializable {
     }
 
     @Override
-    public LocaleNode getTwinByLocale(L10n locale) {
-        for(LocaleNode s : twins) {
+    public LocaleContainer getTwinByLocale(L10n locale) {
+        for(LocaleContainer s : twins) {
             if (s.getL10nId().equals(locale)) {
                 return s;
             }

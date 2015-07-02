@@ -361,8 +361,8 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
-    public LocaleNode getTwinByLocale(L10n locale) {
-        for(LocaleNode s : twins) {
+    public LocaleFile getTwinByLocale(L10n locale) {
+        for(LocaleFile s : twins) {
             if (s.getL10nId().equals(locale)) {
                 return s;
             }

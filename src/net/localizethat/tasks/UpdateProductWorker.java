@@ -21,6 +21,7 @@ import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
+import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
 import net.localizethat.model.jpa.LocaleFileJPAHelper;
 import net.localizethat.util.gui.JStatusBar;
@@ -36,6 +37,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
     private final Iterator<LocalePath> localePathIterator;
     private final List<LocaleContent> newAndModifiedList;
     private final EntityManager em;
+    private final JPAHelperBundle jhb;
     private int filesAdded;
     private int filesModified;
     private int filesDeleted;
@@ -51,6 +53,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
         this.statusBar = Main.mainWindow.getStatusBar();
         this.em = Main.emf.createEntityManager();
         this.newAndModifiedList = new ArrayList<>(10);
+        this.jhb = JPAHelperBundle.getInstance(em);
     }
 
     @Override
@@ -134,8 +137,8 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
     private void processContainer(String currentPath, LocaleContainer lc) {
         File curDir = new File(currentPath);
         File[] childFiles = curDir.listFiles();
-        LocaleContainerJPAHelper lcHelper = new LocaleContainerJPAHelper(em);
-        LocaleFileJPAHelper lfHelper = new LocaleFileJPAHelper(em);
+        LocaleContainerJPAHelper lcHelper = jhb.getLocaleContainerJPAHelper();
+        LocaleFileJPAHelper lfHelper = jhb.getLocaleFileJPAHelper();
 
         if (isCancelled()) {
             return;
