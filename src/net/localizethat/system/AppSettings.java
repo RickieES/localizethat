@@ -274,7 +274,6 @@ public class AppSettings {
         // Set the default path to database
         dbPath = System.getProperty("user.dir", ".") + System.getProperty("file.separator")
                 + "db";
-        dbPath = "/home/rpalomares/.netbeans-derby";
         defaultPrefs.setProperty(PREF_DB_PATH, dbPath);
 
         // Set the default username and password
