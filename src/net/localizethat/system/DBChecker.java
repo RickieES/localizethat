@@ -83,7 +83,7 @@ public final class DBChecker {
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
             dbConnection = DriverManager.getConnection("jdbc:derby:" + DB_NAME + ";create="
-                    + (Boolean.toString(createDB)) + ";upgrade=true", login, passwd);
+                    + (Boolean.toString(createDB)), login, passwd);
             // To update the DB version, use upgrade=true like follows
             //      + (Boolean.toString(createDB)) + ";upgrade=true", login, passwd);
 
