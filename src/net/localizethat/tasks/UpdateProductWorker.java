@@ -17,7 +17,7 @@ import javax.swing.SwingWorker;
 import net.localizethat.Main;
 import net.localizethat.model.DtdFile;
 import net.localizethat.model.LocaleContainer;
-import net.localizethat.model.LocaleContent;
+import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
@@ -30,12 +30,12 @@ import net.localizethat.util.gui.JStatusBar;
  * SwingWorker task that performs an update process in the locale paths passed in the constructor
  * @author rpalomares
  */
-public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String> {
+public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
     private final JTextArea feedbackArea;
     private final JButton editChangesButton;
     private final JStatusBar statusBar;
     private final Iterator<LocalePath> localePathIterator;
-    private final List<LocaleContent> newAndModifiedList;
+    private final List<LTContent> newAndModifiedList;
     private final EntityManager em;
     private final JPAHelperBundle jhb;
     private int filesAdded;
@@ -57,7 +57,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
     }
 
     @Override
-    protected List<LocaleContent> doInBackground() {
+    protected List<LTContent> doInBackground() {
         int totalFilesAdded = 0;
         int totalFilesModified = 0;
         int totalFilesDeleted = 0;
