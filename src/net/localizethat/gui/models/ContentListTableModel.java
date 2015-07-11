@@ -9,14 +9,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import net.localizethat.model.EditableLocaleContent;
 import net.localizethat.model.L10n;
+import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
 
 /**
- * Table model of LocaleContent objects; the list of objects may come from a
- * ParseableFile objects or from LocaleContent lists (from product updates or
- * searches, for instance)
+ * Table model of LTContent objects; the list of objects may come from a
+ ParseableFile objects or from LTContent lists (from product updates or
+ searches, for instance)
  * @author rpalomares
  */
 public class ContentListTableModel extends AbstractTableModel {
@@ -37,20 +39,20 @@ public class ContentListTableModel extends AbstractTableModel {
         this.list = new ArrayList<>(10);
     }
 
-    public ContentListTableModel(L10n localizationCode, List<LocaleContent> source) {
+    public ContentListTableModel(L10n localizationCode, List<LTContent> source) {
         super();
         this.localizationCode = localizationCode;
         this.list = new ArrayList<>(source.size());
 
-        for(LocaleContent lc : source) {
+        for(LTContent lc : source) {
             ContentListObject clo = new ContentListObject(lc);
             list.add(clo);
         }
     }
 
-    public void replaceData(Collection<LocaleContent> newSource) {
+    public void replaceData(Collection<LTContent> newSource) {
         this.list.clear();
-        for(LocaleContent lc : newSource) {
+        for(LTContent lc : newSource) {
             ContentListObject clo = new ContentListObject(lc);
             list.add(clo);
         }
@@ -73,6 +75,14 @@ public class ContentListTableModel extends AbstractTableModel {
         this.columnModel = columnModel;
     }
 
+    public ContentListObject getElementAt(int row) {
+        if ((row < 0) || (row >= list.size())) {
+            return null;
+        } else {
+            return list.get(row);
+        }
+    }
+
     @Override
     public int getRowCount() {
         return list.size();
@@ -86,21 +96,27 @@ public class ContentListTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         ContentListObject clo = list.get(rowIndex);
+        LocaleContent lcOrig = clo.getOriginalNode();
+        LocaleContent lcTarget = clo.getSiblingNode();
 
         switch (columnIndex) {
             case 0: // Filename
                 return clo.getParentFile().getName();
             case 1: // Order/Line
-                return clo.getOriginalNode().getOrderInFile();
+                return lcOrig.getOrderInFile();
             case 2: // Content Type
-                return clo.getOriginalNode().getClass().getSimpleName();
+                return lcOrig.getClass().getSimpleName();
             case 3: // Key/Entity
-                return clo.getOriginalNode().getName();
+                return lcOrig.getName();
             case 4: // Original value
-                return clo.getOriginalNode().getTextValue();
+                if (lcOrig instanceof EditableLocaleContent) {
+                    return ((EditableLocaleContent) lcOrig).getTextValue();
+                } else {
+                    return "";
+                }
             case 5: // Translated value
-                if (clo.getSiblingNode() != null) {
-                    return clo.getSiblingNode().getTextValue();
+                if ((lcTarget != null) && (lcTarget instanceof EditableLocaleContent)) {
+                    return ((EditableLocaleContent) lcTarget).getTextValue();
                 } else {
                     return "";
                 }
@@ -133,22 +149,22 @@ public class ContentListTableModel extends AbstractTableModel {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    class ContentListObject {
-        private final LocaleContent originalNode;
-        private LocaleContent siblingNode;
+    public class ContentListObject {
+        private final LTContent originalNode;
+        private LTContent siblingNode;
         private final LocaleFile parentFile;
 
-        ContentListObject(LocaleContent originalNode) {
+        ContentListObject(LTContent originalNode) {
             this.originalNode = originalNode;
             this.siblingNode = originalNode.getTwinByLocale(localizationCode); // This may be null
             this.parentFile = originalNode.getParent();
         }
 
-        public LocaleContent getOriginalNode() {
+        public LTContent getOriginalNode() {
             return originalNode;
         }
 
-        public LocaleContent getSiblingNode() {
+        public LTContent getSiblingNode() {
             return siblingNode;
         }
 
@@ -156,7 +172,7 @@ public class ContentListTableModel extends AbstractTableModel {
             return parentFile;
         }
 
-        public void setSiblingNode(LocaleContent siblingNode) {
+        public void setSiblingNode(LTContent siblingNode) {
             this.siblingNode = siblingNode;
         }
 

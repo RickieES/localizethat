@@ -13,7 +13,7 @@ import net.localizethat.Main;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.tabpanels.AbstractTabPanel;
 import net.localizethat.model.L10n;
-import net.localizethat.model.LocaleContent;
+import net.localizethat.model.LTContent;
 
 /**
  *
@@ -33,9 +33,11 @@ public class ContentListEditPanel extends AbstractTabPanel {
         //     entityManager = emf.createEntityManager();
         // }
         initComponents();
+        this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
+        this.contentListTable.addTableListSelectionListener(contentEditionPanel);
     }
 
-    public ContentListEditPanel(EntityManager entityManager, List<LocaleContent> lcList,
+    public ContentListEditPanel(EntityManager entityManager, List<LTContent> lcList,
             L10n targetLocale) {
         emf = Main.emf;
         this.entityManager = entityManager;
@@ -88,10 +90,10 @@ public class ContentListEditPanel extends AbstractTabPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                    .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
                     .addContainerGap()))
         );
     }// </editor-fold>//GEN-END:initComponents

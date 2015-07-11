@@ -49,6 +49,8 @@ public class EditContentPanel extends AbstractTabPanel {
         tl = new TreeListeners();
         dataTree.addTreeSelectionListener(tl);
         dataTree.addTreeExpansionListener(tl);
+        this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
+        this.contentListTable.addTableListSelectionListener(contentEditionPanel);
     }
 
     public void refreshTree(Product p) {
@@ -201,6 +203,7 @@ public class EditContentPanel extends AbstractTabPanel {
                 if (nodeObject instanceof LocaleFile) {
                     LocaleFile lf = (LocaleFile) nodeObject;
                     ContentListTableModel tableModel = contentListTable.getTableModel();
+                    tableModel.setLocalizationCode(targetLocale);
                     tableModel.replaceData(lf.getChildren());
                 }
             }

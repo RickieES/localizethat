@@ -8,10 +8,12 @@ package net.localizethat.gui.components;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
@@ -21,7 +23,6 @@ import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.models.SelectableItem;
 import net.localizethat.gui.models.XTableColumnModel;
 import net.localizethat.gui.renderers.SelectableListItem;
-import net.localizethat.model.L10n;
 
 /**
  * Panel containing a JTable to display a list of LocaleContent entries
@@ -30,7 +31,6 @@ import net.localizethat.model.L10n;
 public class ContentListTable extends javax.swing.JPanel {
     private final XTableColumnModel xColumnModel;
     private final TableRowSorter<ContentListTableModel> tableRowSorter;
-    private L10n locale;
 
     /**
      * Creates new form ContentListTable
@@ -57,12 +57,16 @@ public class ContentListTable extends javax.swing.JPanel {
         }
     }
 
-    public void setLocale(L10n locale) {
-        this.locale = locale;
+    public JTable getTable() {
+        return this.contentTable;
     }
 
     public ContentListTableModel getTableModel() {
         return tableModel;
+    }
+
+    public void addTableListSelectionListener(ListSelectionListener lsl) {
+        this.contentTable.getSelectionModel().addListSelectionListener(lsl);
     }
 
     private void applyFilter(TableModel tm, TableRowSorter trs, String filter) {

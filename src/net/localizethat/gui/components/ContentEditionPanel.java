@@ -5,17 +5,90 @@
  */
 package net.localizethat.gui.components;
 
+import java.beans.Beans;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import net.localizethat.Main;
+import net.localizethat.gui.models.ContentListTableModel;
+import net.localizethat.model.EditableLocaleContent;
+import net.localizethat.model.LocaleContent;
+import net.localizethat.model.jpa.JPAHelperBundle;
+import net.localizethat.model.jpa.LocaleContentJPAHelper;
+
 /**
- *
+ * Content edition panel
+
+ This panel allows to edit LTContent siblings of a target locale. The target locale is
+ * defined in the ContentListTableModel instance
  * @author rpalomares
  */
-public class ContentEditionPanel extends javax.swing.JPanel {
+public class ContentEditionPanel extends javax.swing.JPanel implements ListSelectionListener {
+    private final EntityManagerFactory emf;
+    private JTable associatedTable;
+    private ContentListTableModel tableModel;
+    private ContentListTableModel.ContentListObject lObject;
+    private JPAHelperBundle jhb;
 
     /**
      * Creates new form ContentEditionPanel
      */
     public ContentEditionPanel() {
+        emf = Main.emf;
+        // The following code is executed inside initComponents()
+        // if (!Beans.isDesignTime() && entityManager == null) {
+        //     entityManager = emf.createEntityManager();
+        // }
         initComponents();
+        jhb = JPAHelperBundle.getInstance(entityManager);
+    }
+
+    public ContentEditionPanel(EntityManager entityManager, JTable associatedTable) {
+        emf = Main.emf;
+        this.entityManager = entityManager;
+        initComponents();
+
+        if (!Beans.isDesignTime() && !entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+        setAssociatedTable(associatedTable);
+    }
+
+    public final void setAssociatedTable(JTable associatedTable) {
+        if (associatedTable != null) {
+            this.associatedTable = associatedTable;
+            this.tableModel = (ContentListTableModel) this.associatedTable.getModel();
+        }
+    }
+
+    private void updateTargetLocale(int editingRowInModel) {
+        ContentListTableModel.ContentListObject  clo = tableModel.getElementAt(editingRowInModel);
+        LocaleContent lc = clo.getSiblingNode();
+        LocaleContentJPAHelper lcntjh = jhb.getLocaleContentJPAHelper();
+
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+
+        if (lc == null) {
+            if (!lcntjh.createRecursively(clo.getOriginalNode(), tableModel.getLocalizationCode(),
+                    true)) {
+                Main.mainWindow.getStatusBar().setErrorText(
+                        "Error creating the localized value in DB");
+            }
+        }
+
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+
+        EditableLocaleContent elc = (EditableLocaleContent) clo.getOriginalNode()
+                .getTwinByLocale(tableModel.getLocalizationCode());
+        elc.setTextValue(trnsTextArea.getText());
+        entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
     }
 
     /**
@@ -26,19 +99,24 @@ public class ContentEditionPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        if (!Beans.isDesignTime() && entityManager == null) {
+            entityManager = emf.createEntityManager();
+        }
         jTabbedPane1 = new javax.swing.JTabbedPane();
         mainPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         upperPanel = new javax.swing.JPanel();
         origLabel = new javax.swing.JLabel();
-        commentButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         origTextPane = new javax.swing.JTextPane();
+        commentTButton = new javax.swing.JToggleButton();
         lowerPanel = new javax.swing.JPanel();
         trnsLabel = new javax.swing.JLabel();
         sugButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         trnsTextArea = new javax.swing.JTextArea();
+        copyOrigButton = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
         advancedPanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
         nextButton = new javax.swing.JButton();
@@ -50,9 +128,11 @@ public class ContentEditionPanel extends javax.swing.JPanel {
 
         origLabel.setText("Original");
 
-        commentButton.setText("Comment");
-
+        origTextPane.setEditable(false);
         jScrollPane1.setViewportView(origTextPane);
+
+        commentTButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-comment.png"))); // NOI18N
+        commentTButton.setToolTipText("Toogle between original value <-> comment");
 
         javax.swing.GroupLayout upperPanelLayout = new javax.swing.GroupLayout(upperPanel);
         upperPanel.setLayout(upperPanelLayout);
@@ -60,8 +140,8 @@ public class ContentEditionPanel extends javax.swing.JPanel {
             upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(upperPanelLayout.createSequentialGroup()
                 .addComponent(origLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 317, Short.MAX_VALUE)
-                .addComponent(commentButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 367, Short.MAX_VALUE)
+                .addComponent(commentTButton))
             .addComponent(jScrollPane1)
         );
         upperPanelLayout.setVerticalGroup(
@@ -70,9 +150,9 @@ public class ContentEditionPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(origLabel)
-                    .addComponent(commentButton))
+                    .addComponent(commentTButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
         );
 
         jSplitPane1.setTopComponent(upperPanel);
@@ -83,8 +163,14 @@ public class ContentEditionPanel extends javax.swing.JPanel {
         sugButton.setToolTipText("Cycle over suggestions");
 
         trnsTextArea.setColumns(20);
-        trnsTextArea.setRows(5);
+        trnsTextArea.setRows(3);
         jScrollPane2.setViewportView(trnsTextArea);
+
+        copyOrigButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-edit-copy.png"))); // NOI18N
+        copyOrigButton.setToolTipText("Copy from original value");
+
+        jCheckBox1.setMnemonic('K');
+        jCheckBox1.setText("Keep original value");
 
         javax.swing.GroupLayout lowerPanelLayout = new javax.swing.GroupLayout(lowerPanel);
         lowerPanel.setLayout(lowerPanelLayout);
@@ -93,6 +179,10 @@ public class ContentEditionPanel extends javax.swing.JPanel {
             .addGroup(lowerPanelLayout.createSequentialGroup()
                 .addComponent(trnsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jCheckBox1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(copyOrigButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sugButton))
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
         );
@@ -100,11 +190,14 @@ public class ContentEditionPanel extends javax.swing.JPanel {
             lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lowerPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sugButton)
-                    .addComponent(trnsLabel))
+                .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(sugButton)
+                        .addComponent(trnsLabel)
+                        .addComponent(jCheckBox1))
+                    .addComponent(copyOrigButton, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(lowerPanel);
@@ -130,7 +223,7 @@ public class ContentEditionPanel extends javax.swing.JPanel {
         );
         advancedPanelLayout.setVerticalGroup(
             advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 306, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Details", advancedPanel);
@@ -138,10 +231,20 @@ public class ContentEditionPanel extends javax.swing.JPanel {
         nextButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-go-next.png"))); // NOI18N
         nextButton.setMnemonic('N');
         nextButton.setText("Next");
+        nextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextButtonActionPerformed(evt);
+            }
+        });
 
         prevButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-go-previous.png"))); // NOI18N
         prevButton.setMnemonic('P');
         prevButton.setText("Previous");
+        prevButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prevButtonActionPerformed(evt);
+            }
+        });
 
         exitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-system-log-out.png"))); // NOI18N
         exitButton.setMnemonic('C');
@@ -197,12 +300,73 @@ public class ContentEditionPanel extends javax.swing.JPanel {
         jTabbedPane1.getAccessibleContext().setAccessibleName("Main");
     }// </editor-fold>//GEN-END:initComponents
 
+    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        boolean foundEditable;
+        int editingRowInView;
+        int editingRowInModel;
+        LocaleContent lc;
+        EditableLocaleContent elc;
+
+        editingRowInView = associatedTable.getSelectedRow();
+        editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
+        updateTargetLocale(editingRowInModel);
+
+        do {
+            editingRowInView++;
+            foundEditable = false;
+
+            if (editingRowInView < associatedTable.getRowCount()) {
+                editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
+                lc = tableModel.getElementAt(editingRowInModel).getOriginalNode();
+                foundEditable = lc.isEditable();
+
+                if (foundEditable) {
+                    elc = (EditableLocaleContent) lc;
+                    associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
+                    tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
+                }
+            }
+        } while ((editingRowInView < associatedTable.getRowCount()) && !foundEditable);
+    }//GEN-LAST:event_nextButtonActionPerformed
+
+    private void prevButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prevButtonActionPerformed
+        boolean foundEditable;
+        int editingRowInView;
+        int editingRowInModel;
+        LocaleContent lc;
+        EditableLocaleContent elc;
+
+        editingRowInView = associatedTable.getSelectedRow();
+        editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
+        updateTargetLocale(editingRowInModel);
+
+        do {
+            editingRowInView--;
+            foundEditable = false;
+
+            if (editingRowInView > 0) {
+                editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
+                lc = tableModel.getElementAt(editingRowInModel).getOriginalNode();
+                foundEditable = lc.isEditable();
+
+                if (foundEditable) {
+                    elc = (EditableLocaleContent) lc;
+                    associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
+                    tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
+                }
+            }
+        } while ((editingRowInView > 0) && !foundEditable);
+    }//GEN-LAST:event_prevButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedPanel;
     private javax.swing.JPanel buttonPanel;
-    private javax.swing.JButton commentButton;
+    private javax.swing.JToggleButton commentTButton;
+    private javax.swing.JButton copyOrigButton;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton exitButton;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
@@ -219,4 +383,34 @@ public class ContentEditionPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea trnsTextArea;
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) {
+            return;
+        }
+        int selectedRow = associatedTable.getSelectedRow();
+        if (selectedRow != -1) {
+            selectedRow = associatedTable.convertRowIndexToModel(selectedRow);
+            lObject = tableModel.getElementAt(selectedRow);
+            LocaleContent origLc = lObject.getOriginalNode();
+
+            if (origLc instanceof EditableLocaleContent) {
+                origTextPane.setText(((EditableLocaleContent) origLc).getTextValue());
+
+                EditableLocaleContent trnsLc = (EditableLocaleContent) origLc.getTwinByLocale(
+                        tableModel.getLocalizationCode());
+                
+                if (trnsLc != null) {
+                    trnsTextArea.setText(trnsLc.getTextValue());
+                } else {
+                    trnsTextArea.setText("");
+                }
+                trnsTextArea.requestFocusInWindow();
+            } else {
+                origTextPane.setText("");
+                trnsTextArea.setText("");
+            }
+        }
+    }
 }
