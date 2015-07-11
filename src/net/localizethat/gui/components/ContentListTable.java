@@ -21,7 +21,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.models.SelectableItem;
-import net.localizethat.gui.models.XTableColumnModel;
 import net.localizethat.gui.renderers.SelectableListItem;
 
 /**
@@ -29,7 +28,6 @@ import net.localizethat.gui.renderers.SelectableListItem;
  * @author rpalomares
  */
 public class ContentListTable extends javax.swing.JPanel {
-    private final XTableColumnModel xColumnModel;
     private final TableRowSorter<ContentListTableModel> tableRowSorter;
 
     /**
@@ -37,12 +35,10 @@ public class ContentListTable extends javax.swing.JPanel {
      */
     public ContentListTable() {
         super();
-        xColumnModel = new XTableColumnModel();
 
         initComponents();
         columnChooserDialog.pack();
         columnChooserDialog.setLocationRelativeTo(null);
-        contentTable.setColumnModel(xColumnModel);
         contentTable.createDefaultColumnsFromModel();
         tableModel.addTableModelListener(contentTable);
         tableModel.addTableModelListener(new ContentTableModelListener());
@@ -51,9 +47,9 @@ public class ContentListTable extends javax.swing.JPanel {
         filterField.getDocument().addDocumentListener(
                 new FilterDocumentListener(tableModel, tableRowSorter, filterField));
 
-        for(TableColumn tc : xColumnModel.getColumnsAsList(false)) {
+        for(TableColumn tc : tableColumnModel.getColumnsAsList(false)) {
             columnChooserModel.addElement(new SelectableItem<>(tc,
-                    xColumnModel.isColumnVisible(tc)));
+                    tableColumnModel.isColumnVisible(tc)));
         }
     }
 
@@ -110,6 +106,7 @@ public class ContentListTable extends javax.swing.JPanel {
         columnChooserDialog.setTitle("Select columns");
         columnChooserDialog.setLocationByPlatform(true);
         columnChooserDialog.setMinimumSize(new java.awt.Dimension(150, 100));
+        columnChooserDialog.setModal(true);
 
         selectColumnsLabel.setText("Select columns to display");
 
@@ -246,6 +243,7 @@ public class ContentListTable extends javax.swing.JPanel {
         contentTable.setModel(tableModel);
         contentTable.setMinimumSize(new java.awt.Dimension(90, 48));
         jScrollPane1.setViewportView(contentTable);
+        contentTable.setColumnModel(tableColumnModel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
