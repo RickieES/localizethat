@@ -21,11 +21,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import net.localizethat.model.CommentType;
-import net.localizethat.model.ExternalEntity;
+import net.localizethat.model.LTExternalEntity;
 import net.localizethat.model.LTComment;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LTLicense;
-import net.localizethat.model.LocaleContent;
+import net.localizethat.model.LTContent;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -53,7 +53,7 @@ public class DTDReadHelper extends DefaultHandler2 {
     private static final Logger fLogger = Logger.getLogger(DTDReadHelper.class.getPackage().
             getName());
     private final LineNumberReader is;
-    private final List<LocaleContent> lcList;
+    private final List<LTContent> lcList;
     private Locator2 locator;
     
     // FIXME This is not actually a *line* counter, but a *managed token* counter.
@@ -76,7 +76,7 @@ public class DTDReadHelper extends DefaultHandler2 {
         this.locator = locator;
     }
 
-    public List<LocaleContent> getLocaleContentList() {
+    public List<LTContent> getLocaleContentList() {
         if (is == null) {
             return null;
         } else {
@@ -184,7 +184,7 @@ public class DTDReadHelper extends DefaultHandler2 {
     @Override
     public void externalEntityDecl(String name, String publicId, String systemId) {
         int lineNumber = lineCount++;
-        ExternalEntity ltExtEntity = new ExternalEntity(name, publicId, systemId);
+        LTExternalEntity ltExtEntity = new LTExternalEntity(name, publicId, systemId);
         ltExtEntity.setName(name);
         // publicId is currently a transient property and is NOT persisted in DB
         ltExtEntity.setPublicId(publicId);
