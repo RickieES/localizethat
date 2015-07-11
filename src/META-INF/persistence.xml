@@ -8,10 +8,10 @@
     <class>net.localizethat.model.ImageFile</class>
     <class>net.localizethat.model.L10n</class>
     <class>net.localizethat.model.LocaleContainer</class>
-    <class>net.localizethat.model.LocaleContent</class>
     <class>net.localizethat.model.LocaleFile</class>
     <class>net.localizethat.model.LocalePath</class>
     <class>net.localizethat.model.LTComment</class>
+    <class>net.localizethat.model.LTContent</class>
     <class>net.localizethat.model.LTIniSection</class>
     <class>net.localizethat.model.LTKeyValuePair</class>
     <class>net.localizethat.model.LTLicense</class>
