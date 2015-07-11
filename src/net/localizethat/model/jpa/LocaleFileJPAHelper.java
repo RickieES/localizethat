@@ -14,7 +14,7 @@ import net.localizethat.Main;
 import net.localizethat.model.ImageFile;
 import net.localizethat.model.L10n;
 import net.localizethat.model.LocaleContainer;
-import net.localizethat.model.LocaleContent;
+import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.ParseableFile;
 import net.localizethat.model.TextFile;
@@ -138,8 +138,8 @@ public class LocaleFileJPAHelper {
      * Removes the LocaleFile lf from database and in-memory structure.
      *
      * The "recursively" part comes because this method takes care of all internal
-     * references to contents, like LocaleContent collection, or BLOB/CLOB content,
-     * and to keep naming scheme consistent with LocaleContainerJPAHelper.
+ references to contents, like LTContent collection, or BLOB/CLOB content,
+ and to keep naming scheme consistent with LocaleContainerJPAHelper.
      *
      * @param lf The LocaleFile to be removed
      * @return true if the operation ended successfully
@@ -163,9 +163,9 @@ public class LocaleFileJPAHelper {
                 case "DtdFile":
                 case "PropertiesFile":
                     ((ParseableFile) lf).setFileLicense(null);
-                    for (Iterator<LocaleContent> iterator = lf.getChildren().iterator();
+                    for (Iterator<LTContent> iterator = lf.getChildren().iterator();
                             iterator.hasNext();) {
-                        LocaleContent child = iterator.next();
+                        LTContent child = iterator.next();
                         child = em.merge(child);
                         iterator.remove();
                         child.setParent(null);

@@ -16,20 +16,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * LocalizeThat class for marking sections in INI files. It is a kind (ie., subclass)
- * of LocaleContent, which in turn implements the LocaleNode interface.
- *
- * LTIniSection has a LocaleContent children list made on the fly (it is not persisted
- * in the DB as such). To build it, the very own INI section is searched in the parent
- * children list, and then every node is considered a children up to the end of the list
- * or the next INISection noe (not included).
+ of LTContent, which in turn implements the LocaleNode interface.
+
+ LTIniSection has a LTContent children list made on the fly (it is not persisted
+ in the DB as such). To build it, the very own INI section is searched in the parent
+ children list, and then every node is considered a children up to the end of the list
+ or the next INISection noe (not included).
  * 
  * @author rpalomares
  */
 @Entity
 @DiscriminatorValue("LTIniSection")
 @XmlRootElement
-public class LTIniSection extends LocaleContent {
-    transient protected List<LocaleContent> children;
+public class LTIniSection extends LTContent {
+    transient protected List<LTContent> children;
     
     public LTIniSection() {
         super();
@@ -44,15 +44,15 @@ public class LTIniSection extends LocaleContent {
     private void buildChildrenOnTheFly() {
         children.clear();
         for(LocaleNode ln : getParent().getChildren()) {
-            children.add((LocaleContent) ln);
+            children.add((LTContent) ln);
         }
-        Collections.sort(children, LocaleContent.orderInFileComparator);
+        Collections.sort(children, LTContent.orderInFileComparator);
 
         // Now we have a copy of the siblings sorted by their position in file
         // We are going to remove the siblings before this ini section (including it)
-        Iterator<LocaleContent> it = children.iterator();
+        Iterator<LTContent> it = children.iterator();
         while (it.hasNext()) {
-            LocaleContent lc = it.next();
+            LTContent lc = it.next();
             if (lc.getOrderInFile() <= this.getOrderInFile()) {
                 it.remove();
             } else {
@@ -65,7 +65,7 @@ public class LTIniSection extends LocaleContent {
         it = children.iterator();
         boolean endOfSectionReached = false;
         while (it.hasNext()) {
-            LocaleContent lc = it.next();
+            LTContent lc = it.next();
             if (!endOfSectionReached && (lc instanceof LTIniSection)) {
                 endOfSectionReached = true;
             }

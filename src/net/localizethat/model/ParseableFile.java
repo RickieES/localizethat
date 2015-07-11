@@ -23,10 +23,10 @@ public interface ParseableFile extends LocaleNode {
      * remaining if they have changed
      *
      * @param em an EntityManager used to persist in DB new, modified and deleted records
-     * @return a list of LocaleContent objects added or modified
+     * @return a list of LTContent objects added or modified
      * @throws ParseException in case the parsing fails
      */
-    List<LocaleContent> update(EntityManager em) throws ParseException;
+    List<LTContent> update(EntityManager em) throws ParseException;
 
     /**
      * Parses a text file (like a DTD file, a Properties file, etc.) and tries to apply
@@ -35,10 +35,10 @@ public interface ParseableFile extends LocaleNode {
      * remaining if they have changed
      *
      * @param f a pointer to the file that will be parsed
-     * @return a list of LocaleContent objects added or modified
+     * @return a list of LTContent objects added or modified
      * @throws ParseException in case the parsing fails
      */
-    List<LocaleContent> importFromFile(File f) throws ParseException;
+    List<LTContent> importFromFile(File f) throws ParseException;
 
     /**
      * Returns the license header of the file
@@ -54,5 +54,5 @@ public interface ParseableFile extends LocaleNode {
     void setFileLicense(LTLicense fileLicense);
 
     // List<LObject> getLObjectCollection();
-    List<LocaleContent> getLObjectCollection();
+    List<LTContent> getLObjectCollection();
 }

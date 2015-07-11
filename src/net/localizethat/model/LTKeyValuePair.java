@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * LocalizeThat class for marking regular key-value pairs. It is a kind (ie., subclass)
- * of LocaleContent, which in turn implements the LocaleNode interface.
- *
- * Key-value pairs are present, for example, in DTD files and Properties files.
+ of LTContent, which in turn implements the LocaleNode interface.
+
+ Key-value pairs are present, for example, in DTD files and Properties files.
  *
  * @author rpalomares
  */
 @Entity
 @DiscriminatorValue("LTKeyValuePair")
 @XmlRootElement
-public class LTKeyValuePair extends LocaleContent {
+public class LTKeyValuePair extends LTContent implements EditableLocaleContent {
     public static final int TEXTVALUE_LENGTH = 32672;
 
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
@@ -43,6 +43,7 @@ public class LTKeyValuePair extends LocaleContent {
         return textValue;
     }
 
+    @Override
     public void setTextValue(String textValue) {
         this.textValue = textValue.substring(0, Math.min(textValue.length(), LTKeyValuePair.TEXTVALUE_LENGTH));
     }

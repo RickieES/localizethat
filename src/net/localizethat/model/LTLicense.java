@@ -13,14 +13,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * LocalizeThat class for marking file license headers. It is a kind (ie., subclass)
- * of LocaleContent, which in turn implements the LocaleNode interface
+ of LTContent, which in turn implements the LocaleNode interface
  *
  * @author rpalomares
  */
 @Entity
 @DiscriminatorValue("LTLicense")
 @XmlRootElement
-public class LTLicense extends LocaleContent {
+public class LTLicense extends LTContent implements EditableLocaleContent {
     public static final int TEXTVALUE_LENGTH = 32672;
    
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
@@ -89,6 +89,7 @@ public class LTLicense extends LocaleContent {
         return textValue;
     }
 
+    @Override
     public void setTextValue(String textValue) {
         this.textValue = textValue.substring(0, Math.min(textValue.length(), TEXTVALUE_LENGTH));
     }

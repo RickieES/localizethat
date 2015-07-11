@@ -32,12 +32,12 @@ public class PropertiesFile extends ParseableFileAdapter {
     }
 
     @Override
-    public List<LocaleContent> getLObjectCollection() {
+    public List<LTContent> getLObjectCollection() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    protected List<LocaleContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
+    protected List<LTContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -47,7 +47,7 @@ public class PropertiesFile extends ParseableFileAdapter {
     }
 
     @Override
-    public List<LocaleContent> importFromFile(File f) throws ParseException {
+    public List<LTContent> importFromFile(File f) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("LTExternalEntity")
 @XmlRootElement
-public class ExternalEntity extends LocaleContent {
+public class LTExternalEntity extends LTContent implements EditableLocaleContent {
     public static final int TEXTVALUE_LENGTH = 32672;
 
     // Currently, we don't expect external entities of type PUBLIC
@@ -32,11 +32,11 @@ public class ExternalEntity extends LocaleContent {
     private String systemId;
 
     /** Creates a new instance of ExternalEntity */
-    public ExternalEntity() {
+    public LTExternalEntity() {
         super();
     }
 
-    public ExternalEntity(String name, String publicId, String systemId) {
+    public LTExternalEntity(String name, String publicId, String systemId) {
         super();
         setName(name);
         this.publicId = publicId;
@@ -66,6 +66,11 @@ public class ExternalEntity extends LocaleContent {
 
     @Override
     public String getTextValue() {
-        return getPublicId();
+        return getSystemId();
+    }
+
+    @Override
+    public void setTextValue(String value) {
+        // Do nothing, as the SYSTEM ID value shouldn't be localizable
     }
 }

@@ -16,15 +16,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * LocalizeThat class for marking comments in files (except license headers, which have their
- * own class). It is a kind (ie., subclass) of LocaleContent, which in turn implements the
- * LocaleNode interface
+ * own class). It is a kind (ie., subclass) of LTContent, which in turn implements the
+ LocaleNode interface
  * 
  * @author rpalomares
  */
 @Entity
 @DiscriminatorValue("LTComment")
 @XmlRootElement
-public class LTComment extends LocaleContent {
+public class LTComment extends LTContent implements EditableLocaleContent {
     public static final int COMMENTTEXTVALUE_LENGTH = 32672;
 
     transient protected Collection<Void> children;
@@ -104,6 +104,7 @@ public class LTComment extends LocaleContent {
         return textValue;
     }
 
+    @Override
     public void setTextValue(String textValue) {
         this.textValue = textValue.substring(0, Math.min(textValue.length(), LTComment.COMMENTTEXTVALUE_LENGTH));
     }

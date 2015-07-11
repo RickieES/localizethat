@@ -51,10 +51,14 @@ public class JPAHelperBundle {
     }
     
     public LocaleContainerJPAHelper getLocaleContainerJPAHelper() {
-        return this.lcjh;
+        return lcjh;
     }
     
     public LocaleFileJPAHelper getLocaleFileJPAHelper() {
-        return this.lfjh;
+        return lfjh;
+    }
+
+    public LocaleContentJPAHelper getLocaleContentJPAHelper() {
+        return lcntjh;
     }
 }

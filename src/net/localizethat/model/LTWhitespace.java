@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("LTWhitespace")
 @XmlRootElement
-public class LTWhitespace extends LocaleContent {
+public class LTWhitespace extends LTContent implements EditableLocaleContent {
     public static final int TEXTVALUE_LENGTH = 32672;
 
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
@@ -86,6 +86,7 @@ public class LTWhitespace extends LocaleContent {
         return textValue;
     }
 
+    @Override
     public void setTextValue(String textValue) {
         this.textValue = textValue.substring(0, Math.min(textValue.length(), TEXTVALUE_LENGTH));
     }
