@@ -7,6 +7,7 @@ package net.localizethat.gui.dialogs.DialogDataObjects;
 
 import java.awt.Component;
 import java.util.List;
+import javax.persistence.EntityManager;
 import net.localizethat.gui.dialogs.ChooseTreePanel;
 import net.localizethat.model.L10n;
 import net.localizethat.model.LocalePath;
@@ -22,6 +23,7 @@ public class ChooseTreeDDO implements DialogDataObject {
     private L10n locale;
     private List<LocalePath> colPaths;
     private Product product;
+    private EntityManager entityManager;
 
     @Override
     public void transferTo(Component c) {
@@ -33,6 +35,7 @@ public class ChooseTreeDDO implements DialogDataObject {
         this.locale = ctp.getTargetL10n();
         this.product = ctp.getSelectedProduct();
         this.colPaths = ctp.getSelectedPaths();
+        this.entityManager = ctp.getEntityManager();
     }
 
     public L10n getLocale() {
@@ -45,5 +48,9 @@ public class ChooseTreeDDO implements DialogDataObject {
 
     public Product getProduct() {
         return product;
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }
