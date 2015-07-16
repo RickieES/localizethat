@@ -6,6 +6,7 @@
 package net.localizethat.gui.components;
 
 import java.beans.Beans;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,7 +17,9 @@ import net.localizethat.model.L10n;
 import net.localizethat.model.LTContent;
 
 /**
- *
+ * Panel/component that shows a list of (Editable)LocaleContent items and allows
+ * (editing or) reviewing them. The list can come from a ParseableFile, from a
+ * Update Product, a QA query, etc.
  * @author rpalomares
  */
 public class ContentListEditPanel extends AbstractTabPanel {
@@ -28,10 +31,6 @@ public class ContentListEditPanel extends AbstractTabPanel {
      */
     public ContentListEditPanel() {
         emf = Main.emf;
-        // The following code is executed inside initComponents()
-        // if (!Beans.isDesignTime() && entityManager == null) {
-        //     entityManager = emf.createEntityManager();
-        // }
         initComponents();
         this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
         this.contentListTable.addTableListSelectionListener(contentEditionPanel);
@@ -48,9 +47,18 @@ public class ContentListEditPanel extends AbstractTabPanel {
             entityManager.getTransaction().begin();
         }
         
+        // We want the LTContent items to be managed in entityManager, so we need to
+        // merge them one by one, creating a new list
+        List<LTContent> managedLcList = new ArrayList<>(lcList.size());
+        for(LTContent lc : lcList) {
+            managedLcList.add(entityManager.merge(lc));
+        }
+        
+        this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
+        this.contentListTable.addTableListSelectionListener(contentEditionPanel);
         ContentListTableModel tableModel = contentListTable.getTableModel();
         tableModel.setLocalizationCode(targetLocale);
-        tableModel.replaceData(lcList);
+        tableModel.replaceData(managedLcList);
     }
 
     public L10n getTargetLocale() {
@@ -74,7 +82,7 @@ public class ContentListEditPanel extends AbstractTabPanel {
         }
         jSplitPane2 = new javax.swing.JSplitPane();
         contentListTable = new net.localizethat.gui.components.ContentListTable();
-        contentEditionPanel = new net.localizethat.gui.components.ContentEditionPanel();
+        contentEditionPanel = new net.localizethat.gui.components.ContentEditionPanel(entityManager, contentListTable.getTable());
 
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane2.setLeftComponent(contentListTable);

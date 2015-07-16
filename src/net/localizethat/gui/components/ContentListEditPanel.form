@@ -62,6 +62,9 @@
           </Constraints>
         </Component>
         <Component class="net.localizethat.gui.components.ContentEditionPanel" name="contentEditionPanel">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new net.localizethat.gui.components.ContentEditionPanel(entityManager, contentListTable.getTable())"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="right"/>

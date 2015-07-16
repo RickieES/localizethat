@@ -6,6 +6,7 @@
 package net.localizethat.gui.components;
 
 import java.beans.Beans;
+import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JTable;
@@ -26,7 +27,8 @@ import net.localizethat.model.jpa.LocaleContentJPAHelper;
  * @author rpalomares
  */
 public class ContentEditionPanel extends javax.swing.JPanel implements ListSelectionListener {
-    private final EntityManagerFactory emf;
+    private EntityManagerFactory emf;
+    private EntityManager entityManager;
     private JTable associatedTable;
     private ContentListTableModel tableModel;
     private ContentListTableModel.ContentListObject lObject;
@@ -36,18 +38,21 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
      * Creates new form ContentEditionPanel
      */
     public ContentEditionPanel() {
-        emf = Main.emf;
-        // The following code is executed inside initComponents()
-        // if (!Beans.isDesignTime() && entityManager == null) {
-        //     entityManager = emf.createEntityManager();
-        // }
+        if (Beans.isDesignTime()) {
+        } else {
+            emf = Main.emf;
+            entityManager = emf.createEntityManager();
+            jhb = JPAHelperBundle.getInstance(entityManager);
+        }
         initComponents();
-        jhb = JPAHelperBundle.getInstance(entityManager);
     }
 
     public ContentEditionPanel(EntityManager entityManager, JTable associatedTable) {
-        emf = Main.emf;
-        this.entityManager = entityManager;
+        if (!Beans.isDesignTime()) {
+            emf = Main.emf;
+            this.entityManager = entityManager;
+            jhb = JPAHelperBundle.getInstance(entityManager);
+        }
         initComponents();
 
         if (!Beans.isDesignTime() && !entityManager.getTransaction().isActive()) {
@@ -63,13 +68,27 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         }
     }
 
+    /**
+     * This method checks if there is anything to be updated in the target locale, to
+     * avoid wasting resources modifying the DB when there is no reason to do it
+     * @return true if something has to be updated/persisted in the DB
+     */
+    private boolean targetLocaleChanged(LocaleContent lc) {
+        boolean result;
+        EditableLocaleContent elc = (EditableLocaleContent) lc;
+
+        result = (!trnsTextArea.getText().isEmpty());
+        result &= ((lc == null) || (elc.getTextValue().compareTo(trnsTextArea.getText()) != 0));
+        return result;
+    }
+
     private void updateTargetLocale(int editingRowInModel) {
         ContentListTableModel.ContentListObject  clo = tableModel.getElementAt(editingRowInModel);
         LocaleContent lc = clo.getSiblingNode();
         LocaleContentJPAHelper lcntjh = jhb.getLocaleContentJPAHelper();
 
-        if (!entityManager.getTransaction().isActive()) {
-            entityManager.getTransaction().begin();
+        if (!targetLocaleChanged(lc)) {
+            return;
         }
 
         if (lc == null) {
@@ -87,6 +106,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         EditableLocaleContent elc = (EditableLocaleContent) clo.getOriginalNode()
                 .getTwinByLocale(tableModel.getLocalizationCode());
         elc.setTextValue(trnsTextArea.getText());
+        elc.setLastUpdate(new Date());
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
     }
@@ -99,9 +119,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        if (!Beans.isDesignTime() && entityManager == null) {
-            entityManager = emf.createEntityManager();
-        }
         jTabbedPane1 = new javax.swing.JTabbedPane();
         mainPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -310,6 +327,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         editingRowInView = associatedTable.getSelectedRow();
         editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
         updateTargetLocale(editingRowInModel);
+        tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
 
         do {
             editingRowInView++;
@@ -323,6 +341,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 if (foundEditable) {
                     elc = (EditableLocaleContent) lc;
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
+                    editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                     tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
                 }
             }
@@ -339,6 +358,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         editingRowInView = associatedTable.getSelectedRow();
         editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
         updateTargetLocale(editingRowInModel);
+        tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
 
         do {
             editingRowInView--;
@@ -352,6 +372,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 if (foundEditable) {
                     elc = (EditableLocaleContent) lc;
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
+                    editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                     tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
                 }
             }
@@ -364,7 +385,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JToggleButton commentTButton;
     private javax.swing.JButton copyOrigButton;
-    private javax.persistence.EntityManager entityManager;
     private javax.swing.JButton exitButton;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JScrollPane jScrollPane1;
