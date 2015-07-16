@@ -32,7 +32,7 @@ public class LocaleContainerJPAHelper {
         // Empty private constructor to avoid isolated construction, instead of using
         // the JPAHelperBundle methods
     }
-    
+
     LocaleContainerJPAHelper(EntityManager em, int transactMaxCount) {
         transactCounter = 0;
         if (em == null) {
@@ -54,6 +54,15 @@ public class LocaleContainerJPAHelper {
         this.lcntHelper = lcntjh;
     }
 
+    void setTransactMaxCount(int transactMaxCount) {
+        this.transactMaxCount = transactMaxCount;
+    }
+
+    void setEm(EntityManager em) {
+        this.em = em;
+    }
+
+
     /**
      * Creates a sibling of defaultTwin for the targetLocale, including all needed
      * parents up to either an existing LocaleContainer or to the base, referencing it
@@ -72,7 +81,7 @@ public class LocaleContainerJPAHelper {
         LocaleContainer sibling;
         LocaleContainer defaultParent;
         LocaleContainer newSibling;
-
+        Date opTimeStamp = new Date();
 
         // Only the real defaultTwin has no DefLocaleTwin; we can only process defaultTwins
         result = (defaultTwin.getDefLocaleTwin() == null);
@@ -99,36 +108,41 @@ public class LocaleContainerJPAHelper {
                     // twin, that it has no sibling of the targetLocale and that we have
                     // both a parent of defaultTwin and a parent for the targetLocale
                     // (otherwise, ther recursive call would have returned false)
+
+                    // So, we create a new LocaleContainer with the same name and a parent
+                    // which is a sibling of defaultTwin parent for the target locale
+
+                    if (!em.getTransaction().isActive()) {
+                        em.getTransaction().begin();
+                    }
+
                     newSibling = new LocaleContainer(defaultTwin.getName(),
                             defaultParent.getTwinByLocale(targetLocale));
-                    newSibling.setCreationDate(new Date());
+                    newSibling.setCreationDate(opTimeStamp);
                     newSibling.setDefLocaleTwin(defaultTwin);
                     newSibling.setL10nId(targetLocale);
-                    newSibling.setLastUpdate(newSibling.getCreationDate());
+                    newSibling.setLastUpdate(opTimeStamp);
+
+                    // Connect the parent with newSibling
+                    defaultParent.getTwinByLocale(targetLocale).addChild(newSibling);
+
+                    // Conect defaultTwin and newSibling between them, and with the rest
+                    // of twins
+                    for(LocaleContainer lcTwin : defaultTwin.getTwins()) {
+                        newSibling.addTwin(lcTwin);
+                        lcTwin.addTwin(newSibling);
+                    }
+                    newSibling.addTwin(defaultTwin);
+                    defaultTwin.addTwin(newSibling);
+
                     em.persist(newSibling);
+
                     if (commitOnSuccess) {
                         em.getTransaction().commit();
                     }
                 }
             }
         }
-
-        /*
-         * check if there is already a sibling of targetLocale
-         * if not,
-         *     if there is a not null parent,
-         *         result = result && call createRecursively with the parent of defaultTwin
-         *     else
-         *         // we have reached the base LocaleContainer, and if it does not have a sibling
-         *         // of targetLocale is because there is no LocalePath for it, and therefore we
-         *         // can't create the associated LocaleContainer
-         *         return false;
-         *     endif
-         *     find the sibling for targetLocale of the parent
-         *     create a new LocaleContainer with the targetLocale and the parent sibling
-         * endif
-         *
-        */
         return result;
     }
 
@@ -137,7 +151,8 @@ public class LocaleContainerJPAHelper {
     }
 
     private boolean removeRecursively(LocaleContainer lc, int depth) {
-        boolean result = (lc.getTwins().isEmpty());
+        // boolean result = (lc.getTwins().isEmpty());
+        boolean result = true;
 
         if (!result) {
             return result;
@@ -150,6 +165,9 @@ public class LocaleContainerJPAHelper {
 
             // Ensure that the EntityManager is managing the LocaleContainer to be removed
             lc = em.merge(lc);
+
+            // Walk through the list of children and remove them recursively from the DB, and
+            // also from the children List
             for (Iterator<LocaleContainer> iterator = lc.getChildren().iterator(); iterator.hasNext();) {
                 LocaleContainer child = iterator.next();
                 child = em.merge(child);
@@ -159,7 +177,9 @@ public class LocaleContainerJPAHelper {
                     break;
                 }
             }
-            
+
+            // LocaleContainer have two kind of children, so we need to repeat the process with
+            // LocaleFile children
             if (result) {
                 for(Iterator<LocaleFile> iterator = lc.getFileChildren().iterator(); iterator.hasNext(); ) {
                     LocaleFile lfChild = iterator.next();
@@ -170,12 +190,38 @@ public class LocaleContainerJPAHelper {
                         break;
                     }
                 }
+            }
 
+            // Now we need to update the twins to remove lc from their twins lists
+            if (result) {
+                for (LocaleContainer lcTwin : lc.getTwins()) {
+                    lcTwin = em.merge(lcTwin);
+                    result = result && lcTwin.removeTwin(lc);
+                    if (!result) {
+                        break;
+                    }
+                }
+            }
+
+            // If lc is a default twin (thus, not having a default twin itself), then
+            // we must remove the twins before removing lc itself
+            if (result && (lc.getDefLocaleTwin() == null)) {
+                for(Iterator<LocaleContainer> iterator = lc.getTwins().iterator(); iterator.hasNext(); ) {
+                    LocaleContainer lcTwin = iterator.next();
+                    lcTwin = em.merge(lcTwin);
+                    iterator.remove();
+                    result = removeRecursively(lcTwin);
+                    if (!result) {
+                        break;
+                    }
+                }
+            }
+
+            if (result) {
                 lc.setDefLocaleTwin(null);
+
                 LocaleContainer parent = (LocaleContainer) lc.getParent();
                 if (parent != null) {
-                    // parent = em.merge(parent);
-                    
                     // Only if the node has a parent that it is not being removed, we
                     // remove this container as a child from it: if not, the upper call
                     // will take care of it

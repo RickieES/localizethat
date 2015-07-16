@@ -13,16 +13,15 @@ import javax.persistence.EntityManager;
  */
 public class JPAHelperBundle {
     private static final int DEFAULT_TRANSACT_MAX_COUNT = 50;
-    private static JPAHelperBundle jhb;
 
     public static JPAHelperBundle getInstance(EntityManager em) {
         return getInstance(em, JPAHelperBundle.DEFAULT_TRANSACT_MAX_COUNT);
     }
 
     public static JPAHelperBundle getInstance(EntityManager em, int transactMaxCount) {
-        if (jhb == null) {
-            jhb = new JPAHelperBundle(em, transactMaxCount);
-        }
+        JPAHelperBundle jhb = new JPAHelperBundle(em, transactMaxCount);
+        jhb.setEm(em);
+        jhb.setTransactMaxCount(transactMaxCount);
         return jhb;
     }
     private int transactMaxCount;
@@ -60,5 +59,19 @@ public class JPAHelperBundle {
 
     public LocaleContentJPAHelper getLocaleContentJPAHelper() {
         return lcntjh;
+    }
+
+    private void setTransactMaxCount(int transactMaxCount) {
+        this.transactMaxCount = transactMaxCount;
+        this.lcjh.setTransactMaxCount(transactMaxCount);
+        this.lfjh.setTransactMaxCount(transactMaxCount);
+        this.lcntjh.setTransactMaxCount(transactMaxCount);
+    }
+
+    private void setEm(EntityManager em) {
+        this.em = em;
+        this.lcjh.setEm(em);
+        this.lfjh.setEm(em);
+        this.lcntjh.setEm(em);
     }
 }

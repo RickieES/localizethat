@@ -13,8 +13,8 @@ import javax.persistence.EntityManager;
 import net.localizethat.Main;
 import net.localizethat.model.ImageFile;
 import net.localizethat.model.L10n;
-import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LTContent;
+import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.ParseableFile;
 import net.localizethat.model.TextFile;
@@ -58,6 +58,15 @@ public class LocaleFileJPAHelper {
         this.lcntHelper = lcntjh;
     }
 
+    void setTransactMaxCount(int transactMaxCount) {
+        this.transactMaxCount = transactMaxCount;
+    }
+
+    void setEm(EntityManager em) {
+        this.em = em;
+    }
+
+
     /**
      * Creates a sibling of defaultTwin for the targetLocale, including all needed
      * parents up to either an existing LocaleContainer or to the base, referencing it
@@ -76,7 +85,7 @@ public class LocaleFileJPAHelper {
         LocaleFile sibling;
         LocaleContainer defaultParent;
         LocaleFile newSibling;
-
+        Date opTimeStamp = new Date();
 
         // Only the real defaultTwin has no DefLocaleTwin; we can only process defaultTwins
         result = (defaultTwin.getDefLocaleTwin() == null);
@@ -101,12 +110,33 @@ public class LocaleFileJPAHelper {
                     // twin, that it has no sibling of the targetLocale and that we have
                     // both a parent of defaultTwin and a parent for the targetLocale
                     // (otherwise, ther recursive call would have returned false)
+
+                    // So, we create a new LocaleFile with the same name and a parent
+                    // which is a sibling of defaultTwin parent for the target locale
+
+                    if (!em.getTransaction().isActive()) {
+                        em.getTransaction().begin();
+                    }
+
                     newSibling = LocaleFile.createFile(defaultTwin.getName(),
                             defaultParent.getTwinByLocale(targetLocale));
-                    newSibling.setCreationDate(new Date());
+                    newSibling.setCreationDate(opTimeStamp);
                     newSibling.setDefLocaleTwin(defaultTwin);
                     newSibling.setL10nId(targetLocale);
-                    newSibling.setLastUpdate(newSibling.getCreationDate());
+                    newSibling.setLastUpdate(opTimeStamp);
+
+                    // Connect the parent with newSibling
+                    defaultParent.getTwinByLocale(targetLocale).addChild(newSibling);
+
+                    // Conect defaultTwin and newSibling between them, and with the rest
+                    // of twins
+                    for(LocaleFile lfTwin : defaultTwin.getTwins()) {
+                        newSibling.addTwin(lfTwin);
+                        lfTwin.addTwin(newSibling);
+                    }
+                    newSibling.addTwin(defaultTwin);
+                    defaultTwin.addTwin(newSibling);
+
                     em.persist(newSibling);
                     if (commitOnSuccess) {
                         em.getTransaction().commit();
@@ -114,23 +144,6 @@ public class LocaleFileJPAHelper {
                 }
             }
         }
-
-        /*
-         * check if there is already a sibling of targetLocale
-         * if not,
-         *     if there is a not null parent,
-         *         result = result && call createRecursively with the parent of defaultTwin
-         *     else
-         *         // we have reached the base LocaleContainer, and if it does not have a sibling
-         *         // of targetLocale is because there is no LocalePath for it, and therefore we
-         *         // can't create the associated LocaleContainer
-         *         return false;
-         *     endif
-         *     find the sibling for targetLocale of the parent
-         *     create a new LocaleContainer with the targetLocale and the parent sibling
-         * endif
-         *
-        */
         return result;
     }
 
@@ -138,14 +151,15 @@ public class LocaleFileJPAHelper {
      * Removes the LocaleFile lf from database and in-memory structure.
      *
      * The "recursively" part comes because this method takes care of all internal
- references to contents, like LTContent collection, or BLOB/CLOB content,
- and to keep naming scheme consistent with LocaleContainerJPAHelper.
+     * references to contents, like LTContent collection, or BLOB/CLOB content,
+     * and to keep naming scheme consistent with LocaleContainerJPAHelper.
      *
      * @param lf The LocaleFile to be removed
      * @return true if the operation ended successfully
      */
     public boolean removeRecursively(LocaleFile lf) {
-        boolean result = (lf.getTwins().isEmpty());
+        // boolean result = (lc.getTwins().isEmpty());
+        boolean result = true;
 
         if (!result) {
             return result;
@@ -158,6 +172,8 @@ public class LocaleFileJPAHelper {
 
             // Ensure that the EntityManager is managing the LocaleFile to be removed
             lf = em.merge(lf);
+
+
             result = true;
             switch (lf.getClass().getName()) {
                 case "DtdFile":
@@ -182,6 +198,31 @@ public class LocaleFileJPAHelper {
                     ((TextFile) lf).clearFileContent();
                     break;
                 default:
+            }
+
+            // Now we need to update the twins to remove lf from their twins lists
+            if (result) {
+                for (LocaleFile lfTwin : lf.getTwins()) {
+                    lfTwin = em.merge(lfTwin);
+                    result = result && lfTwin.removeTwin(lf);
+                    if (!result) {
+                        break;
+                    }
+                }
+            }
+
+            // If lf is a default twin (thus, not having a default twin itself), then
+            // we must remove the twins before removing lf itself
+            if (result && (lf.getDefLocaleTwin() == null)) {
+                for(Iterator<LocaleFile> iterator = lf.getTwins().iterator(); iterator.hasNext(); ) {
+                    LocaleFile lfTwin = iterator.next();
+                    lfTwin = em.merge(lfTwin);
+                    iterator.remove();
+                    result = removeRecursively(lfTwin);
+                    if (!result) {
+                        break;
+                    }
+                }
             }
 
             if (result) {

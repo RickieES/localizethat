@@ -6,6 +6,7 @@
 package net.localizethat.model.jpa;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -59,6 +60,15 @@ public class LocaleContentJPAHelper {
         this.lfHelper = lfjh;
     }
 
+    void setTransactMaxCount(int transactMaxCount) {
+        this.transactMaxCount = transactMaxCount;
+    }
+
+    void setEm(EntityManager em) {
+        this.em = em;
+    }
+
+
     /**
      * Creates a sibling of defaultTwin for the targetLocale, including all needed
      * parents up to either an existing LocaleContainer or to the base, referencing it
@@ -67,9 +77,9 @@ public class LocaleContentJPAHelper {
      * @param targetLocale the L10n for which we want to create the sibling
      * @param commitOnSuccess if true, sends a commit for the current transaction
      * @return true on success (this includes the case that a LTContent for the
- targetLocale already exists), false if something went wrong (like the defaultTwin
- not being really the defaultTwin, ie., having itself a not null defaultTwin
- property)
+     * targetLocale already exists), false if something went wrong (like the defaultTwin
+     * not being really the defaultTwin, ie., having itself a not null defaultTwin
+     * property)
      */
     public boolean createRecursively(LTContent defaultTwin, L10n targetLocale,
             boolean commitOnSuccess) {
@@ -77,7 +87,7 @@ public class LocaleContentJPAHelper {
         LTContent sibling;
         LocaleFile defaultParent;
         LTContent newSibling;
-
+        Date opTimeStamp = new Date();
 
         // Only the real defaultTwin has no DefLocaleTwin; we can only process defaultTwins
         result = (defaultTwin.getDefLocaleTwin() == null);
@@ -102,6 +112,13 @@ public class LocaleContentJPAHelper {
                     // twin, that it has no sibling of the targetLocale and that we have
                     // both a parent of defaultTwin and a parent for the targetLocale
                     // (otherwise, the recursive call would have returned false)
+
+                    // So, we create a new LocaleContent with the same name and a parent
+                    // which is a sibling of defaultTwin parent for the target locale
+
+                    if (!em.getTransaction().isActive()) {
+                        em.getTransaction().begin();
+                    }
 
                     if (defaultTwin instanceof LTExternalEntity) {
                         LTExternalEntity origEe = (LTExternalEntity) defaultTwin;
@@ -139,10 +156,23 @@ public class LocaleContentJPAHelper {
                     }
                     newSibling.setName(defaultTwin.getName());
                     newSibling.setParent(defaultParent.getTwinByLocale(targetLocale));
-                    newSibling.setCreationDate(new Date());
+                    newSibling.setCreationDate(opTimeStamp);
                     newSibling.setDefLocaleTwin(defaultTwin);
                     newSibling.setL10nId(targetLocale);
-                    newSibling.setLastUpdate(newSibling.getCreationDate());
+                    newSibling.setLastUpdate(opTimeStamp);
+
+                    // Connect the parent with newSibling
+                    defaultParent.getTwinByLocale(targetLocale).addChild(newSibling);
+
+                    // Conect defaultTwin and newSibling between them, and with the rest
+                    // of twins
+                    for(LTContent lcntTwin : defaultTwin.getTwins()) {
+                        newSibling.addTwin(lcntTwin);
+                        lcntTwin.addTwin(newSibling);
+                    }
+                    newSibling.addTwin(defaultTwin);
+                    defaultTwin.addTwin(newSibling);
+
                     em.persist(newSibling);
                     if (commitOnSuccess) {
                         em.getTransaction().commit();
@@ -150,23 +180,6 @@ public class LocaleContentJPAHelper {
                 }
             }
         }
-
-        /*
-         * check if there is already a sibling of targetLocale
-         * if not,
-         *     if there is a not null parent,
-         *         result = result && call createRecursively with the parent of defaultTwin
-         *     else
-         *         // we have reached the base LocaleContainer, and if it does not have a sibling
-         *         // of targetLocale is because there is no LocalePath for it, and therefore we
-         *         // can't create the associated LocaleContainer
-         *         return false;
-         *     endif
-         *     find the sibling for targetLocale of the parent
-         *     create a new LocaleContainer with the targetLocale and the parent sibling
-         * endif
-         *
-        */
         return result;
     }
 
@@ -181,7 +194,8 @@ public class LocaleContentJPAHelper {
      * @return true if the operation ended successfully
      */
     public boolean removeRecursively(LTContent lcnt) {
-        boolean result = (lcnt.getTwins().isEmpty());
+        // boolean result = (lc.getTwins().isEmpty());
+        boolean result = true;
 
         if (!result) {
             return result;
@@ -197,6 +211,31 @@ public class LocaleContentJPAHelper {
             result = true;
             switch (lcnt.getClass().getName()) {
                 default: // No special handling at the moment
+            }
+
+            // Now we need to update the twins to remove lcnt from their twins lists
+            if (result) {
+                for (LTContent lcntTwin : lcnt.getTwins()) {
+                    lcntTwin = em.merge(lcntTwin);
+                    result = result && lcntTwin.removeTwin(lcnt);
+                    if (!result) {
+                        break;
+                    }
+                }
+            }
+
+            // If lcnt is a default twin (thus, not having a default twin itself), then
+            // we must remove the twins before removing lcnt itself
+            if (result && (lcnt.getDefLocaleTwin() == null)) {
+                for(Iterator<LTContent> iterator = lcnt.getTwins().iterator(); iterator.hasNext(); ) {
+                    LTContent lcntTwin = iterator.next();
+                    lcntTwin = em.merge(lcntTwin);
+                    iterator.remove();
+                    result = removeRecursively(lcntTwin);
+                    if (!result) {
+                        break;
+                    }
+                }
             }
 
             if (result) {
