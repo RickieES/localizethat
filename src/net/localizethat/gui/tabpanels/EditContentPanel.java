@@ -7,6 +7,7 @@ package net.localizethat.gui.tabpanels;
 
 import java.util.Enumeration;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -25,7 +26,8 @@ import net.localizethat.model.Product;
 import net.localizethat.util.gui.JStatusBar;
 
 /**
- *
+ * Panel that shows the tree of the desired product/paths and, on clicking a parseable file,
+ * populates a table and allow (editing or) review of (Editable)LocaleContent items
  * @author rpalomares
  */
 public class EditContentPanel extends AbstractTabPanel {
@@ -43,8 +45,6 @@ public class EditContentPanel extends AbstractTabPanel {
 
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
-        // The following code is executed inside initComponents()
-        // entityManager = emf.createEntityManager();
         initComponents();
         tl = new TreeListeners();
         dataTree.addTreeSelectionListener(tl);
@@ -73,6 +73,10 @@ public class EditContentPanel extends AbstractTabPanel {
 
     public void setTargetLocale(L10n targetLocale) {
         this.targetLocale = targetLocale;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     /**
