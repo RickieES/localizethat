@@ -78,16 +78,17 @@ public class EditContentAction extends AbstractAction {
                 Logger.getLogger(EditContentAction.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+            editContentPanel.setEntityManager(chooseTreeDDO.getEntityManager());
             editContentPanel.setTargetLocale(chooseTreeDDO.getLocale());
             if (chooseTreeDDO.getProduct() != null) {
                 editContentPanel.refreshTree(chooseTreeDDO.getProduct());
             } else {
                 editContentPanel.refreshTree(chooseTreeDDO.getColPaths());
             }
+        } else {
+            if (editContentPanel != null) {
+                Main.mainWindow.removeTab(editContentPanel);
+            }
         }
-
-        }
-        
-
-
+    }
 }
