@@ -7,6 +7,7 @@ package net.localizethat.gui.dialogs;
 
 import java.beans.Beans;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
@@ -89,6 +90,9 @@ public class ChooseTreePanel extends javax.swing.JPanel implements ModalDialogCo
         }
     }
 
+    public EntityManager getEntityManager() {
+        return this.entityManager;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
