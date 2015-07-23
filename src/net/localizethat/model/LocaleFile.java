@@ -8,13 +8,20 @@ package net.localizethat.model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.LineNumberReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,6 +60,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 })
 public class LocaleFile implements LocaleNode, Serializable {
     private static final int LOCALENODENAME_LENGTH = 128;
+    private static final long serialVersionUID = 1L;
 
     public static LocaleFile createFile(String fileName, LocaleContainer parent) {
         LocaleFile newFile;
@@ -131,7 +139,7 @@ public class LocaleFile implements LocaleNode, Serializable {
     @ManyToOne(optional = true)
     private LocaleFile defLocaleTwin;
     @OneToMany(mappedBy="defLocaleTwin")
-    private Collection<LocaleFile> twins;
+    private final Collection<LocaleFile> twins;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     protected Collection<LTContent> children;
     @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
@@ -388,11 +396,15 @@ public class LocaleFile implements LocaleNode, Serializable {
     public File getFile() {
             return new File(getFilePath());
     }
-
+    
     public InputStream getAsInputStream() {
+        return getAsInputStream(getFile());
+    }
+
+    public InputStream getAsInputStream(File f) {
         FileInputStream is;
         try {
-            is = new FileInputStream(getFile());
+            is = new FileInputStream(f);
         } catch (FileNotFoundException e) {
             // TODO log the exception
             is = null;
@@ -401,14 +413,48 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     public LineNumberReader getAsLineNumberReader() {
+        return getAsLineNumberReader(getFile());
+    }
+    
+    public LineNumberReader getAsLineNumberReader(File f) {
         LineNumberReader is;
         try {
-            is = new LineNumberReader(new FileReader(getFile()));
+            is = new LineNumberReader(new FileReader(f));
         } catch (FileNotFoundException e) {
             // TODO log the exception
             is = null;
         }
         return is;
+    }
+    
+    public OutputStream getAsOutputStream() {
+        return getAsOutputStream(getFile());
+    }
+    
+    public OutputStream getAsOutputStream(File f) {
+        FileOutputStream os;
+        try {
+            os = new FileOutputStream(f);
+        } catch (IOException e) {
+            // TODO log the exception
+            os = null;
+        }
+        return os;
+    }
+    
+    public PrintWriter getAsPrintWriter() {
+        return getAsPrintWriter(getFile());
+    }
+    
+    public PrintWriter getAsPrintWriter(File f) {
+        PrintWriter os;
+        try {
+            os = new PrintWriter(new FileWriter(f));
+        } catch (IOException ex) {
+            Logger.getLogger(LocaleFile.class.getName()).log(Level.SEVERE, null, ex);
+            os = null;
+        }
+        return os;
     }
 
     public boolean isDontExport() {
