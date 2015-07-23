@@ -27,6 +27,7 @@ import net.localizethat.model.jpa.LocaleContentJPAHelper;
  * @author rpalomares
  */
 public class ContentEditionPanel extends javax.swing.JPanel implements ListSelectionListener {
+    private static final long serialVersionUID = 1L;
     private EntityManagerFactory emf;
     private EntityManager entityManager;
     private JTable associatedTable;
@@ -105,6 +106,10 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         EditableLocaleContent elc = (EditableLocaleContent) clo.getOriginalNode()
                 .getTwinByLocale(tableModel.getLocalizationCode());
+        elc = entityManager.merge(elc);
+        // Update in-memory table model with the merged object from EntityManager
+        clo.setSiblingNode(elc);
+        
         elc.setTextValue(trnsTextArea.getText());
         elc.setLastUpdate(new Date());
         entityManager.getTransaction().commit();
@@ -180,7 +185,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         sugButton.setToolTipText("Cycle over suggestions");
 
         trnsTextArea.setColumns(20);
+        trnsTextArea.setLineWrap(true);
         trnsTextArea.setRows(3);
+        trnsTextArea.setWrapStyleWord(true);
         jScrollPane2.setViewportView(trnsTextArea);
 
         copyOrigButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-edit-copy.png"))); // NOI18N
