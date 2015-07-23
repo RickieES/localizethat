@@ -165,6 +165,7 @@ public class MainWindow extends javax.swing.JFrame {
         productManagerAction = new net.localizethat.actions.ProductManagerAction();
         updateProductAction = new net.localizethat.actions.UpdateProductAction();
         editContentAction = new net.localizethat.actions.EditContentAction();
+        exportProductAction = new net.localizethat.actions.ExportProductAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
@@ -175,6 +176,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         updateProductsMenuItem = new javax.swing.JMenuItem();
+        exportProductsMenuItem = new javax.swing.JMenuItem();
         manageProductsMenuItem = new javax.swing.JMenuItem();
         manageLocalesMenuItem = new javax.swing.JMenuItem();
         manageChannelsMenuItem = new javax.swing.JMenuItem();
@@ -235,6 +237,9 @@ public class MainWindow extends javax.swing.JFrame {
         updateProductsMenuItem.setAction(updateProductAction);
         updateProductsMenuItem.setText("Update Products");
         fileMenu.add(updateProductsMenuItem);
+
+        exportProductsMenuItem.setAction(exportProductAction);
+        fileMenu.add(exportProductsMenuItem);
 
         manageProductsMenuItem.setAction(productManagerAction);
         manageProductsMenuItem.setMnemonic('M');
@@ -346,6 +351,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem editContentMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
+    private net.localizethat.actions.ExportProductAction exportProductAction;
+    private javax.swing.JMenuItem exportProductsMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JPopupMenu.Separator jSeparator1;
