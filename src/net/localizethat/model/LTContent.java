@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LTContent.count", query = "SELECT COUNT(lc) FROM LTContent lc")
 })
 public class LTContent implements LocaleContent {
+    private static final long serialVersionUID = 1L;
     private static final int LOCALENODENAME_LENGTH = 128;
 
     /**
@@ -140,11 +141,16 @@ public class LTContent implements LocaleContent {
         return parent;
     }
 
+    // FIXME We shouldn't need to implement these two methods, only the
+    // most concrete one
     @Override
     public void setParent(LocaleNode parent) {
-        if (parent instanceof LocaleFile) {
-            this.parent = (LocaleFile) parent;
-        }
+        setParent((LocaleFile) parent);
+    }
+    
+    @Override
+    public void setParent(LocaleFile parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -265,8 +271,8 @@ public class LTContent implements LocaleContent {
     }
 
     @Override
-    public LTContent getTwinByLocale(L10n locale) {
-        for(LTContent s : twins) {
+    public LocaleContent getTwinByLocale(L10n locale) {
+        for(LocaleContent s : twins) {
             if (s.getL10nId().equals(locale)) {
                 return s;
             }
@@ -275,7 +281,7 @@ public class LTContent implements LocaleContent {
     }
 
     @Override
-    public Collection<LTContent> getTwins() {
+    public Collection<? extends LocaleContent> getTwins() {
         return twins;
     }
 

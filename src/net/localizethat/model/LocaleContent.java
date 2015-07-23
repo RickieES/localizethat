@@ -6,9 +6,10 @@
 package net.localizethat.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
- *
+ * 
  * @author rpalomares
  */
 public interface LocaleContent extends LocaleNode, Serializable {
@@ -32,4 +33,26 @@ public interface LocaleContent extends LocaleNode, Serializable {
     int getOrderInFile();
 
     void setOrderInFile(int orderInFile);
+
+    /**
+     * Sets the parent of this node. This allows travelling up in the tree
+     * @param parent a LocaleNode descendent in whose children list exists this node
+     */
+    void setParent(LocaleFile parent);
+
+    /**
+     * Gets the parent of this node.
+     * @return a LocaleNode descendent in whose children list exists this node
+     */
+    @Override
+    LocaleFile getParent();
+
+    /**
+     * Returns a list of twins of this object. The list is automatically maintained by using
+     * setDefLocaleTwin()
+     * @return a list of twins of this object
+     */
+    @Override
+    Collection<? extends LocaleContent> getTwins();
+
 }

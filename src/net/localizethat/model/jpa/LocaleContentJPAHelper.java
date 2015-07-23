@@ -19,6 +19,7 @@ import net.localizethat.model.LTIniSection;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LTLicense;
 import net.localizethat.model.LTWhitespace;
+import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
 
 /**
@@ -81,12 +82,12 @@ public class LocaleContentJPAHelper {
      * not being really the defaultTwin, ie., having itself a not null defaultTwin
      * property)
      */
-    public boolean createRecursively(LTContent defaultTwin, L10n targetLocale,
+    public boolean createRecursively(LocaleContent defaultTwin, L10n targetLocale,
             boolean commitOnSuccess) {
         boolean result;
-        LTContent sibling;
+        LocaleContent sibling;
         LocaleFile defaultParent;
-        LTContent newSibling;
+        LocaleContent newSibling;
         Date opTimeStamp = new Date();
 
         // Only the real defaultTwin has no DefLocaleTwin; we can only process defaultTwins
@@ -94,7 +95,7 @@ public class LocaleContentJPAHelper {
 
         if (result) {
             // Let's find out the sibling of this level defaultTwin
-            sibling = defaultTwin.getTwinByLocale(targetLocale);
+            sibling = (LocaleContent) defaultTwin.getTwinByLocale(targetLocale);
             defaultParent = defaultTwin.getParent();
             // If no sibling
             if (sibling == null) {
@@ -166,7 +167,7 @@ public class LocaleContentJPAHelper {
 
                     // Conect defaultTwin and newSibling between them, and with the rest
                     // of twins
-                    for(LTContent lcntTwin : defaultTwin.getTwins()) {
+                    for(LocaleContent lcntTwin : defaultTwin.getTwins()) {
                         newSibling.addTwin(lcntTwin);
                         lcntTwin.addTwin(newSibling);
                     }
@@ -193,7 +194,7 @@ public class LocaleContentJPAHelper {
      * @param lcnt The LTContent to be removed
      * @return true if the operation ended successfully
      */
-    public boolean removeRecursively(LTContent lcnt) {
+    public boolean removeRecursively(LocaleContent lcnt) {
         // boolean result = (lc.getTwins().isEmpty());
         boolean result = true;
 
@@ -215,7 +216,7 @@ public class LocaleContentJPAHelper {
 
             // Now we need to update the twins to remove lcnt from their twins lists
             if (result) {
-                for (LTContent lcntTwin : lcnt.getTwins()) {
+                for (LocaleContent lcntTwin : lcnt.getTwins()) {
                     lcntTwin = em.merge(lcntTwin);
                     result = result && lcntTwin.removeTwin(lcnt);
                     if (!result) {
@@ -227,8 +228,8 @@ public class LocaleContentJPAHelper {
             // If lcnt is a default twin (thus, not having a default twin itself), then
             // we must remove the twins before removing lcnt itself
             if (result && (lcnt.getDefLocaleTwin() == null)) {
-                for(Iterator<LTContent> iterator = lcnt.getTwins().iterator(); iterator.hasNext(); ) {
-                    LTContent lcntTwin = iterator.next();
+                for(Iterator<? extends LocaleContent> iterator = lcnt.getTwins().iterator(); iterator.hasNext(); ) {
+                    LocaleContent lcntTwin = iterator.next();
                     lcntTwin = em.merge(lcntTwin);
                     iterator.remove();
                     result = removeRecursively(lcntTwin);

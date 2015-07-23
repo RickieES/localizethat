@@ -22,6 +22,7 @@ import net.localizethat.model.LocaleFile;
  * @author rpalomares
  */
 public class ContentListTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
     private L10n localizationCode;
     private final List<ContentListObject> list;
     private XTableColumnModel columnModel;
@@ -150,8 +151,8 @@ public class ContentListTableModel extends AbstractTableModel {
     }
 
     public class ContentListObject {
-        private final LTContent originalNode;
-        private LTContent siblingNode;
+        private final LocaleContent originalNode;
+        private LocaleContent siblingNode;
         private final LocaleFile parentFile;
 
         ContentListObject(LTContent originalNode) {
@@ -160,11 +161,11 @@ public class ContentListTableModel extends AbstractTableModel {
             this.parentFile = originalNode.getParent();
         }
 
-        public LTContent getOriginalNode() {
+        public LocaleContent getOriginalNode() {
             return originalNode;
         }
 
-        public LTContent getSiblingNode() {
+        public LocaleContent getSiblingNode() {
             return siblingNode;
         }
 
@@ -172,7 +173,7 @@ public class ContentListTableModel extends AbstractTableModel {
             return parentFile;
         }
 
-        public void setSiblingNode(LTContent siblingNode) {
+        public void setSiblingNode(LocaleContent siblingNode) {
             this.siblingNode = siblingNode;
         }
 

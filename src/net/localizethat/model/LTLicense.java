@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class LTLicense extends LTContent implements EditableLocaleContent {
     public static final int TEXTVALUE_LENGTH = 32672;
+    private static final long serialVersionUID = 1L;
    
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     transient protected Collection<Void> children;

@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class LTComment extends LTContent implements EditableLocaleContent {
     public static final int COMMENTTEXTVALUE_LENGTH = 32672;
+    private static final long serialVersionUID = 1L;
 
     transient protected Collection<Void> children;
     transient private String entityName;

@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @DiscriminatorValue("LTIniSection")
 @XmlRootElement
 public class LTIniSection extends LTContent {
+    private static final long serialVersionUID = 1L;
     transient protected List<LTContent> children;
     
     public LTIniSection() {
