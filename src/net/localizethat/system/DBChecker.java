@@ -164,6 +164,7 @@ public final class DBChecker {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBChecker.class.getName()).log(Level.WARNING, null, ex);
+            // TODO Issue #18 - Check if the exception is because of no database yet, and handle it graciously
             dbVersionString = "0.0.0";
         }
         VersionObject dbVersion = new VersionObject(dbVersionString);
