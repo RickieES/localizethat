@@ -5,9 +5,13 @@
  */
 package net.localizethat.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -21,6 +25,7 @@ import javax.persistence.OneToOne;
  * @author rpalomares
  */
 public abstract class ParseableFileAdapter extends LocaleFile implements ParseableFile {
+    private static final long serialVersionUID = 1L;
     @OneToOne
     @JoinColumn(name = "ID")
     LTLicense fileLicense;
@@ -160,7 +165,8 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             }
 
             // Permanently delete obsolete contents
-            for(Iterator<? extends LTContent> iterator = this.children.iterator(); iterator.hasNext();) {
+            for(Iterator<? extends LTContent> iterator = this.children.iterator();
+                    iterator.hasNext();) {
                 LTContent lc = iterator.next();
                 em.merge(lc);
                 if (lc.isMarkedForDeletion()) {
@@ -179,17 +185,75 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
     }
 
     /**
-     * Performs initial operations to parse. In practice, this method is what actually parses
- the file, returning a list of LTContent objects
-     * @param fileReader a LineNumberReader with the character stream from the file that is to be parsed
-     * @return a list of LTContent objects representing every significant item in the file
-     * @throws java.text.ParseException if anything prevents from completing the parsing
+     * Performs initial operations to parse. In practice, this method is what
+     * actually parses the file, returning a list of LTContent objects
+     * @param fileReader a LineNumberReader with the character stream from the
+     *                   file that is to be parsed
+     * @return a list of LTContent objects representing every significant item
+     *         in the file
+     * @throws java.text.ParseException if anything prevents from completing the
+     *         parsing
      */
     protected abstract List<LTContent> beforeParsingHook(LineNumberReader fileReader)
             throws ParseException;
 
     protected abstract void afterParsingHook(LineNumberReader fileReader);
 
+    @Override
+    public boolean exportToFile(File f) throws IOException {
+        boolean result;
+        PrintWriter pw;
+        List<LTContent> sortedChildren = new ArrayList<>(children.size());
+        
+        pw = getAsPrintWriter(f);
+        result = (pw != null);
+        
+        if (result) {
+            sortedChildren.addAll(children);
+            Collections.sort(sortedChildren, LTContent.orderInFileComparator);
+            
+            for(LTContent lc : sortedChildren) {
+                if (!lc.isDontExport()) {
+                    printLocaleContent(pw, lc);
+                }
+            }
+            pw.flush();
+            pw.close();
+        }
+        return result;
+    }
+    
+    private void printLocaleContent(PrintWriter pw, LocaleContent lc) {
+        if (lc instanceof LTComment) {
+            // TODO once we have a preference about exporting comments, check it
+            printLocaleContent(pw, (LTComment) lc);
+        } else if (lc instanceof LTExternalEntity) {
+            printLocaleContent(pw, (LTExternalEntity) lc);
+        } else if (lc instanceof LTIniSection) {
+            printLocaleContent(pw, (LTIniSection) lc);
+        } else if (lc instanceof LTKeyValuePair) {
+            printLocaleContent(pw, (LTKeyValuePair) lc);
+        } else if (lc instanceof LTLicense) {
+            printLocaleContent(pw, (LTLicense) lc);
+        } else if (lc instanceof LTWhitespace) {
+            printLocaleContent(pw, (LTWhitespace) lc);
+        }
+    }
+    
+    @Override
+    public abstract void printLocaleContent(PrintWriter pw, LTComment lc);
+    @Override
+    public abstract void printLocaleContent(PrintWriter pw, LTExternalEntity lc);
+    @Override
+    public abstract void printLocaleContent(PrintWriter pw, LTIniSection lc);
+    @Override
+    public abstract void printLocaleContent(PrintWriter pw, LTKeyValuePair lc);
+    @Override
+    public abstract void printLocaleContent(PrintWriter pw, LTLicense lc);
+    @Override
+    public abstract void printLocaleContent(PrintWriter pw, LTWhitespace lc);
+    
+    
     @Override
     public LTLicense getFileLicense() {
         return fileLicense;
@@ -204,5 +268,4 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
     public List<LTContent> getLObjectCollection() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 }

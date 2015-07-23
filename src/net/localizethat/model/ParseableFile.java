@@ -6,12 +6,14 @@
 package net.localizethat.model;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.List;
 import javax.persistence.EntityManager;
 
 /**
- *
+ * Interface defining features of files that can be parseable
  * @author rpalomares
  */
 public interface ParseableFile extends LocaleNode {
@@ -39,6 +41,57 @@ public interface ParseableFile extends LocaleNode {
      * @throws ParseException in case the parsing fails
      */
     List<LTContent> importFromFile(File f) throws ParseException;
+
+    /**
+     * Exports a parseable file to disk
+     * @param f an object representing the file in the disk where it will be
+     *          exported (it does not have to exist previously)
+     * @return true if the file has successfully saved to disk
+     * @throws IOException in case something goes wrong while writing
+     */
+    boolean exportToFile(File f) throws IOException;
+
+    /**
+     * Prints to the file identified by pw the comment identified by lc
+     * @param pw the reference to the file that is being written
+     * @param lc the comment to write
+     */
+    void printLocaleContent(PrintWriter pw, LTComment lc);
+
+    /**
+     * Prints to the file identified by pw the external entity identified by lc
+     * @param pw the reference to the file that is being written
+     * @param lc the external entity to write
+     */
+    void printLocaleContent(PrintWriter pw, LTExternalEntity lc);
+
+    /**
+     * Prints to the file identified by pw the INI section identified by lc
+     * @param pw the reference to the file that is being written
+     * @param lc the INI section to write
+     */
+    void printLocaleContent(PrintWriter pw, LTIniSection lc);
+
+    /**
+     * Prints to the file identified by pw the key-value pair identified by lc
+     * @param pw the reference to the file that is being written
+     * @param lc the key-value pair to write
+     */
+    void printLocaleContent(PrintWriter pw, LTKeyValuePair lc);
+
+    /**
+     * Prints to the file identified by pw the license identified by lc
+     * @param pw the reference to the file that is being written
+     * @param lc the license to write
+     */
+    void printLocaleContent(PrintWriter pw, LTLicense lc);
+
+    /**
+     * Prints to the file identified by pw the whitespace sequence identified by lc
+     * @param pw the reference to the file that is being written
+     * @param lc the whitespace sequence to write
+     */
+    void printLocaleContent(PrintWriter pw, LTWhitespace lc);
 
     /**
      * Returns the license header of the file

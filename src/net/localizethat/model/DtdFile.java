@@ -7,6 +7,7 @@ package net.localizethat.model;
 
 import java.io.File;
 import java.io.LineNumberReader;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import net.localizethat.io.DtdFileAccess;
 //    @NamedQuery(name = "LocaleFile.count", query = "SELECT COUNT(lf) FROM LocaleFile lf")
 //})
 public class DtdFile extends ParseableFileAdapter {
+    private static final long serialVersionUID = 1L;
 
     public DtdFile() {
       super();
@@ -59,5 +61,63 @@ public class DtdFile extends ParseableFileAdapter {
     @Override
     public List<LTContent> importFromFile(File f) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void printLocaleContent(PrintWriter pw, LTComment lc) {
+        StringBuilder sb = new StringBuilder(100);
+        
+        sb.append("<!-- ");
+        sb.append(lc.getTextValue());
+        sb.append(" -->");
+        pw.println(sb.toString());
+    }
+
+    @Override
+    public void printLocaleContent(PrintWriter pw, LTExternalEntity lc) {
+        StringBuilder sb = new StringBuilder(100);
+        
+        sb.append("<!ENTITY % ");
+        sb.append(lc.getSystemId());
+        sb.append(" SYSTEM \"");
+        sb.append(lc.getTextValue());
+        sb.append("\">");
+        sb.append("\n");
+        sb.append("%");
+        sb.append(lc.getSystemId());
+        sb.append(";");
+        pw.println(sb.toString());
+    }
+
+    @Override
+    public void printLocaleContent(PrintWriter pw, LTIniSection lc) {
+        throw new UnsupportedOperationException("No INI sections allowd in DTD files");
+    }
+
+    @Override
+    public void printLocaleContent(PrintWriter pw, LTKeyValuePair lc) {
+        StringBuilder sb = new StringBuilder(100);
+        
+        sb.append("<!ENTITY ");
+        sb.append(lc.getName());
+        sb.append(" \"");
+        sb.append(lc.getTextValue());
+        sb.append("\">");
+        pw.println(sb.toString());
+    }
+
+    @Override
+    public void printLocaleContent(PrintWriter pw, LTLicense lc) {
+        StringBuilder sb = new StringBuilder(100);
+        
+        sb.append("<!-- ");
+        sb.append(lc.getTextValue());
+        sb.append(" -->");
+        pw.println(sb.toString());
+    }
+
+    @Override
+    public void printLocaleContent(PrintWriter pw, LTWhitespace lc) {
+        pw.println(lc.getTextValue());
     }
 }
