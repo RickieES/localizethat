@@ -39,6 +39,7 @@ import net.localizethat.util.gui.JStatusBar;
  * @author rpalomares
  */
 public class ProductManager extends AbstractTabPanel {
+    private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
@@ -916,7 +917,7 @@ public class ProductManager extends AbstractTabPanel {
             lpOrig = origPathTableModel.getElement(origPathIndex);
             lcOrig = (lpOrig.getLocaleContainer().getDefLocaleTwin() == null) ?
                     lpOrig.getLocaleContainer() :
-                    (LocaleContainer) lpOrig.getLocaleContainer().getDefLocaleTwin();
+                    lpOrig.getLocaleContainer().getDefLocaleTwin();
         }
 
         if ((comboPathL10n == null) || (comboPathL10n.equals(selectedProduct.getL10nId()))) {
@@ -1229,7 +1230,11 @@ public class ProductManager extends AbstractTabPanel {
 
     @Override
     public void onTabPanelRemoved() {
-        // Nothing to do here
+        if (entityManager.getTransaction().isActive()) {
+            entityManager.flush();
+            entityManager.getTransaction().commit();
+        }
+        entityManager.close();
     }
 
 private class ProductListRowListener implements ListSelectionListener {

@@ -26,6 +26,7 @@ import net.localizethat.util.gui.JStatusBar;
  * @author rpalomares
  */
 public class L10nGUIManager extends AbstractTabPanel {
+    private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
     JStatusBar statusBar;
     SimpleDateFormat dateFormat;
@@ -410,7 +411,11 @@ public class L10nGUIManager extends AbstractTabPanel {
 
     @Override
     public void onTabPanelRemoved() {
-        // Nothing to do here
+        if (entityManager.getTransaction().isActive()) {
+            entityManager.flush();
+            entityManager.getTransaction().commit();
+        }
+        entityManager.close();
     }
 
     private class L10nTableRowListener implements ListSelectionListener {

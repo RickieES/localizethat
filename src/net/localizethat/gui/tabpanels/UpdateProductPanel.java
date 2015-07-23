@@ -34,6 +34,7 @@ import net.localizethat.util.gui.JStatusBar;
  * @author rpalomares
  */
 public class UpdateProductPanel extends AbstractTabPanel {
+    private static final long serialVersionUID = 1L;
     private final EntityManagerFactory emf;
     private final JStatusBar statusBar;
     private UpdateProductWorker upw;

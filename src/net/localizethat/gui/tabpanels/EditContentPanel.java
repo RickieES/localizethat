@@ -31,6 +31,7 @@ import net.localizethat.util.gui.JStatusBar;
  * @author rpalomares
  */
 public class EditContentPanel extends AbstractTabPanel {
+    private static final long serialVersionUID = 1L;
     private LocaleNodeTreeModel lntm;
     private final EntityManagerFactory emf;
     private final JStatusBar statusBar;
@@ -187,7 +188,11 @@ public class EditContentPanel extends AbstractTabPanel {
 
     @Override
     public void onTabPanelRemoved() {
-        // Nothing to do here
+        if (entityManager.getTransaction().isActive()) {
+            entityManager.flush();
+            entityManager.getTransaction().commit();
+        }
+        entityManager.close();
     }
 
     class TreeListeners implements TreeSelectionListener, TreeExpansionListener {
