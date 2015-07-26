@@ -194,6 +194,13 @@ public class LocaleContainerJPAHelper {
 
             // Now we need to update the twins to remove lc from their twins lists
             if (result) {
+                // The next line should be redundant with the for loop below, but
+                // it could be that some entries in the DB might miss the default
+                // twin being included in the twins collection
+                if (lc.getDefLocaleTwin() != null) {
+                    lc.getDefLocaleTwin().removeTwin(lc);
+                }
+
                 for (LocaleContainer lcTwin : lc.getTwins()) {
                     lcTwin = em.merge(lcTwin);
                     result = result && lcTwin.removeTwin(lc);
