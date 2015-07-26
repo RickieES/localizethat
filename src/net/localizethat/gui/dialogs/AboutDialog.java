@@ -29,7 +29,7 @@ public class AboutDialog extends javax.swing.JDialog {
         super(Main.mainWindow, "", true);
         productHomeUri = new URI(website);
         initComponents();
-        // setTitle("MozillaTranslator " + Kernel.settings.getString("system.version", "(Unknown version)"));
+        versionNumberLabel.setText("v" + Main.version);
     }
 
     private void openWebsite() {
