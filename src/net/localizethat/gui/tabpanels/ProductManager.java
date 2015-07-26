@@ -517,6 +517,7 @@ public class ProductManager extends AbstractTabPanel {
 
         pathL10nCombo.setModel(pathL10nListModel);
 
+        targetPathTable.setAutoCreateRowSorter(true);
         targetPathTable.setModel(targetPathTableModel);
         jScrollPane1.setViewportView(targetPathTable);
 
@@ -772,7 +773,6 @@ public class ProductManager extends AbstractTabPanel {
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (answer == JOptionPane.YES_OPTION) {
-            Product p = productListModel.getSelectedTypedItem();
 
             LocaleContainerJPAHelper lcHelper = jhb.getLocaleContainerJPAHelper();
 
@@ -822,12 +822,13 @@ public class ProductManager extends AbstractTabPanel {
             }
 
             try {
-                entityManager.remove(p);
+                entityManager.remove(selectedProduct);
                 entityManager.getTransaction().commit();
                 entityManager.getTransaction().begin();
                 refreshProductList();
                 refreshOrigPathList();
                 refreshTargetPathList();
+                clearProductFields();
                 statusBar.setText(JStatusBar.LogMsgType.INFO, "Product deleted");
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(ProductManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -1217,6 +1218,10 @@ public class ProductManager extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
+        if (entityManager == null) {
+            entityManager = emf.createEntityManager();
+            entityManager.getTransaction().begin();
+        }
         refreshProductList();
         refreshL10nList(l10nListModel);
         refreshL10nList(pathL10nListModel);
@@ -1235,6 +1240,7 @@ public class ProductManager extends AbstractTabPanel {
             entityManager.getTransaction().commit();
         }
         entityManager.close();
+        entityManager = null;
     }
 
 private class ProductListRowListener implements ListSelectionListener {

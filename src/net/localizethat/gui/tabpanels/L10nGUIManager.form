@@ -29,7 +29,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="buttonPanel" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
@@ -38,10 +38,10 @@
                           <Component id="lblL10nURL" min="-2" max="-2" attributes="0"/>
                           <Component id="lblL10nTeamName" min="-2" pref="99" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="l10nUrlField" max="32767" attributes="0"/>
-                          <Component id="l10nTeamNameField" max="32767" attributes="0"/>
+                          <Component id="l10nUrlField" pref="483" max="32767" attributes="0"/>
+                          <Component id="l10nTeamNameField" pref="483" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -51,16 +51,16 @@
                           <Component id="lblL10nCreated" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblL10nDescription" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="l10nCodeField" max="32767" attributes="0"/>
-                          <Component id="l10nDescriptionField" alignment="0" max="32767" attributes="0"/>
+                          <Component id="l10nCodeField" pref="483" max="32767" attributes="0"/>
+                          <Component id="l10nDescriptionField" alignment="0" pref="483" max="32767" attributes="0"/>
                           <Component id="l10nCreationDateField" max="32767" attributes="0"/>
                           <Component id="l10nLastUpdatedField" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -196,7 +196,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="101" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="newButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="saveButton" min="-2" max="-2" attributes="0"/>

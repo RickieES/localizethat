@@ -419,6 +419,10 @@ public class ChannelGUIManager extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
+        if (entityManager == null) {
+            entityManager = emf.createEntityManager();
+            entityManager.getTransaction().begin();
+        }
         refreshChannelList();
         selectedChannel = null;
         channelNameField.setText("");
@@ -436,6 +440,7 @@ public class ChannelGUIManager extends AbstractTabPanel {
             entityManager.getTransaction().commit();
         }
         entityManager.close();
+        entityManager = null;
     }
 
     private class ChannelTableRowListener implements ListSelectionListener {

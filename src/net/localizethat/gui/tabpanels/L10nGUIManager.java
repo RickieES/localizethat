@@ -69,7 +69,7 @@ public class L10nGUIManager extends AbstractTabPanel {
         // Validation 2: the L10n code (case insensitive) can't exist already in the database,
         // except in the same item
         TypedQuery<L10n> validationQuery = entityManager.createNamedQuery(
-                "L10n.findByCode", L10n.class);
+                "L10n.findByL10ncode", L10n.class);
         validationQuery.setParameter("code", l10nCodeField.getText());
         List<L10n> listL10n = validationQuery.getResultList();
         int listLength = listL10n.size();
@@ -203,7 +203,7 @@ public class L10nGUIManager extends AbstractTabPanel {
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addComponent(refreshButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(newButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveButton)
@@ -237,8 +237,8 @@ public class L10nGUIManager extends AbstractTabPanel {
                             .addComponent(lblL10nTeamName, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(l10nUrlField)
-                            .addComponent(l10nTeamNameField)))
+                            .addComponent(l10nUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                            .addComponent(l10nTeamNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblL10nLastUpdated)
@@ -247,8 +247,8 @@ public class L10nGUIManager extends AbstractTabPanel {
                             .addComponent(lblL10nDescription))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(l10nCodeField)
-                            .addComponent(l10nDescriptionField)
+                            .addComponent(l10nCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                            .addComponent(l10nDescriptionField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                             .addComponent(l10nCreationDateField)
                             .addComponent(l10nLastUpdatedField))))
                 .addContainerGap())
@@ -399,6 +399,11 @@ public class L10nGUIManager extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
+        if (entityManager == null) {
+            entityManager = emf.createEntityManager();
+            entityManager.getTransaction().begin();
+        }
+
         refreshL10nList();
         selectedL10n = null;
         l10nCodeField.setText("");
@@ -416,6 +421,7 @@ public class L10nGUIManager extends AbstractTabPanel {
             entityManager.getTransaction().commit();
         }
         entityManager.close();
+        entityManager = null;
     }
 
     private class L10nTableRowListener implements ListSelectionListener {
