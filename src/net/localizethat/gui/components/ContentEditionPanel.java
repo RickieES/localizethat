@@ -34,6 +34,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private ContentListTableModel tableModel;
     private ContentListTableModel.ContentListObject lObject;
     private JPAHelperBundle jhb;
+    private EllipsisUnicodeCharKeyAdapter ellipsisCharKeyAdapter;
 
     /**
      * Creates new form ContentEditionPanel
@@ -46,6 +47,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             jhb = JPAHelperBundle.getInstance(entityManager);
         }
         initComponents();
+        ellipsisCharKeyAdapter = new EllipsisUnicodeCharKeyAdapter();
+        trnsTextArea.addKeyListener(ellipsisCharKeyAdapter);
     }
 
     public ContentEditionPanel(EntityManager entityManager, JTable associatedTable) {
