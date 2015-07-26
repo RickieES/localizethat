@@ -10,14 +10,16 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import net.localizethat.Main;
 import net.localizethat.model.DtdFile;
-import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LTContent;
+import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
@@ -119,6 +121,11 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
     protected void done() {
         statusBar.endProgress();
         editChangesButton.setEnabled(true);
+        if (em.getTransaction().isActive()) {
+            em.flush();
+            em.getTransaction().commit();
+        }
+        em.close();
     }
 
     private void processPath(LocalePath lp) {
@@ -218,7 +225,7 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
             }
             em.getTransaction().commit();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Logger.getLogger(UpdateProductWorker.class.getName()).log(Level.SEVERE, null, e);
         } catch (Exception e) {
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
@@ -259,7 +266,7 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
             }
             em.getTransaction().commit();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            Logger.getLogger(UpdateProductWorker.class.getName()).log(Level.SEVERE, null, e);
         } catch (Exception e) {
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
