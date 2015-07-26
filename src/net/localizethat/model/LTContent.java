@@ -253,8 +253,7 @@ public class LTContent implements LocaleContent {
         boolean result;
 
         result = (twin != null)
-                && (twin instanceof LocaleFile)
-                && (twin.getDefLocaleTwin() == null)
+                && (twin instanceof LTContent)
                 && (twins.contains((LTContent) twin))
                 && twins.remove((LTContent) twin);
         return result;

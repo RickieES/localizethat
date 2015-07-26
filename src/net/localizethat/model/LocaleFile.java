@@ -352,7 +352,6 @@ public class LocaleFile implements LocaleNode, Serializable {
 
         result = (twin != null)
                 && (twin instanceof LocaleFile)
-                && (twin.getDefLocaleTwin() == null)
                 && (twins.contains((LocaleFile) twin))
                 && twins.remove((LocaleFile) twin);
         return result;

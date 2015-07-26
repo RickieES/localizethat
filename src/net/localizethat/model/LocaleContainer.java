@@ -278,7 +278,6 @@ public class LocaleContainer implements LocaleNode, Serializable {
 
         result = (twin != null)
                 && (twin instanceof LocaleContainer)
-                &&(twin.getDefLocaleTwin() == null)
                 && (twins.contains((LocaleContainer) twin))
                 && twins.remove((LocaleContainer) twin);
         return result;
