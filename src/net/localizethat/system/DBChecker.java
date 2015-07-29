@@ -79,6 +79,7 @@ public final class DBChecker {
         File fltDBDir = new File(ltDBDir);
         boolean createDB = !fltDBDir.exists();
         Connection dbConnection = null;
+        boolean errorDbInUse = false;
 
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -92,16 +93,16 @@ public final class DBChecker {
             Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         } catch (SQLException ex) {
-            if (ex.getSQLState().equals("XJ040")) {
-                ex = ex.getNextException();
-                if (ex.getSQLState().equals("XSDB6")) {
-                    Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE,
-                            "There is probably another instance/program using the database");
-                }
+            SQLException nextEx = ex.getNextException();
+            if (ex.getSQLState().equals("XJ040") && nextEx.getSQLState().equals("XSDB6")) {
+                Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE,
+                        "There is probably another instance/program using the database");
+                errorDbInUse = true;
+            } else {
+                Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DBChecker.class.getName()).log(Level.CONFIG, "Derby JAR version: {0}",
+                        org.apache.derby.tools.sysinfo.getVersionString());
             }
-            Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE, null, ex);
-            Logger.getLogger(DBChecker.class.getName()).log(Level.CONFIG, "Derby JAR version: {0}",
-                    org.apache.derby.tools.sysinfo.getVersionString());
             return false;
         } finally {
             if (dbConnection != null) {
@@ -113,7 +114,9 @@ public final class DBChecker {
                     if (ex.getSQLState().equals("XJ015")) {
                         Logger.getLogger(DBChecker.class.getName()).info("Database cleanly closed");
                     } else {
-                        Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE, null, ex);
+                        if (!errorDbInUse) {
+                            Logger.getLogger(DBChecker.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
             }
