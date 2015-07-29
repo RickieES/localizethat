@@ -15,9 +15,9 @@ import javax.persistence.Enumerated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * LocalizeThat class for marking comments in files (except license headers, which have their
- * own class). It is a kind (ie., subclass) of LTContent, which in turn implements the
- LocaleNode interface
+ * LocalizeThat class for marking comments in files (except license headers,
+ * which have their own class). It is a kind (ie., subclass) of LTContent, which
+ * in turn implements the LocaleContent and LocaleNode interfaces
  * 
  * @author rpalomares
  */

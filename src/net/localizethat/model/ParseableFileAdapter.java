@@ -101,7 +101,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                             if (lc.getEntityName() != null) {
                                 LTContent l = this.getChildByName(lc.getEntityName());
                                 if (l != null && l instanceof LTKeyValuePair) {
-                                    ((LTKeyValuePair) l).setLtComment(existingComment);
+                                    ((LTKeyValuePair) l).setComment(existingComment);
                                 }
                             }
                         }
@@ -112,7 +112,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                         if (lc.getEntityName() != null) {
                             LTContent l = this.getChildByName(lc.getEntityName());
                             if (l != null && l instanceof LTKeyValuePair) {
-                                ((LTKeyValuePair) l).setLtComment(lc);
+                                ((LTKeyValuePair) l).setComment(lc);
                             }
                         }
                     }

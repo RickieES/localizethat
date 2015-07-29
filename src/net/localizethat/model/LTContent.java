@@ -31,8 +31,8 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Superclass of all file contents, except images and non parseable files. This class defines the
- * entity and the main JPA mapping
+ * Superclass of all file contents, except images and non parseable files. This
+ * class defines the entity and the main JPA mapping
  * @author rpalomares
  */
 @Entity
@@ -88,6 +88,10 @@ public class LTContent implements LocaleContent {
     @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
     @ManyToOne(optional = false)
     private L10n l10nId;
+    @Basic(optional = true)
+    @Column(name = "LCONTENTKEEPORIG", nullable = true)
+    private boolean keepOriginal;
+    @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LNODECREATIONDATE", nullable = false)
     private Date creationDate;
@@ -334,6 +338,14 @@ public class LTContent implements LocaleContent {
         this.dontExport = dontExport;
     }
 
+    public boolean isKeepOriginal() {
+        return keepOriginal;
+    }
+
+    public void setKeepOriginal(boolean keepOriginal) {
+        this.keepOriginal = keepOriginal;
+    }
+
     @Override
     public boolean isMarkedForDeletion() {
         return markedForDeletion;
@@ -346,8 +358,8 @@ public class LTContent implements LocaleContent {
 
     /**
      * This method returns true if the instance of LTContent can be edited/localized
- (by default it is). Subclasses of LTContent should override this method returning
- the appropiate value
+     * (by default it is). Subclasses of LTContent should override this method
+     * returning the appropiate value
      * @return true if the LTContent is intended to be editable/localizable
      */
     @Override
