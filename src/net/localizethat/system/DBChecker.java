@@ -166,8 +166,13 @@ public final class DBChecker {
                 dbVersionString = res.getString("CONFIGVALUE");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DBChecker.class.getName()).log(Level.WARNING, null, ex);
-            // TODO Issue #18 - Check if the exception is because of no database yet, and handle it graciously
+            if (ex.getSQLState().equals("42X05")) {
+                Logger.getLogger(DBChecker.class.getName()).log(Level.INFO,
+                        "Creating new database");
+            } else {
+                Logger.getLogger(DBChecker.class.getName()).log(Level.WARNING,
+                        null, ex);
+            }
             dbVersionString = "0.0.0";
         }
         VersionObject dbVersion = new VersionObject(dbVersionString);
