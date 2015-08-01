@@ -25,6 +25,7 @@ public class UpdateProductAction extends AbstractAction {
     private static final String DESCRIPTION = "Opens " + TITLE + " panel";
     private static final String ICON = "view-refresh.png";
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_U;
+    private static final long serialVersionUID = 1L;
     private UpdateProductPanel updateProductPanel;
 
     /**
@@ -34,7 +35,8 @@ public class UpdateProductAction extends AbstractAction {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
         putValue(MNEMONIC_KEY, MNEMONIC);
-        putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC, java.awt.event.InputEvent.CTRL_MASK));
+        putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC,
+                java.awt.event.InputEvent.CTRL_MASK));
         ImageIcon icon = new ImageIcon(LocaleManagerAction.class.getResource(
                     "/net/localizethat/resources/" + ICON));
         putValue(LARGE_ICON_KEY, icon);
@@ -58,7 +60,8 @@ public class UpdateProductAction extends AbstractAction {
             Main.mainWindow.addTab(updateProductPanel, TITLE);
             Main.mainWindow.getStatusBar().clearText();
         } catch (InterruptedException ex) {
-            Logger.getLogger(UpdateProductAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UpdateProductAction.class.getName()).log(Level.SEVERE,
+                    null, ex);
         }
     }
 }

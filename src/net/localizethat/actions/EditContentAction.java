@@ -28,6 +28,7 @@ public class EditContentAction extends AbstractAction {
     private static final String DESCRIPTION = "Opens the Edit Content Panel";
     private static final String ICON = "show-in-chrome.png";
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_H;
+    private static final long serialVersionUID = 1L;
     private EditContentPanel editContentPanel;
     private ChooseTreePanel chooseTreePanel;
     private ChooseTreeDDO chooseTreeDDO;
