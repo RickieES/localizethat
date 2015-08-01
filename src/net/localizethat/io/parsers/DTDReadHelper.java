@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,7 +66,7 @@ public class DTDReadHelper extends DefaultHandler2 {
      */
     public DTDReadHelper(LineNumberReader dtdReader) {
         super();
-        this.is = (LineNumberReader) dtdReader;
+        this.is = dtdReader;
         lcList = new ArrayList<>(15);
         locator = new Locator2Impl();
     }
