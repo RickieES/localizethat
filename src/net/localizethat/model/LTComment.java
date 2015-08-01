@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("LTComment")
 @XmlRootElement
-public class LTComment extends LTContent implements EditableLocaleContent {
+public class LTComment extends LTContent {
     public static final int COMMENTTEXTVALUE_LENGTH = 32672;
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +36,10 @@ public class LTComment extends LTContent implements EditableLocaleContent {
     @Column(name = "LCOMMENTTYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private CommentType commentType;
+    @Basic(optional = true)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
+    private TranslationStatus trnsStatus;
 
     @Override
     public boolean addChild(LocaleNode node) {
@@ -58,27 +62,27 @@ public class LTComment extends LTContent implements EditableLocaleContent {
     }
 
     @Override
-    public LocaleNode getChildByName(String name) {
+    public LocaleContent getChildByName(String name) {
         return null;
     }
 
     @Override
-    public LocaleNode getChildByName(String name, boolean matchCase) {
+    public LocaleContent getChildByName(String name, boolean matchCase) {
         return null;
     }
 
     @Override
-    public Collection<? extends LocaleNode> getChildren() {
+    public Collection<? extends LocaleContent> getChildren() {
         return null;
     }
 
     @Override
-    public LocaleNode removeChild(String name) {
+    public LocaleContent removeChild(String name) {
         return null;
     }
 
     @Override
-    public LocaleNode removeChild(String name, boolean matchCase) {
+    public LocaleContent removeChild(String name, boolean matchCase) {
         return null;
     }
 
@@ -107,7 +111,8 @@ public class LTComment extends LTContent implements EditableLocaleContent {
 
     @Override
     public void setTextValue(String textValue) {
-        this.textValue = textValue.substring(0, Math.min(textValue.length(), LTComment.COMMENTTEXTVALUE_LENGTH));
+        this.textValue = textValue.substring(0,
+                Math.min(textValue.length(), LTComment.COMMENTTEXTVALUE_LENGTH));
     }
 
     public CommentType getCommentType() {

@@ -6,9 +6,12 @@
 
 package net.localizethat.model;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,14 +25,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("LTExternalEntity")
 @XmlRootElement
-public class LTExternalEntity extends LTContent implements EditableLocaleContent {
-    public static final int TEXTVALUE_LENGTH = 32672;
+public class LTExternalEntity extends LTContent {
+    private static final long serialVersionUID = 1L;
 
     // Currently, we don't expect external entities of type PUBLIC
     transient private String publicId;
     // We will use the text value to save the SYSTEM ID
+    @Basic(optional = false)
     @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
     private String systemId;
+    @Basic(optional = true)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
+    private TranslationStatus trnsStatus;
 
     /** Creates a new instance of ExternalEntity */
     public LTExternalEntity() {

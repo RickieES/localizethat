@@ -50,7 +50,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             // We mark all contents for deletion; every object modified or added will
             // have their markedForDeletion reset, so in the end we will have that mark
             // only in the objects no longer existing in the file
-            for (LTContent lc : this.children) {
+            for (LocaleContent lc : this.children) {
                 lc.setMarkedForDeletion(true);
             }
 
@@ -99,7 +99,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                             existingComment.setMarkedForDeletion(false);
                             newAndModifiedList.add(existingComment);
                             if (lc.getEntityName() != null) {
-                                LTContent l = this.getChildByName(lc.getEntityName());
+                                LocaleContent l = this.getChildByName(lc.getEntityName());
                                 if (l != null && l instanceof LTKeyValuePair) {
                                     ((LTKeyValuePair) l).setComment(existingComment);
                                 }
@@ -110,7 +110,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                         em.persist(lc);
                         newAndModifiedList.add(lc);
                         if (lc.getEntityName() != null) {
-                            LTContent l = this.getChildByName(lc.getEntityName());
+                            LocaleContent l = this.getChildByName(lc.getEntityName());
                             if (l != null && l instanceof LTKeyValuePair) {
                                 ((LTKeyValuePair) l).setComment(lc);
                             }
@@ -165,9 +165,9 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             }
 
             // Permanently delete obsolete contents
-            for(Iterator<? extends LTContent> iterator = this.children.iterator();
+            for(Iterator<? extends LocaleContent> iterator = this.children.iterator();
                     iterator.hasNext();) {
-                LTContent lc = iterator.next();
+                LocaleContent lc = iterator.next();
                 em.merge(lc);
                 if (lc.isMarkedForDeletion()) {
                     lc.setParent(null);
@@ -201,18 +201,18 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
 
     @Override
     public boolean exportToFile(File f) throws IOException {
-        boolean result;
+        boolean result = false;
         PrintWriter pw;
-        List<LTContent> sortedChildren = new ArrayList<>(children.size());
+        List<LocaleContent> sortedChildren = new ArrayList<>(children.size());
         
         pw = getAsPrintWriter(f);
-        result = (pw != null);
         
-        if (result) {
+        if (pw != null) {
+            result = true;
             sortedChildren.addAll(children);
             Collections.sort(sortedChildren, LTContent.orderInFileComparator);
             
-            for(LTContent lc : sortedChildren) {
+            for(LocaleContent lc : sortedChildren) {
                 if (!lc.isDontExport()) {
                     printLocaleContent(pw, lc);
                 }

@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class LTIniSection extends LTContent {
     private static final long serialVersionUID = 1L;
-    transient protected List<LTContent> children;
+    transient protected List<LocaleContent> children;
     
     public LTIniSection() {
         super();
@@ -51,9 +51,9 @@ public class LTIniSection extends LTContent {
 
         // Now we have a copy of the siblings sorted by their position in file
         // We are going to remove the siblings before this ini section (including it)
-        Iterator<LTContent> it = children.iterator();
+        Iterator<LocaleContent> it = children.iterator();
         while (it.hasNext()) {
-            LTContent lc = it.next();
+            LocaleContent lc = it.next();
             if (lc.getOrderInFile() <= this.getOrderInFile()) {
                 it.remove();
             } else {
@@ -66,7 +66,7 @@ public class LTIniSection extends LTContent {
         it = children.iterator();
         boolean endOfSectionReached = false;
         while (it.hasNext()) {
-            LTContent lc = it.next();
+            LocaleContent lc = it.next();
             if (!endOfSectionReached && (lc instanceof LTIniSection)) {
                 endOfSectionReached = true;
             }
@@ -83,23 +83,23 @@ public class LTIniSection extends LTContent {
     }
 
     @Override
-    public LocaleNode getChildByName(String name) {
+    public LocaleContent getChildByName(String name) {
         return null;
     }
 
     @Override
-    public LocaleNode getChildByName(String name, boolean matchCase) {
+    public LocaleContent getChildByName(String name, boolean matchCase) {
         return null;
     }
 
     @Override
-    public Collection<? extends LocaleNode> getChildren() {
+    public Collection<? extends LocaleContent> getChildren() {
         buildChildrenOnTheFly();
         return children;
     }
 
     @Override
-    public LocaleNode removeChild(String name) {
+    public LocaleContent removeChild(String name) {
         return null;
     }
 

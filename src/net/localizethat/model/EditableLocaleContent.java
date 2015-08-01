@@ -14,16 +14,15 @@ package net.localizethat.model;
 public interface EditableLocaleContent extends LocaleContent {
 
     /**
-     * Returns the text value (as opposed to the <i>name</i> of the item)
-     * @return an empty string if there is no saved text value, or the actual text value
+     * Returns the Translation Status for this editable locale content
+     * @return the translation status of this EditableLocaleContent.
      */
-    String getTextValue();
+    public TranslationStatus getTrnsStatus();
 
     /**
-     * Sets the text value.
-     * ExternalEntity does nothing on this method, since the value is not localizable
-     *
-     * @param value the text value to be set
+     * Sets the Translation Status for this editable locale content
+     * @param trnsStatus the translation status value to assign to this
+     * EditableLocaleContent
      */
-    void setTextValue(String value);
+    public void setTrnsStatus(TranslationStatus trnsStatus);
 }

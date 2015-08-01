@@ -6,9 +6,12 @@
 package net.localizethat.model;
 
 import java.util.Collection;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -19,12 +22,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @DiscriminatorValue("LTWhitespace")
 @XmlRootElement
 public class LTWhitespace extends LTContent implements EditableLocaleContent {
-    public static final int TEXTVALUE_LENGTH = 32672;
+    private static final long serialVersionUID = 1L;
 
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     transient protected Collection<Void> children;
+    @Basic(optional = false)
     @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
     String textValue;
+    @Basic(optional = true)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
+    private TranslationStatus trnsStatus;
 
     @Override
     public boolean addChild(LocaleNode node) {
@@ -92,7 +100,17 @@ public class LTWhitespace extends LTContent implements EditableLocaleContent {
     }
 
     @Override
+    public TranslationStatus getTrnsStatus() {
+        return trnsStatus;
+    }
+
+    @Override
+    public void setTrnsStatus(TranslationStatus trnsStatus) {
+        this.trnsStatus = trnsStatus;
+    }
+
+    @Override
     public boolean isEditable() {
-        return false;
+        return true;
     }
 }

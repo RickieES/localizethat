@@ -28,15 +28,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @DiscriminatorValue("LTKeyValuePair")
 @XmlRootElement
 public class LTKeyValuePair extends LTContent implements EditableLocaleContent {
-    public static final int TEXTVALUE_LENGTH = 32672;
     private static final long serialVersionUID = 1L;
 
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     // transient protected Collection<Void> children;
 
-    @Basic(optional = false)
-    @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
-    private String textValue;
     @OneToOne(optional = true)
     @JoinColumn(name = "LCONTENTCOMMENT", referencedColumnName = "ID", nullable = true)
     private LTComment comment;
@@ -51,16 +47,6 @@ public class LTKeyValuePair extends LTContent implements EditableLocaleContent {
     @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
     private TranslationStatus trnsStatus;
 
-    @Override
-    public String getTextValue() {
-        return textValue;
-    }
-
-    @Override
-    public void setTextValue(String textValue) {
-        this.textValue = textValue.substring(0, Math.min(textValue.length(), LTKeyValuePair.TEXTVALUE_LENGTH));
-    }
-
     public LTComment getComment() {
         return comment;
     }
@@ -69,10 +55,12 @@ public class LTKeyValuePair extends LTContent implements EditableLocaleContent {
         this.comment = Comment;
     }
 
+    @Override
     public TranslationStatus getTrnsStatus() {
         return trnsStatus;
     }
 
+    @Override
     public void setTrnsStatus(TranslationStatus trnsStatus) {
         this.trnsStatus = trnsStatus;
     }

@@ -140,8 +140,8 @@ public class LocaleFile implements LocaleNode, Serializable {
     private LocaleFile defLocaleTwin;
     @OneToMany(mappedBy="defLocaleTwin")
     private final Collection<LocaleFile> twins;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
-    protected Collection<LTContent> children;
+    @OneToMany(targetEntity=LTContent.class, cascade = CascadeType.ALL, mappedBy = "parent")
+    protected Collection<LocaleContent> children;
     @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
     @ManyToOne(optional = false)
     private L10n l10nId;
@@ -242,24 +242,24 @@ public class LocaleFile implements LocaleNode, Serializable {
     public boolean hasChild(String name, boolean matchCase) {
         boolean found = false;
 
-        for(LTContent l : children) {
+        for(LocaleContent l : children) {
             found = found || ((matchCase) ? (l.getName().equals(name)) : (l.getName().equalsIgnoreCase(name)));
         }
         return found;
     }
 
     @Override
-    public LTContent getChildByName(String name) {
+    public LocaleContent getChildByName(String name) {
         return getChildByName(name, false);
     }
 
     @Override
-    public LTContent getChildByName(String name, boolean matchCase) {
+    public LocaleContent getChildByName(String name, boolean matchCase) {
         if (name == null) {
             return null;
         }
 
-        for(LTContent l : children) {
+        for(LocaleContent l : children) {
             boolean found = (matchCase) ? (name.equals(l.getName()))
                                         : (name.equalsIgnoreCase(l.getName()));
             if (found) {
@@ -269,8 +269,8 @@ public class LocaleFile implements LocaleNode, Serializable {
         return null;
     }
 
-    public LTContent getChildByOrderInFile(int orderInFile) {
-        for(LTContent l : children) {
+    public LocaleContent getChildByOrderInFile(int orderInFile) {
+        for(LocaleContent l : children) {
             boolean found = (l.getOrderInFile() == orderInFile);
             if (found) {
                 return l;
@@ -280,18 +280,18 @@ public class LocaleFile implements LocaleNode, Serializable {
     }
 
     @Override
-    public Collection<LTContent> getChildren() {
+    public Collection<LocaleContent> getChildren() {
         return children;
     }
 
     @Override
-    public LTContent removeChild(String name) {
+    public LocaleContent removeChild(String name) {
         return removeChild(name, false);
     }
 
     @Override
-    public LTContent removeChild(String name, boolean matchCase) {
-        LTContent l = getChildByName(name, matchCase);
+    public LocaleContent removeChild(String name, boolean matchCase) {
+        LocaleContent l = getChildByName(name, matchCase);
 
         if ((l != null) && (removeChild(l))) {
             return l;

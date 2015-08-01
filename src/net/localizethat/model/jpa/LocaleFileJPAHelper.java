@@ -13,8 +13,8 @@ import javax.persistence.EntityManager;
 import net.localizethat.Main;
 import net.localizethat.model.ImageFile;
 import net.localizethat.model.L10n;
-import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContainer;
+import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.ParseableFile;
 import net.localizethat.model.TextFile;
@@ -179,9 +179,9 @@ public class LocaleFileJPAHelper {
                 case "DtdFile":
                 case "PropertiesFile":
                     ((ParseableFile) lf).setFileLicense(null);
-                    for (Iterator<LTContent> iterator = lf.getChildren().iterator();
+                    for (Iterator<LocaleContent> iterator = lf.getChildren().iterator();
                             iterator.hasNext();) {
-                        LTContent child = iterator.next();
+                        LocaleContent child = iterator.next();
                         child = em.merge(child);
                         iterator.remove();
                         child.setParent(null);

@@ -35,25 +35,26 @@ import javax.xml.bind.annotation.XmlRootElement;
  * class defines the entity and the main JPA mapping
  * @author rpalomares
  */
-@Entity
+@Entity(name="LocaleContent")
 @Table(name = "APP.LOCALECONTENT")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="LC_TYPE")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "LTContent.countAll", query = "SELECT COUNT(lc) FROM LTContent lc"),
-    @NamedQuery(name = "LTContent.count", query = "SELECT COUNT(lc) FROM LTContent lc")
+    @NamedQuery(name = "LocaleContent.countAll", query = "SELECT COUNT(lc) FROM LocaleContent lc"),
+    @NamedQuery(name = "LocaleContent.count", query = "SELECT COUNT(lc) FROM LocaleContent lc")
 })
 public class LTContent implements LocaleContent {
     private static final long serialVersionUID = 1L;
     private static final int LOCALENODENAME_LENGTH = 128;
+    public static final int TEXTVALUE_LENGTH = 32672;
 
     /**
      * Comparator based in the position of the LTContent objects in a file
      */
-    public static Comparator<LTContent> orderInFileComparator = new Comparator<LTContent>() {
+    public static Comparator<LocaleContent> orderInFileComparator = new Comparator<LocaleContent>() {
             @Override
-            public int compare(LTContent o1, LTContent o2) {
+            public int compare(LocaleContent o1, LocaleContent o2) {
                 return o2.getOrderInFile() - o1.getOrderInFile();
             }
     };
@@ -75,10 +76,10 @@ public class LTContent implements LocaleContent {
     @ManyToOne(optional = false)
     private LocaleFile parent;
     @JoinColumn(name = "LNODETWIN", referencedColumnName = "ID", nullable = true)
-    @ManyToOne(optional = true)
-    private LTContent defLocaleTwin;
-    @OneToMany(mappedBy="defLocaleTwin")
-    private Collection<LTContent> twins;
+    @ManyToOne(optional = true, targetEntity=LTContent.class)
+    private LocaleContent defLocaleTwin;
+    @OneToMany(mappedBy="defLocaleTwin", targetEntity=LTContent.class)
+    private Collection<LocaleContent> twins;
     @Basic(optional = false)
     @Column(name = "LCONTENTDONTEXPORT", nullable = false)
     private boolean dontExport;
@@ -88,6 +89,9 @@ public class LTContent implements LocaleContent {
     @JoinColumn(name = "L10N_ID", referencedColumnName = "ID", nullable = false)
     @ManyToOne(optional = false)
     private L10n l10nId;
+    @Basic(optional = false)
+    @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
+    private String textValue;
     @Basic(optional = true)
     @Column(name = "LCONTENTKEEPORIG", nullable = true)
     private boolean keepOriginal;
@@ -145,8 +149,6 @@ public class LTContent implements LocaleContent {
         return parent;
     }
 
-    // FIXME We shouldn't need to implement these two methods, only the
-    // most concrete one
     @Override
     public void setParent(LocaleNode parent) {
         setParent((LocaleFile) parent);
@@ -227,8 +229,8 @@ public class LTContent implements LocaleContent {
 
     @Override
     public void setDefLocaleTwin(LocaleNode twin) {
-        if ((twin != null) && (twin instanceof LTContent)) {
-            this.defLocaleTwin = (LTContent) twin;
+        if ((twin != null) && (twin instanceof LocaleContent)) {
+            this.defLocaleTwin = (LocaleContent) twin;
             twin.addTwin(this);
         } else {
             this.defLocaleTwin = null;
@@ -236,7 +238,7 @@ public class LTContent implements LocaleContent {
     }
 
     @Override
-    public LocaleNode getDefLocaleTwin() {
+    public LocaleContent getDefLocaleTwin() {
         return defLocaleTwin;
     }
 
@@ -338,12 +340,24 @@ public class LTContent implements LocaleContent {
         this.dontExport = dontExport;
     }
 
+    @Override
     public boolean isKeepOriginal() {
         return keepOriginal;
     }
 
+    @Override
     public void setKeepOriginal(boolean keepOriginal) {
         this.keepOriginal = keepOriginal;
+    }
+    
+    @Override
+    public String getTextValue() {
+        return textValue;
+    }
+
+    @Override
+    public void setTextValue(String textValue) {
+        this.textValue = textValue.substring(0, Math.min(textValue.length(), LTKeyValuePair.TEXTVALUE_LENGTH));
     }
 
     @Override
