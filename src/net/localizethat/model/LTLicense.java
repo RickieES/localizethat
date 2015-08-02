@@ -33,9 +33,6 @@ public class LTLicense extends LTContent implements EditableLocaleContent {
     @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
     private TranslationStatus trnsStatus;
 
-    @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
-    private String textValue;
-
     @Override
     public boolean addChild(LocaleNode node) {
         return false;
@@ -89,16 +86,6 @@ public class LTLicense extends LTContent implements EditableLocaleContent {
     @Override
     public boolean clearChildren() {
         return false;
-    }
-
-    @Override
-    public String getTextValue() {
-        return textValue;
-    }
-
-    @Override
-    public void setTextValue(String textValue) {
-        this.textValue = textValue.substring(0, Math.min(textValue.length(), TEXTVALUE_LENGTH));
     }
 
     @Override

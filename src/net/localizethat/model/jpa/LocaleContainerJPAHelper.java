@@ -227,7 +227,7 @@ public class LocaleContainerJPAHelper {
             if (result) {
                 lc.setDefLocaleTwin(null);
 
-                LocaleContainer parent = (LocaleContainer) lc.getParent();
+                LocaleContainer parent = lc.getParent();
                 if (parent != null) {
                     // Only if the node has a parent that it is not being removed, we
                     // remove this container as a child from it: if not, the upper call

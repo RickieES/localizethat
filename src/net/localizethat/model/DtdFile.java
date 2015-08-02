@@ -78,13 +78,13 @@ public class DtdFile extends ParseableFileAdapter {
         StringBuilder sb = new StringBuilder(100);
         
         sb.append("<!ENTITY % ");
-        sb.append(lc.getSystemId());
+        sb.append(lc.getTextValue());
         sb.append(" SYSTEM \"");
         sb.append(lc.getTextValue());
         sb.append("\">");
         sb.append("\n");
         sb.append("%");
-        sb.append(lc.getSystemId());
+        sb.append(lc.getTextValue());
         sb.append(";");
         pw.println(sb.toString());
     }

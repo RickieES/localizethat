@@ -6,12 +6,8 @@
 
 package net.localizethat.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -30,14 +26,6 @@ public class LTExternalEntity extends LTContent {
 
     // Currently, we don't expect external entities of type PUBLIC
     transient private String publicId;
-    // We will use the text value to save the SYSTEM ID
-    @Basic(optional = false)
-    @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
-    private String systemId;
-    @Basic(optional = true)
-    @Enumerated(EnumType.STRING)
-    @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
-    private TranslationStatus trnsStatus;
 
     /** Creates a new instance of ExternalEntity */
     public LTExternalEntity() {
@@ -48,7 +36,7 @@ public class LTExternalEntity extends LTContent {
         super();
         setName(name);
         this.publicId = publicId;
-        this.systemId = systemId;
+        this.setTextValue(systemId);
     }
 
     public String getPublicId() {
@@ -59,26 +47,8 @@ public class LTExternalEntity extends LTContent {
         this.publicId = publicId;
     }
 
-    public String getSystemId() {
-        return (systemId == null) ? "" : systemId;
-    }
-
-    public void setSystemId(String systemId) {
-        this.systemId = systemId;
-    }
-
     @Override
     public boolean isEditable() {
         return false;
-    }
-
-    @Override
-    public String getTextValue() {
-        return getSystemId();
-    }
-
-    @Override
-    public void setTextValue(String value) {
-        // Do nothing, as the SYSTEM ID value shouldn't be localizable
     }
 }

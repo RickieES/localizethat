@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 //})
 public class ImageFile extends LocaleFile {
     private static final int BINARYFILE_LENGTH = 1048576; // We expect files no longer than 1 MBytes
+    private static final long serialVersionUID = 1L;
     @Lob
     @Basic(fetch=FetchType.LAZY)
     @Column(table = "APP.LFILELOBS", name = "LFILEBINARYCONTENT", length = BINARYFILE_LENGTH)

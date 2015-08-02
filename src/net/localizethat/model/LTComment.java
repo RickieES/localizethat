@@ -30,16 +30,10 @@ public class LTComment extends LTContent {
 
     transient protected Collection<Void> children;
     transient private String entityName;
-    @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = COMMENTTEXTVALUE_LENGTH)
-    private String textValue;
     @Basic(optional = false)
     @Column(name = "LCOMMENTTYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private CommentType commentType;
-    @Basic(optional = true)
-    @Enumerated(EnumType.STRING)
-    @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
-    private TranslationStatus trnsStatus;
 
     @Override
     public boolean addChild(LocaleNode node) {
@@ -102,17 +96,6 @@ public class LTComment extends LTContent {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
-    }
-
-    @Override
-    public String getTextValue() {
-        return textValue;
-    }
-
-    @Override
-    public void setTextValue(String textValue) {
-        this.textValue = textValue.substring(0,
-                Math.min(textValue.length(), LTComment.COMMENTTEXTVALUE_LENGTH));
     }
 
     public CommentType getCommentType() {

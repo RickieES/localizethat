@@ -44,6 +44,7 @@ import net.localizethat.Main;
 })
 public class LocaleContainer implements LocaleNode, Serializable {
     private static final int LOCALENODENAME_LENGTH = 128;
+    private static final long serialVersionUID = 1L;
     @TableGenerator(name="LOCALENODE", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
             valueColumnName="COUNTERVALUE", allocationSize = 5)
     @Id
@@ -342,7 +343,7 @@ public class LocaleContainer implements LocaleNode, Serializable {
     @Override
     public String getFilePath() {
         StringBuilder sb = new StringBuilder(64);
-        LocaleContainer lc = (LocaleContainer) getParent();
+        LocaleContainer lc = getParent();
 
         if (lc != null) {
             sb.append(lc.getFilePath());

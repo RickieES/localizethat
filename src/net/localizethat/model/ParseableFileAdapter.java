@@ -147,10 +147,10 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                     if (existingEntity != null) {
                         existingEntity.setMarkedForDeletion(false);
                         changed = !((lExtEnt.getOrderInFile() == existingEntity.getOrderInFile()) &&
-                                    (lExtEnt.getSystemId().equals(existingEntity.getSystemId())));
+                                    (lExtEnt.getTextValue().equals(existingEntity.getTextValue())));
                         if (changed) {
                             existingEntity.setOrderInFile(lExtEnt.getOrderInFile());
-                            existingEntity.setSystemId(lExtEnt.getSystemId());
+                            existingEntity.setTextValue(lExtEnt.getTextValue());
                             existingEntity.setLastUpdate(lExtEnt.getLastUpdate());
                             existingEntity.setMarkedForDeletion(false);
                             newAndModifiedList.add(existingEntity);

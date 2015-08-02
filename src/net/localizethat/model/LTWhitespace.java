@@ -26,9 +26,6 @@ public class LTWhitespace extends LTContent implements EditableLocaleContent {
 
     // @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent")
     transient protected Collection<Void> children;
-    @Basic(optional = false)
-    @Column(name = "LCONTENTTEXTVALUE", nullable = false, length = TEXTVALUE_LENGTH)
-    String textValue;
     @Basic(optional = true)
     @Enumerated(EnumType.STRING)
     @Column(name = "LCONTENTTRNSSTATUS", nullable = true)
@@ -87,16 +84,6 @@ public class LTWhitespace extends LTContent implements EditableLocaleContent {
     @Override
     public boolean clearChildren() {
         return false;
-    }
-
-    @Override
-    public String getTextValue() {
-        return textValue;
-    }
-
-    @Override
-    public void setTextValue(String textValue) {
-        this.textValue = textValue.substring(0, Math.min(textValue.length(), TEXTVALUE_LENGTH));
     }
 
     @Override

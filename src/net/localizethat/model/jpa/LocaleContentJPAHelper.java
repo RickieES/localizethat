@@ -95,7 +95,7 @@ public class LocaleContentJPAHelper {
 
         if (result) {
             // Let's find out the sibling of this level defaultTwin
-            sibling = (LocaleContent) defaultTwin.getTwinByLocale(targetLocale);
+            sibling = defaultTwin.getTwinByLocale(targetLocale);
             defaultParent = defaultTwin.getParent();
             // If no sibling
             if (sibling == null) {

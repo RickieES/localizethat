@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 //})
 public class TextFile extends LocaleFile {
     private static final int TEXTFILE_LENGTH = 512*1024; // We expect files no longer than 512 KBytes
+    private static final long serialVersionUID = 1L;
     @Lob
     @Basic(fetch=FetchType.LAZY)
     @Column(table = "APP.LFILELOBS", name="LFILECLOB", length = TEXTFILE_LENGTH)
