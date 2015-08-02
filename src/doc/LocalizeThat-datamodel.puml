@@ -1,0 +1,82 @@
+@startuml
+abstract class net.localizethat.model.ParseableFileAdapter
+class net.localizethat.Main
+class net.localizethat.io.DtdFileAccess
+class net.localizethat.model.Channel
+class net.localizethat.model.ConfigValue
+class net.localizethat.model.DtdFile
+class net.localizethat.model.ImageFile
+class net.localizethat.model.L10n
+class net.localizethat.model.LTComment
+class net.localizethat.model.LTContent
+class net.localizethat.model.LTExternalEntity
+class net.localizethat.model.LTIniSection
+class net.localizethat.model.LTKeyValuePair
+class net.localizethat.model.LTLicense
+class net.localizethat.model.LTWhitespace
+class net.localizethat.model.LocaleContainer
+class net.localizethat.model.LocaleFile
+class net.localizethat.model.LocalePath
+class net.localizethat.model.Product
+class net.localizethat.model.PropertiesFile
+class net.localizethat.model.TextFile
+class net.localizethat.model.jpa.JPAHelperBundle
+class net.localizethat.model.jpa.LocaleContainerJPAHelper
+class net.localizethat.model.jpa.LocaleContentJPAHelper
+class net.localizethat.model.jpa.LocaleFileJPAHelper
+enum net.localizethat.model.CommentType
+enum net.localizethat.model.ProductSourceType
+enum net.localizethat.model.TranslationStatus
+interface net.localizethat.model.EditableLocaleContent
+interface net.localizethat.model.LocaleContent
+interface net.localizethat.model.LocaleNode
+interface net.localizethat.model.ParseableFile
+net.localizethat.model.ParseableFileAdapter --|> net.localizethat.model.LocaleFile
+net.localizethat.model.ParseableFileAdapter --|> net.localizethat.model.ParseableFile
+net.localizethat.model.DtdFile --|> net.localizethat.model.ParseableFileAdapter
+net.localizethat.model.DtdFile ..> net.localizethat.io.DtdFileAccess
+net.localizethat.model.ImageFile --|> net.localizethat.model.LocaleFile
+net.localizethat.model.LTComment --|> net.localizethat.model.LTContent
+net.localizethat.model.LTComment --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTContent --|> net.localizethat.model.LocaleContent
+net.localizethat.model.LTExternalEntity --|> net.localizethat.model.LTContent
+net.localizethat.model.LTExternalEntity --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTIniSection --|> net.localizethat.model.LTContent
+net.localizethat.model.LTKeyValuePair --|> net.localizethat.model.LTContent
+net.localizethat.model.LTKeyValuePair --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTLicense --|> net.localizethat.model.LTContent
+net.localizethat.model.LTLicense --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTWhitespace --|> net.localizethat.model.LTContent
+net.localizethat.model.LTWhitespace --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LocaleContainer ..> net.localizethat.Main
+net.localizethat.model.LocaleContainer --|> net.localizethat.model.LocaleNode
+net.localizethat.model.LocaleFile --|> net.localizethat.model.LocaleNode
+net.localizethat.model.PropertiesFile --|> net.localizethat.model.ParseableFileAdapter
+net.localizethat.model.TextFile --|> net.localizethat.model.LocaleFile
+net.localizethat.model.jpa.LocaleContainerJPAHelper ..> net.localizethat.Main
+net.localizethat.model.jpa.LocaleContainerJPAHelper ..> net.localizethat.model.L10n
+net.localizethat.model.jpa.LocaleContainerJPAHelper ..> net.localizethat.model.LocaleContainer
+net.localizethat.model.jpa.LocaleContainerJPAHelper ..> net.localizethat.model.LocaleFile
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.Main
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.L10n
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTComment
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTContent
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTExternalEntity
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTIniSection
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTKeyValuePair
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTLicense
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LTWhitespace
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LocaleFile
+net.localizethat.model.jpa.LocaleContentJPAHelper ..> net.localizethat.model.LocaleContent
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.Main
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.ImageFile
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.L10n
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.LTContent
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.LocaleContainer
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.LocaleFile
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.TextFile
+net.localizethat.model.jpa.LocaleFileJPAHelper ..> net.localizethat.model.ParseableFile
+net.localizethat.model.EditableLocaleContent --|> net.localizethat.model.LocaleContent
+net.localizethat.model.LocaleContent --|> net.localizethat.model.LocaleNode
+net.localizethat.model.ParseableFile --|> net.localizethat.model.LocaleNode
+@enduml
