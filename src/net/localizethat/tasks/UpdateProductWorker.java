@@ -121,11 +121,6 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
     protected void done() {
         statusBar.endProgress();
         editChangesButton.setEnabled(true);
-        if (em.getTransaction().isActive()) {
-            em.flush();
-            em.getTransaction().commit();
-        }
-        em.close();
     }
 
     private void processPath(LocalePath lp) {
