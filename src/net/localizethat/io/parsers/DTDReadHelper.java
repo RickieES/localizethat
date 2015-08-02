@@ -144,7 +144,7 @@ public class DTDReadHelper extends DefaultHandler2 {
              * However, sometimes no entity is given
              */
 
-            p = Pattern.compile("LOCALIZATION NOTE\\s+\\(([^).]+)\\):?[\\n.]+$",
+            p = Pattern.compile("LOCALIZATION NOTE\\s+\\(([^)]+)\\):[^$]+$",
                     Pattern.CASE_INSENSITIVE);
             m = p.matcher(thisComment);
 
@@ -159,8 +159,8 @@ public class DTDReadHelper extends DefaultHandler2 {
             ltComment.setOrderInFile(lineNumber);
             ltComment.setCreationDate(new Date());
             ltComment.setLastUpdate(ltComment.getCreationDate());
-            // If we've got a localization note referencing an entity, we save it for further search
-            // in the model
+            // If we've got a localization note referencing an entity, we save it
+            // for further search in the model
             if (entityName != null) {
                 ltComment.setEntityName(entityName);
             }
@@ -184,10 +184,6 @@ public class DTDReadHelper extends DefaultHandler2 {
     public void externalEntityDecl(String name, String publicId, String systemId) {
         int lineNumber = lineCount++;
         LTExternalEntity ltExtEntity = new LTExternalEntity(name, publicId, systemId);
-        ltExtEntity.setName(name);
-        // publicId is currently a transient property and is NOT persisted in DB
-        ltExtEntity.setPublicId(publicId);
-        ltExtEntity.setSystemId(systemId);
         ltExtEntity.setOrderInFile(lineNumber);
         ltExtEntity.setCreationDate(new Date());
         ltExtEntity.setLastUpdate(ltExtEntity.getCreationDate());
