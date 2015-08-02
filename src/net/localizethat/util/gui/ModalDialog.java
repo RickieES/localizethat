@@ -25,6 +25,7 @@ import javax.swing.WindowConstants;
  * @param <D> a DialogDataObject subclass instance used to transfer data to and from C instance
  */
 public class ModalDialog<C extends Component, D extends DialogDataObject> extends JDialog {
+    private static final long serialVersionUID = 1L;
     private final C dlgContent;
     private boolean result;
     private D ddo;
