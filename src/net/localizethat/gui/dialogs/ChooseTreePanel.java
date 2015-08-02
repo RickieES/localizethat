@@ -12,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.swing.JOptionPane;
 import net.localizethat.Main;
+import net.localizethat.gui.dialogs.DialogDataObjects.ChooseTreeDDO;
 import net.localizethat.model.L10n;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.Product;
@@ -22,9 +23,11 @@ import net.localizethat.util.gui.ModalDialogComponent;
  *
  * @author rpalomares
  */
-public class ChooseTreePanel extends javax.swing.JPanel implements ModalDialogComponent {
+public class ChooseTreePanel extends javax.swing.JPanel
+        implements ModalDialogComponent<ChooseTreePanel, ChooseTreeDDO> {
+    private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
-    ModalDialog md;
+    ModalDialog<ChooseTreePanel, ChooseTreeDDO> md;
 
     /**
      * Creates new form ChooseTreePanel
@@ -66,7 +69,7 @@ public class ChooseTreePanel extends javax.swing.JPanel implements ModalDialogCo
     }
 
     @Override
-    public void setModalDialogReference(ModalDialog md) {
+    public void setModalDialogReference(ModalDialog<ChooseTreePanel, ChooseTreeDDO> md) {
         this.md = md;
     }
 
@@ -108,14 +111,14 @@ public class ChooseTreePanel extends javax.swing.JPanel implements ModalDialogCo
         productListModel = new net.localizethat.gui.models.ListComboBoxGenericModel<Product>();
         localePathListModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath>();
         targetLocaleLabel = new javax.swing.JLabel();
-        targetLocaleCombo = new javax.swing.JComboBox();
+        targetLocaleCombo = new javax.swing.JComboBox<L10n>();
         treeContentLabel = new javax.swing.JLabel();
         allPathsRadio = new javax.swing.JRadioButton();
         productPathsRadio = new javax.swing.JRadioButton();
-        productCombo = new javax.swing.JComboBox();
+        productCombo = new javax.swing.JComboBox<Product>();
         selectedPathsRadio = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        pathsList = new javax.swing.JList();
+        pathsList = new javax.swing.JList<LocalePath>();
         buttonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -286,12 +289,12 @@ public class ChooseTreePanel extends javax.swing.JPanel implements ModalDialogCo
     private net.localizethat.gui.models.ListComboBoxGenericModel<L10n> l10nListModel;
     private net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath> localePathListModel;
     private javax.swing.JButton okButton;
-    private javax.swing.JList pathsList;
-    private javax.swing.JComboBox productCombo;
+    private javax.swing.JList<LocalePath> pathsList;
+    private javax.swing.JComboBox<Product> productCombo;
     private net.localizethat.gui.models.ListComboBoxGenericModel<Product> productListModel;
     private javax.swing.JRadioButton productPathsRadio;
     private javax.swing.JRadioButton selectedPathsRadio;
-    private javax.swing.JComboBox targetLocaleCombo;
+    private javax.swing.JComboBox<L10n> targetLocaleCombo;
     private javax.swing.JLabel targetLocaleLabel;
     private javax.swing.JLabel treeContentLabel;
     private javax.swing.ButtonGroup treeContentsRadioGroup;

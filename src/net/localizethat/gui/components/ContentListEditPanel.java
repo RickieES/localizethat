@@ -15,6 +15,7 @@ import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.tabpanels.AbstractTabPanel;
 import net.localizethat.model.L10n;
 import net.localizethat.model.LTContent;
+import net.localizethat.model.LocaleContent;
 
 /**
  * Panel/component that shows a list of (Editable)LocaleContent items and allows
@@ -23,6 +24,7 @@ import net.localizethat.model.LTContent;
  * @author rpalomares
  */
 public class ContentListEditPanel extends AbstractTabPanel {
+    private static final long serialVersionUID = 1L;
     private final EntityManagerFactory emf;
     private L10n targetLocale;
 
@@ -47,10 +49,10 @@ public class ContentListEditPanel extends AbstractTabPanel {
             entityManager.getTransaction().begin();
         }
         
-        // We want the LTContent items to be managed in entityManager, so we need to
-        // merge them one by one, creating a new list
-        List<LTContent> managedLcList = new ArrayList<>(lcList.size());
-        for(LTContent lc : lcList) {
+        // We want the LocaleContent items to be managed in entityManager, so we
+        // need to merge them one by one, creating a new list
+        List<LocaleContent> managedLcList = new ArrayList<>(lcList.size());
+        for(LocaleContent lc : lcList) {
             managedLcList.add(entityManager.merge(lc));
         }
         

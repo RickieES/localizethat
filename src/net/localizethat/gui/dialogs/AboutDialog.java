@@ -19,6 +19,7 @@ import net.localizethat.Main;
  */
 public class AboutDialog extends javax.swing.JDialog {
     private static final String website = "http://www.localizethat.net/";
+    private static final long serialVersionUID = 1L;
     private final URI productHomeUri;
 
     /**

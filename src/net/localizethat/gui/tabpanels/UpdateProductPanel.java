@@ -90,8 +90,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
     }
 
     private void changeProductItemSelectedState(int index) {
-        SelectableItem<Product> item = (SelectableItem<Product>) productList.getModel()
-                .getElementAt(index);
+        SelectableItem<Product> item = productList.getModel().getElementAt(index);
         item.setSelected(!item.isSelected());
         Rectangle rect = productList.getCellBounds(index, index);
         productList.repaint(rect);
@@ -165,10 +164,10 @@ public class UpdateProductPanel extends AbstractTabPanel {
         listL10nModel = new net.localizethat.gui.models.ListComboBoxGenericModel<L10n>();
         selectProductsLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        productList = new javax.swing.JList();
+        productList = new javax.swing.JList<SelectableItem<Product>>();
         originalPathsLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        originalpathsList = new javax.swing.JList();
+        originalpathsList = new javax.swing.JList<LocalePath>();
         selectAllProductsCheck = new javax.swing.JCheckBox();
         jScrollPane3 = new javax.swing.JScrollPane();
         updateOutputArea = new javax.swing.JTextArea();
@@ -330,7 +329,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_selectAllProductsCheckActionPerformed
 
     private void productListKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_productListKeyTyped
-        JList c = (JList) evt.getComponent();
+        JList<SelectableItem<Product>> c = (JList<SelectableItem<Product>>) evt.getComponent();
         char keyCode = evt.getKeyChar();
         int index = c.getLeadSelectionIndex();
 
@@ -377,6 +376,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
+            entityManager.clear();
             clePanel = new ContentListEditPanel(entityManager, upw.get(), listL10nModel.getSelectedTypedItem());
             Main.mainWindow.addTab(clePanel, "Last Update Product result");
             Main.mainWindow.getStatusBar().clearText();
@@ -400,8 +400,8 @@ public class UpdateProductPanel extends AbstractTabPanel {
     private net.localizethat.gui.models.ListComboBoxGenericModel<L10n> listL10nModel;
     private javax.swing.JLabel originalPathsLabel;
     private net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath> originalPathsListModel;
-    private javax.swing.JList originalpathsList;
-    private javax.swing.JList productList;
+    private javax.swing.JList<LocalePath> originalpathsList;
+    private javax.swing.JList<SelectableItem<Product>> productList;
     private net.localizethat.gui.models.ListComboBoxGenericModel<SelectableItem<Product>> productListModel;
     private javax.swing.JCheckBox selectAllProductsCheck;
     private javax.swing.JLabel selectProductsLabel;

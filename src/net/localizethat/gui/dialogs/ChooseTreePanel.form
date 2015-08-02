@@ -124,6 +124,9 @@
           <Connection component="l10nListModel" type="bean"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;L10n&gt;"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="treeContentLabel">
       <Properties>
@@ -159,6 +162,9 @@
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Product&gt;"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JRadioButton" name="selectedPathsRadio">
       <Properties>
@@ -185,6 +191,9 @@
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;LocalePath&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

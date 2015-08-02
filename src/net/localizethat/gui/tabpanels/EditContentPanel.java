@@ -232,7 +232,6 @@ public class EditContentPanel extends AbstractTabPanel {
                 LocaleNode nodeObject = (LocaleNode) childNode.getUserObject();
                 if (nodeObject instanceof LocaleContainer) {
                     loadGrandChildNodes(childNode, (LocaleContainer) nodeObject);
-                    // TODO Notify the model?
                 }
             }
         }

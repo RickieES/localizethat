@@ -51,9 +51,9 @@ public class ContentListTableModel extends AbstractTableModel {
         }
     }
 
-    public void replaceData(Collection<LTContent> newSource) {
+    public void replaceData(Collection<LocaleContent> newSource) {
         this.list.clear();
-        for(LTContent lc : newSource) {
+        for(LocaleContent lc : newSource) {
             ContentListObject clo = new ContentListObject(lc);
             list.add(clo);
         }
@@ -155,7 +155,7 @@ public class ContentListTableModel extends AbstractTableModel {
         private LocaleContent siblingNode;
         private final LocaleFile parentFile;
 
-        ContentListObject(LTContent originalNode) {
+        ContentListObject(LocaleContent originalNode) {
             this.originalNode = originalNode;
             this.siblingNode = originalNode.getTwinByLocale(localizationCode); // This may be null
             this.parentFile = originalNode.getParent();

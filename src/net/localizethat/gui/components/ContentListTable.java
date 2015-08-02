@@ -28,6 +28,7 @@ import net.localizethat.gui.renderers.SelectableListItem;
  * @author rpalomares
  */
 public class ContentListTable extends javax.swing.JPanel {
+    private static final long serialVersionUID = 1L;
     private final TableRowSorter<ContentListTableModel> tableRowSorter;
 
     /**
@@ -292,8 +293,7 @@ public class ContentListTable extends javax.swing.JPanel {
         int index = c.getLeadSelectionIndex();
 
         if ((keyCode == KeyEvent.VK_SPACE) || (keyCode == KeyEvent.VK_ENTER)) {
-            SelectableItem<TableColumn> item = (SelectableItem<TableColumn>) columnChooserModel
-                .getElementAt(index);
+            SelectableItem<TableColumn> item = columnChooserModel.getElementAt(index);
             item.setSelected(!item.isSelected());
             Rectangle rect = columnsList.getCellBounds(index, index);
             columnsList.repaint(rect);
@@ -303,8 +303,8 @@ public class ContentListTable extends javax.swing.JPanel {
 
     private void columnsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnsListMouseClicked
         int index = columnsList.locationToIndex(evt.getPoint());
-        SelectableItem<TableColumn> item = (SelectableItem<TableColumn>) columnChooserModel
-            .getElementAt(index);
+        SelectableItem<TableColumn> item = columnChooserModel
+                .getElementAt(index);
         item.setSelected(!item.isSelected());
         Rectangle rect = columnsList.getCellBounds(index, index);
         columnsList.repaint(rect);

@@ -25,6 +25,7 @@ import net.localizethat.model.Product;
  * @author rpalomares
  */
 public class LocaleNodeTreeModel extends DefaultTreeModel {
+    private static final long serialVersionUID = 1L;
 
     public static LocaleNodeTreeModel createFromProduct(Product p) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Paths for " + p.getName());
