@@ -476,6 +476,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
                     editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                     tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
+                    trnsTextArea.requestFocusInWindow();
                 }
             }
         } while ((editingRowInView < associatedTable.getRowCount()) && !foundEditable);
@@ -507,6 +508,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
                     editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                     tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
+                    trnsTextArea.requestFocusInWindow();
                 }
             }
         } while ((editingRowInView > 0) && !foundEditable);
@@ -524,6 +526,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private void keepOriginalCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keepOriginalCheckActionPerformed
         if (keepOriginalCheck.isSelected()) {
             trnsTextArea.setText("");
+            trnsStatusCombo.setSelectedItem(TranslationStatus.Translated);
         }
     }//GEN-LAST:event_keepOriginalCheckActionPerformed
 
