@@ -26,7 +26,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane1" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="652" max="32767" attributes="0"/>
                   <Component id="buttonPanel" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -156,12 +156,12 @@
                               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="tsclApproximated" pref="0" max="32767" attributes="0"/>
-                                  <Component id="tsclUntranslated" alignment="0" pref="125" max="32767" attributes="0"/>
+                                  <Component id="tsclUntranslated" alignment="0" pref="130" max="32767" attributes="0"/>
                                   <Component id="tsclCopied" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="tsclModified" pref="129" max="32767" attributes="0"/>
+                                  <Component id="tsclModified" pref="133" max="32767" attributes="0"/>
                                   <Component id="tsclProposed" max="32767" attributes="0"/>
                                   <Component id="tsclTranslated" max="32767" attributes="0"/>
                               </Group>
@@ -226,7 +226,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="editPhraseFontLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Font for Edit Phrase dialog"/>
+                <Property name="text" type="java.lang.String" value="Font for locale content fields"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="editPhraseChooseButton">
@@ -440,7 +440,7 @@
                                           <Component id="exportOnlyModifFilesCheck" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="emptyTrnsAsOriginalCheck" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="0" pref="121" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="145" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -641,7 +641,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="138" max="32767" attributes="0"/>
+                      <EmptySpace pref="214" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -751,7 +751,7 @@
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="ckeyPatternField" pref="307" max="32767" attributes="0"/>
+                                          <Component id="ckeyPatternField" pref="372" max="32767" attributes="0"/>
                                           <Component id="labelPatternField" max="32767" attributes="0"/>
                                           <Component id="akeyPatternField" alignment="0" max="32767" attributes="0"/>
                                       </Group>
@@ -978,7 +978,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="20" max="32767" attributes="0"/>
+                      <EmptySpace pref="96" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1112,7 +1112,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="47" max="32767" attributes="0"/>
+                      <EmptySpace pref="75" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

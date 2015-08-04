@@ -272,7 +272,7 @@ public void showDialog() {
         appearanceLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
         appearanceLabel.setText("Appearance");
 
-        editPhraseFontLabel.setText("Font for Edit Phrase dialog");
+        editPhraseFontLabel.setText("Font for locale content fields");
 
         editPhraseChooseButton.setMnemonic('C');
         editPhraseChooseButton.setText("Choose...");
@@ -399,11 +399,11 @@ public void showDialog() {
                         .addGap(18, 18, 18)
                         .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tsclApproximated, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                            .addComponent(tsclUntranslated, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                            .addComponent(tsclUntranslated, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                             .addComponent(tsclCopied, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tsclModified, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                            .addComponent(tsclModified, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
                             .addComponent(tsclProposed, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(tsclTranslated, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -536,7 +536,7 @@ public void showDialog() {
                                     .addComponent(useExtZipCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(exportOnlyModifFilesCheck)
                                     .addComponent(emptyTrnsAsOriginalCheck))
-                                .addGap(0, 121, Short.MAX_VALUE))))
+                                .addGap(0, 145, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
                         .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
@@ -624,7 +624,7 @@ public void showDialog() {
                                 .addComponent(provideSuggFor2Label))
                             .addComponent(useSuggCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(autoTranslateCheck))))
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
         prefTrnsAssistPanelLayout.setVerticalGroup(
             prefTrnsAssistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -716,7 +716,7 @@ public void showDialog() {
                                             .addComponent(ckeyPatternLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(prefKeyConnPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ckeyPatternField, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                                    .addComponent(ckeyPatternField, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                                     .addComponent(labelPatternField)
                                     .addComponent(akeyPatternField))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -812,7 +812,7 @@ public void showDialog() {
                                             .addComponent(pairedCharsListField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(endingCheckedCharsField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(endingCheckedCharsLabel))))))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
         prefAutoTestsPanelLayout.setVerticalGroup(
             prefAutoTestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -878,7 +878,7 @@ public void showDialog() {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(pathGlossaryButton))
                             .addComponent(useOneFilePerProductCheck))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         prefDataStorePanelLayout.setVerticalGroup(
             prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -904,7 +904,7 @@ public void showDialog() {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
                     .addComponent(buttonPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
