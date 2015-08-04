@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -27,6 +29,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DiscriminatorValue("LTKeyValuePair")
 @XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "LTKeyValuePair.countAll", query = "SELECT COUNT(lkvp) FROM LTKeyValuePair lkvp"),
+    @NamedQuery(name = "LocaleContent.count", query = "SELECT COUNT(lc) FROM LocaleContent lc"),
+    @NamedQuery(name = "LTKeyValuePair.allFromAFile",
+            query = "SELECT lkvp FROM LTKeyValuePair lkvp WHERE lkvp.parent = :parentfile ORDER BY lkvp.orderInFile")
+})
 public class LTKeyValuePair extends LTContent implements EditableLocaleContent {
     private static final long serialVersionUID = 1L;
 
