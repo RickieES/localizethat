@@ -18,13 +18,16 @@ import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import net.localizethat.Main;
 import net.localizethat.model.DtdFile;
+import net.localizethat.model.L10n;
 import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContainer;
+import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
 import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
+import net.localizethat.model.jpa.LocaleContentJPAHelper;
 import net.localizethat.model.jpa.LocaleFileJPAHelper;
 import net.localizethat.util.gui.JStatusBar;
 
@@ -36,6 +39,7 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
     private final JTextArea feedbackArea;
     private final JButton editChangesButton;
     private final JStatusBar statusBar;
+    private final L10n targetLocale;
     private final Iterator<LocalePath> localePathIterator;
     private final List<LTContent> newAndModifiedList;
     private final EntityManager em;
@@ -48,9 +52,10 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
     private int foldersDeleted;
 
     public UpdateProductWorker(JTextArea feedbackArea, JButton editChangesButton,
-            Iterator<LocalePath> localePathIterator) {
+            L10n targetLocale, Iterator<LocalePath> localePathIterator) {
         this.feedbackArea = feedbackArea;
         this.editChangesButton = editChangesButton;
+        this.targetLocale = targetLocale;
         this.localePathIterator = localePathIterator;
         this.statusBar = Main.mainWindow.getStatusBar();
         this.em = Main.emf.createEntityManager();
@@ -167,6 +172,9 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
                         lc.addChild(newLc);
                         foldersAdded++;
                         em.persist(newLc);
+                        
+                        // Create the twin for the target locale
+                        lcHelper.createRecursively(newLc, targetLocale, false);
                     }
                 } else {
                     boolean exists = (lc.hasFileChild(curFile.getName(), true));
@@ -175,6 +183,9 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
                         lc.addFileChild(lf);
                         filesAdded++;
                         em.persist(lf);
+
+                        // Create the twin for the target locale
+                        lfHelper.createRecursively(lf, targetLocale, false);
                     }
                 }
             }
@@ -291,21 +302,40 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
                 }
                 return;
             }
-
             processFile(currentPath + "/" + lfChild.getName(), lfChild);
         }
     }
 
     private boolean processFile(String filePath, LocaleFile lf) {
+        LocaleContentJPAHelper lcntHelper = jhb.getLocaleContentJPAHelper();
+        boolean result = true;
+
         try {
             // if (lf instanceof ParseableFile) {
             if (lf instanceof DtdFile) {
-                ParseableFile pf = (ParseableFile) lf;
-                newAndModifiedList.addAll(pf.update(this.em));
+                ParseableFile pf = (ParseableFile) em.merge(lf);
+                newAndModifiedList.addAll(pf.update(this.em, lcntHelper));
+
+                for(LocaleContent lcnt : pf.getChildren()) {
+                    // If the original locale content is set to not be exported
+                    // we don't want to create sibling for it
+                    if ((!lcnt.isDontExport() && lcnt.getTwinByLocale(targetLocale) == null)) {
+                        // em.contains(entity) to know whether an entity is managed or not
+                        lcnt = em.merge(lcnt);
+                        result = lcntHelper.createRecursively(lcnt, targetLocale, false);
+                    }
+                }
+                if (em.isJoinedToTransaction()) {
+                    em.getTransaction().commit();
+                    em.getTransaction().begin();
+                }
             }
             filesModified++;
-            return true;
+            return result;
         } catch (ParseException ex) {
+            return false;
+        } catch (Exception ex) {
+            Logger.getLogger(UpdateProductWorker.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }

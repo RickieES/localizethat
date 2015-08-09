@@ -365,7 +365,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
             upw.cancel(true);
         }
         upw = new UpdateProductWorker(updateOutputArea, editChangesButton,
-                originalPathsListModel.iterator());
+                l, originalPathsListModel.iterator());
         statusBar.startUndefProgress();
         upw.execute();
     }//GEN-LAST:event_updateButtonActionPerformed
