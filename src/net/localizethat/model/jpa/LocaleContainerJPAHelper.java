@@ -126,15 +126,6 @@ public class LocaleContainerJPAHelper {
                     // Connect the parent with newSibling
                     defaultParent.getTwinByLocale(targetLocale).addChild(newSibling);
 
-                    // Conect defaultTwin and newSibling between them, and with the rest
-                    // of twins
-                    for(LocaleContainer lcTwin : defaultTwin.getTwins()) {
-                        newSibling.addTwin(lcTwin);
-                        lcTwin.addTwin(newSibling);
-                    }
-                    newSibling.addTwin(defaultTwin);
-                    defaultTwin.addTwin(newSibling);
-
                     em.persist(newSibling);
 
                     if (commitOnSuccess) {

@@ -87,6 +87,7 @@ public class LocaleContentJPAHelper {
         boolean result;
         LocaleContent sibling;
         LocaleFile defaultParent;
+        LocaleFile twinParent;
         LocaleContent newSibling;
         Date opTimeStamp = new Date();
 
@@ -109,6 +110,8 @@ public class LocaleContentJPAHelper {
                 }
 
                 if (result) {
+                    twinParent = defaultParent.getTwinByLocale(targetLocale);
+                    twinParent = em.merge(twinParent);
                     // At this point, we know that defaultTwin is really the default
                     // twin, that it has no sibling of the targetLocale and that we have
                     // both a parent of defaultTwin and a parent for the targetLocale
@@ -156,23 +159,14 @@ public class LocaleContentJPAHelper {
                         newSibling = new LTContent();
                     }
                     newSibling.setName(defaultTwin.getName());
-                    newSibling.setParent(defaultParent.getTwinByLocale(targetLocale));
+                    newSibling.setParent(twinParent);
                     newSibling.setCreationDate(opTimeStamp);
                     newSibling.setDefLocaleTwin(defaultTwin);
                     newSibling.setL10nId(targetLocale);
                     newSibling.setLastUpdate(opTimeStamp);
 
                     // Connect the parent with newSibling
-                    defaultParent.getTwinByLocale(targetLocale).addChild(newSibling);
-
-                    // Conect defaultTwin and newSibling between them, and with the rest
-                    // of twins
-                    for(LocaleContent lcntTwin : defaultTwin.getTwins()) {
-                        newSibling.addTwin(lcntTwin);
-                        lcntTwin.addTwin(newSibling);
-                    }
-                    newSibling.addTwin(defaultTwin);
-                    defaultTwin.addTwin(newSibling);
+                    twinParent.addChild(newSibling);
 
                     em.persist(newSibling);
                     if (commitOnSuccess) {
@@ -212,17 +206,6 @@ public class LocaleContentJPAHelper {
             result = true;
             switch (lcnt.getClass().getName()) {
                 default: // No special handling at the moment
-            }
-
-            // Now we need to update the twins to remove lcnt from their twins lists
-            if (result) {
-                for (LocaleContent lcntTwin : lcnt.getTwins()) {
-                    lcntTwin = em.merge(lcntTwin);
-                    result = result && lcntTwin.removeTwin(lcnt);
-                    if (!result) {
-                        break;
-                    }
-                }
             }
 
             // If lcnt is a default twin (thus, not having a default twin itself), then
