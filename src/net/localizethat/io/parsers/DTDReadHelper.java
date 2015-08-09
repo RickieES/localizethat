@@ -20,11 +20,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import net.localizethat.model.CommentType;
-import net.localizethat.model.LTExternalEntity;
 import net.localizethat.model.LTComment;
+import net.localizethat.model.LTContent;
+import net.localizethat.model.LTExternalEntity;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LTLicense;
-import net.localizethat.model.LTContent;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -175,8 +175,6 @@ public class DTDReadHelper extends DefaultHandler2 {
             ltComment.setCreationDate(new Date());
             ltComment.setLastUpdate(ltComment.getCreationDate());
             lcList.add(ltComment);
-            // TODO set other properties (like DefaultLocaleTwin)
-            // TODO persist thisFileLicense and commit changes to it and dtdFile
         }
     }
 
@@ -200,8 +198,6 @@ public class DTDReadHelper extends DefaultHandler2 {
         ltKvp.setLastUpdate(ltKvp.getCreationDate());
         ltKvp.setOrderInFile(lineNumber);
         lcList.add(ltKvp);
-        // TODO set other properties (like DefaultLocaleTwin)
-        // TODO persist thisFileLicense and commit changes to it and dtdFile
     }
 
     @Override
