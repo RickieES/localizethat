@@ -53,7 +53,7 @@ public class ContentListEditPanel extends AbstractTabPanel {
         // need to merge them one by one, creating a new list
         List<LocaleContent> managedLcList = new ArrayList<>(lcList.size());
         for(LocaleContent lc : lcList) {
-            managedLcList.add(entityManager.merge(lc));
+            managedLcList.add(entityManager.find(lc.getClass(), lc.getId()));
         }
         
         this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
