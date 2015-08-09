@@ -16,7 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import net.localizethat.model.jpa.LocaleContentJPAHelper;
 
 /**
  * Adapter class that extends LocaleFile (thus, implementing LocaleNode) and
@@ -24,14 +26,16 @@ import javax.persistence.OneToOne;
  * parseable file. Two abstract methods deal with the previous parsing of
  * @author rpalomares
  */
+@MappedSuperclass
 public abstract class ParseableFileAdapter extends LocaleFile implements ParseableFile {
     private static final long serialVersionUID = 1L;
-    @OneToOne
-    @JoinColumn(name = "ID")
+    @OneToOne(optional = true)
+    @JoinColumn(name = "LFILELICENSE")
     LTLicense fileLicense;
 
     @Override
-    public List<LTContent> update(EntityManager em) throws ParseException {
+    public List<LTContent> update(EntityManager em, LocaleContentJPAHelper lcntHelper)
+                throws ParseException {
         List<LTContent> newAndModifiedList = new ArrayList<>(10);
         // We're parsing the original if this file has no default twin
         boolean isParsingOriginal = (this.getDefLocaleTwin() == null);
@@ -45,7 +49,9 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
         boolean changed;
 
         try {
-            em.getTransaction().begin();
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
             
             // We mark all contents for deletion; every object modified or added will
             // have their markedForDeletion reset, so in the end we will have that mark
@@ -163,19 +169,17 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                     
                 }
             }
+            em.getTransaction().commit();
 
             // Permanently delete obsolete contents
             for(Iterator<? extends LocaleContent> iterator = this.children.iterator();
                     iterator.hasNext();) {
                 LocaleContent lc = iterator.next();
-                em.merge(lc);
                 if (lc.isMarkedForDeletion()) {
-                    lc.setParent(null);
                     iterator.remove();
-                    em.remove(lc);
+                    lcntHelper.removeRecursively(lc);
                 }
             }
-            em.getTransaction().commit();
         } catch (Exception e) {
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
