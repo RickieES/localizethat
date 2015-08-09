@@ -162,6 +162,7 @@ public class LocaleFile implements LocaleNode, Serializable {
         twins = new ArrayList<>(1); // Most of the time, there will be just one twin
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -321,11 +322,19 @@ public class LocaleFile implements LocaleNode, Serializable {
 
     @Override
     public void setDefLocaleTwin(LocaleNode twin) {
-        if ((twin != null) && (twin instanceof LocaleFile)) {
+        // The twin must not be null, must be of the same class and must be a default locale itself
+        if ((twin != null) && (twin instanceof LocaleFile)
+                && (twin.getDefLocaleTwin() == null)) {
             this.defLocaleTwin = (LocaleFile) twin;
-            twin.addTwin(this);
+            if (twin.getTwinByLocale(l10nId) == null) {
+                twin.addTwin(this);
+            }
         } else {
+            twin = this.defLocaleTwin;
             this.defLocaleTwin = null;
+            if ((twin != null) && (twin.getTwinByLocale(l10nId) == this)) {
+                twin.removeTwin(this);
+            }
         }
     }
 
@@ -338,7 +347,11 @@ public class LocaleFile implements LocaleNode, Serializable {
     public boolean addTwin(LocaleNode twin) {
         boolean result;
 
-        result = (twin.getDefLocaleTwin() == this);
+        // We only add non-null twins, of the same class and only on the default locale twin,
+        // so there is only one list of twins kept in the default locale twin. getTwinByLocale
+        // will look up in the default locale twin if called on a non-default locale twin
+        result = ((twin != null) && (twin instanceof LocaleFile)
+                && (twin.getDefLocaleTwin() == this) && (!isATwin(twin)));
 
         if (result) {
             this.twins.add((LocaleFile) twin);
@@ -359,6 +372,12 @@ public class LocaleFile implements LocaleNode, Serializable {
 
     @Override
     public boolean isATwin(LocaleNode possibleTwin) {
+        // If this node is not a default locale twin, its twins collection should be empty, so
+        // we call the method for the default locale twin
+        if (this.getDefLocaleTwin() != null) {
+            return this.getDefLocaleTwin().isATwin(possibleTwin);
+        }
+
         for(LocaleNode s : twins) {
             if (s.equals(possibleTwin)) {
                 return true;
@@ -369,6 +388,12 @@ public class LocaleFile implements LocaleNode, Serializable {
 
     @Override
     public LocaleFile getTwinByLocale(L10n locale) {
+        // If this node is not a default locale twin, its twins collection should be empty, so
+        // we call the method for the default locale twin
+        if (this.getDefLocaleTwin() != null) {
+            return this.getDefLocaleTwin().getTwinByLocale(locale);
+        }
+
         for(LocaleFile s : twins) {
             if (s.getL10nId().equals(locale)) {
                 return s;
@@ -379,6 +404,12 @@ public class LocaleFile implements LocaleNode, Serializable {
 
     @Override
     public Collection<LocaleFile> getTwins() {
+        // If this node is not a default locale twin, its twins collection should be empty, so
+        // we call the method for the default locale twin
+        if (this.getDefLocaleTwin() != null) {
+            return this.getDefLocaleTwin().getTwins();
+        }
+
         return twins;
     }
 
@@ -405,7 +436,7 @@ public class LocaleFile implements LocaleNode, Serializable {
         try {
             is = new FileInputStream(f);
         } catch (FileNotFoundException e) {
-            // TODO log the exception
+            Logger.getLogger(LocaleFile.class.getName()).log(Level.SEVERE, null, e);
             is = null;
         }
         return is;
@@ -420,7 +451,7 @@ public class LocaleFile implements LocaleNode, Serializable {
         try {
             is = new LineNumberReader(new FileReader(f));
         } catch (FileNotFoundException e) {
-            // TODO log the exception
+            Logger.getLogger(LocaleFile.class.getName()).log(Level.SEVERE, null, e);
             is = null;
         }
         return is;

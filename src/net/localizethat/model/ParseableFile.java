@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
+import net.localizethat.model.jpa.LocaleContentJPAHelper;
 
 /**
  * Interface defining features of files that can be parseable
@@ -19,16 +21,25 @@ import javax.persistence.EntityManager;
 public interface ParseableFile extends LocaleNode {
 
     /**
+     * Returns the list of children of this LocaleNode
+     * @return A list of LocaleNode items that represent the children of this one
+     */
+    @Override
+    Collection<? extends LocaleContent> getChildren();
+
+    /**
      * Parses a text file (like a DTD file, a Properties file, etc.) corresponding to
      * this ParseableFile and "merges" both, removing obsolete entries, adding
      * new ones (only if ParseableFile is declared as default twin) and updating the
      * remaining if they have changed
      *
      * @param em an EntityManager used to persist in DB new, modified and deleted records
+     * @param lcntHelper 
      * @return a list of LTContent objects added or modified
      * @throws ParseException in case the parsing fails
      */
-    List<LTContent> update(EntityManager em) throws ParseException;
+    List<LTContent> update(EntityManager em, LocaleContentJPAHelper lcntHelper)
+            throws ParseException;
 
     /**
      * Parses a text file (like a DTD file, a Properties file, etc.) and tries to apply

@@ -15,7 +15,13 @@ import java.util.Date;
  * @author rpalomares
  */
 public interface LocaleNode extends Comparable<LocaleNode> {
-    
+
+    /**
+     * Returns the ID of the entity.
+     * @return the ID of the entity assigned by the Persistence Manager
+     */
+    Integer getId();
+
     /**
      * Sets the name of the node. What exactly represents the name depends on the specific subtype
      * of LocaleNode, but usually it represents the natural name of the node (what a human would
@@ -219,10 +225,12 @@ public interface LocaleNode extends Comparable<LocaleNode> {
     /**
      * Adds a twin other than the default locale twin. The list of twins is automatically
      * maintained by using twin.setDefLocaleTwin(this), so addTwin() does not need to be
-     * called independently
+     * called independently. The list of twins is kept only in the default locale node; the
+     * rest of twins will have its twins collection empty (but getTwinByLocale will work for
+     * any of them, as the method will look up in the default locale twin collection)
      * @param twin a twin of this object
      * @return true if the twin was added successfully; false if it wasn't added because the twin
-     * had not set this object as default locale twin
+     * was null, not of the same concrete type of had not set this object as default locale twin
      */
     boolean addTwin(LocaleNode twin);
 
@@ -244,7 +252,9 @@ public interface LocaleNode extends Comparable<LocaleNode> {
     boolean isATwin(LocaleNode possibleTwin);
 
     /**
-     * Returns the twin of this node for the supplied Locale
+     * Returns the twin of this node for the supplied Locale. If called on a non-default locale
+     * twin (thus, having its twins collection empty), it will look up in its default locale twins
+     * collection.
      * @param locale the L10n for which we are looking a twin
      * @return the LocaleNode twin for L10n locale, or null if there is no twin for that L10n
      */

@@ -112,6 +112,7 @@ public class LocaleContainer implements LocaleNode, Serializable {
         this.parent = parent;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -248,11 +249,19 @@ public class LocaleContainer implements LocaleNode, Serializable {
 
     @Override
     public void setDefLocaleTwin(LocaleNode twin) {
-        if ((twin != null) && (twin instanceof LocaleContainer)) {
+        // The twin must not be null, must be of the same class and must be a default locale itself
+        if ((twin != null) && (twin instanceof LocaleContainer)
+                && (twin.getDefLocaleTwin() == null)) {
             this.defLocaleTwin = (LocaleContainer) twin;
-            twin.addTwin(this);
+            if (twin.getTwinByLocale(l10nId) == null) {
+                twin.addTwin(this);
+            }
         } else {
+            twin = this.defLocaleTwin;
             this.defLocaleTwin = null;
+            if ((twin != null) && (twin.getTwinByLocale(l10nId) == this)) {
+                twin.removeTwin(this);
+            }
         }
     }
 
@@ -265,7 +274,11 @@ public class LocaleContainer implements LocaleNode, Serializable {
     public boolean addTwin(LocaleNode twin) {
         boolean result;
 
-        result = ((twin != null) && (twin instanceof LocaleContainer) && (twin.getDefLocaleTwin() == this));
+        // We only add non-null twins, of the same class and only on the default locale twin,
+        // so there is only one list of twins kept in the default locale twin. getTwinByLocale
+        // will look up in the default locale twin if called on a non-default locale twin
+        result = ((twin != null) && (twin instanceof LocaleContainer)
+                && (twin.getDefLocaleTwin() == this) && (!isATwin(twin)));
 
         if (result) {
             this.twins.add((LocaleContainer) twin);
@@ -286,17 +299,28 @@ public class LocaleContainer implements LocaleNode, Serializable {
 
     @Override
     public boolean isATwin(LocaleNode possibleTwin) {
+        // If this node is not a default locale twin, its twins collection should be empty, so
+        // we call the method for the default locale twin
+        if (this.getDefLocaleTwin() != null) {
+            return this.getDefLocaleTwin().isATwin(possibleTwin);
+        }
+
         for(LocaleNode s : twins) {
             if (s.equals(possibleTwin)) {
                 return true;
             }
         }
-
         return false;
     }
 
     @Override
     public LocaleContainer getTwinByLocale(L10n locale) {
+        // If this node is not a default locale twin, its twins collection should be empty, so
+        // we call the method for the default locale twin
+        if (this.getDefLocaleTwin() != null) {
+            return this.getDefLocaleTwin().getTwinByLocale(locale);
+        }
+
         for(LocaleContainer s : twins) {
             if (s.getL10nId().equals(locale)) {
                 return s;
@@ -307,6 +331,12 @@ public class LocaleContainer implements LocaleNode, Serializable {
 
     @Override
     public Collection<LocaleContainer> getTwins() {
+        // If this node is not a default locale twin, its twins collection should be empty, so
+        // we call the method for the default locale twin
+        if (this.getDefLocaleTwin() != null) {
+            return this.getDefLocaleTwin().getTwins();
+        }
+
         return twins;
     }
 
