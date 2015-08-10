@@ -9,6 +9,7 @@ import java.beans.Beans;
 import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -17,6 +18,7 @@ import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.model.EditableLocaleContent;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LocaleContent;
+import net.localizethat.model.LocaleFile;
 import net.localizethat.model.TranslationStatus;
 import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContentJPAHelper;
@@ -37,6 +39,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private ContentListTableModel.ContentListObject selectedLObject;
     private JPAHelperBundle jhb;
     private final EllipsisUnicodeCharKeyAdapter ellipsisCharKeyAdapter;
+    private LocaleFile lastParent;
 
     /**
      * Creates new form ContentEditionPanel
@@ -52,10 +55,21 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         for(TranslationStatus ts : TranslationStatus.values()) {
             trnsStatusCombo.addItem(ts);
         }
+        // Clear text pane/area of design dummy text
+        origTextPane.setText("");
+        trnsTextArea.setText("");
         ellipsisCharKeyAdapter = new EllipsisUnicodeCharKeyAdapter();
         trnsTextArea.addKeyListener(ellipsisCharKeyAdapter);
     }
 
+    /**
+     * Creates new form ContentEditionPanel using a provided EntityManager and a
+     * connection to a table containing the entries to be edited
+     * @param entityManager an existing, open EntityManager containing the entities
+     * held in the associated table
+     * @param associatedTable a table holding a list of entries to be edited by
+     * the user
+     */
     public ContentEditionPanel(EntityManager entityManager, JTable associatedTable) {
         if (!Beans.isDesignTime()) {
             emf = Main.emf;
@@ -66,6 +80,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         for(TranslationStatus ts : TranslationStatus.values()) {
             trnsStatusCombo.addItem(ts);
         }
+        // Clear text pane/area of design dummy text
+        origTextPane.setText("");
+        trnsTextArea.setText("");
         ellipsisCharKeyAdapter = new EllipsisUnicodeCharKeyAdapter();
         trnsTextArea.addKeyListener(ellipsisCharKeyAdapter);
 
@@ -75,6 +92,11 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         setAssociatedTable(associatedTable);
     }
 
+    /**
+     * Sets an associated table, in case the no args constructor is used
+     * @param associatedTable a table holding a list of entries to be edited by
+     * the user
+     */
     public final void setAssociatedTable(JTable associatedTable) {
         if (associatedTable != null) {
             this.associatedTable = associatedTable;
@@ -114,12 +136,18 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     lkvp = (LTKeyValuePair) elc;
                     connAccessKey = lkvp.getConnAccesskey();
                     connCommandKey = lkvp.getConnCommandkey();
-                    result |= ((connAccessKey != null)
-                            && (connAccessKey.getTextValue() != null)
-                            && (connAccessKey.getTextValue().compareTo(accessKeyField.getText()) != 0));
-                    result |= ((connCommandKey != null)
-                            && (connCommandKey.getTextValue() != null)
-                            && (connCommandKey.getTextValue().compareTo(commandKeyField.getText()) != 0));
+                    result |= (
+                            ((connAccessKey == null) && (objectForAKCombo.getSelectedItem() != null))
+                            ||
+                            ((connAccessKey != null) && (connAccessKey.getTextValue() != null)
+                                && (connAccessKey.getTextValue().compareTo(accessKeyField.getText()) != 0))
+                            );
+                    result |= (
+                            ((connCommandKey == null) && (objectForCKCombo.getSelectedItem() != null))
+                            ||
+                            ((connCommandKey != null) && (connCommandKey.getTextValue() != null)
+                                && (connCommandKey.getTextValue().compareTo(commandKeyField.getText()) != 0))
+                            );
                 }
             }
         } else {
@@ -144,6 +172,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     true)) {
                 Main.mainWindow.getStatusBar().setErrorText(
                         "Error creating the localized value in DB");
+                return;
             }
         }
 
@@ -159,10 +188,66 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         elc.setTextValue(trnsTextArea.getText());
         elc.setKeepOriginal(keepOriginalCheck.isSelected());
-        elc.setTrnsStatus((TranslationStatus) trnsStatusCombo.getSelectedItem());
+
+        if (trnsStatusCombo.getSelectedItem() != null) {
+            elc.setTrnsStatus((TranslationStatus) trnsStatusCombo.getSelectedItem());
+        } else {
+            elc.setTrnsStatus(TranslationStatus.Translated);
+        }
+
+        if (elc instanceof LTKeyValuePair) {
+            LTKeyValuePair lkvpOrig = (LTKeyValuePair) selectedLObject.getOriginalNode();
+            LTKeyValuePair lkvpTrns = (LTKeyValuePair) elc;
+            
+            // We'll use the same variable to manage updating of both access and command
+            // key connections
+            LTKeyValuePair keyConn = lkvpTrns.getConnAccesskey();
+            if (keyConn == null) {
+                if (objectForAKCombo.getSelectedItem() != null) {
+                    keyConn = (LTKeyValuePair) objectForAKCombo.getSelectedItem();
+                    keyConn = (LTKeyValuePair) keyConn.getTwinByLocale(tableModel.getLocalizationCode());
+                }
+            }
+
+            if (keyConn != null) {
+                keyConn = entityManager.merge(keyConn);
+                keyConn.setTextValue(accessKeyField.getText());
+                lkvpTrns.setConnAccesskey(keyConn);
+            }
+
+            keyConn = lkvpTrns.getConnCommandkey();
+            if (keyConn == null) {
+                if (objectForCKCombo.getSelectedItem() != null) {
+                    keyConn = (LTKeyValuePair) objectForCKCombo.getSelectedItem();
+                    keyConn = (LTKeyValuePair) keyConn.getTwinByLocale(tableModel.getLocalizationCode());
+                }
+            }
+
+            if (keyConn != null) {
+                keyConn = entityManager.merge(keyConn);
+                keyConn.setTextValue(commandKeyField.getText());
+                lkvpTrns.setConnCommandkey(keyConn);
+            }
+        }
+
         elc.setLastUpdate(new Date());
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
+    }
+
+    private void fillKeyConnections() {
+        if ((lastParent == null) || (!lastParent.equals(selectedLObject.getParentFile()))) {
+            // One query, two models to fill
+            TypedQuery<LTKeyValuePair> lkvpQuery = entityManager.createNamedQuery("LTKeyValuePair.allFromAFile",
+                    LTKeyValuePair.class);
+            lkvpQuery.setParameter("parentfile", selectedLObject.getParentFile());
+
+            connAccessKeyComboModel.clearAll();
+            connAccessKeyComboModel.addAll(lkvpQuery.getResultList());
+            connCommandKeyComboModel.clearAll();
+            connCommandKeyComboModel.addAll(lkvpQuery.getResultList());
+        }
+        lastParent = selectedLObject.getParentFile();
     }
 
     /**
@@ -173,6 +258,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        connAccessKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair>();
+        connCommandKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair>();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         mainPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -194,6 +281,10 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         commandKeyLabel = new javax.swing.JLabel();
         commandKeyField = new javax.swing.JTextField();
         advancedPanel = new javax.swing.JPanel();
+        objectForAKLabel = new javax.swing.JLabel();
+        objectForAKCombo = new javax.swing.JComboBox<LTKeyValuePair>();
+        objectForCKLabel = new javax.swing.JLabel();
+        objectForCKCombo = new javax.swing.JComboBox<LTKeyValuePair>();
         buttonPanel = new javax.swing.JPanel();
         nextButton = new javax.swing.JButton();
         prevButton = new javax.swing.JButton();
@@ -221,13 +312,12 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         upperPanelLayout.setHorizontalGroup(
             upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(upperPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(origLabel)
                     .addGroup(upperPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(commentTButton))
-                    .addGroup(upperPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(origLabel)))
+                        .addGap(12, 12, 12)
+                        .addComponent(commentTButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
                 .addContainerGap())
@@ -365,15 +455,61 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         jTabbedPane1.addTab("Main", mainPanel);
 
+        objectForAKLabel.setText("Object for Access Key:");
+
+        objectForAKCombo.setModel(connAccessKeyComboModel);
+        objectForAKCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                objectForAKComboActionPerformed(evt);
+            }
+        });
+        objectForAKCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                objectForAKComboKeyTyped(evt);
+            }
+        });
+
+        objectForCKLabel.setText("Object for Command Key:");
+
+        objectForCKCombo.setModel(connCommandKeyComboModel);
+        objectForCKCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                objectForCKComboActionPerformed(evt);
+            }
+        });
+        objectForCKCombo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                objectForCKComboKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout advancedPanelLayout = new javax.swing.GroupLayout(advancedPanel);
         advancedPanel.setLayout(advancedPanelLayout);
         advancedPanelLayout.setHorizontalGroup(
             advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 497, Short.MAX_VALUE)
+            .addGroup(advancedPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(objectForCKLabel)
+                    .addComponent(objectForAKLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(objectForAKCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(objectForCKCombo, 0, 283, Short.MAX_VALUE))
+                .addContainerGap())
         );
         advancedPanelLayout.setVerticalGroup(
             advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(advancedPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(objectForAKLabel)
+                    .addComponent(objectForAKCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(objectForCKLabel)
+                    .addComponent(objectForCKCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(208, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Details", advancedPanel);
@@ -498,7 +634,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             editingRowInView--;
             foundEditable = false;
 
-            if (editingRowInView > 0) {
+            if (editingRowInView >= 0) {
                 editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                 lc = tableModel.getElementAt(editingRowInModel).getOriginalNode();
                 foundEditable = lc.isEditable();
@@ -543,6 +679,44 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         }
     }//GEN-LAST:event_trnsStatusComboActionPerformed
 
+    private void objectForAKComboKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectForAKComboKeyTyped
+        if (java.awt.event.KeyEvent.VK_DELETE == evt.getKeyChar()) {
+            connAccessKeyComboModel.setSelectedIndex(-1);
+            accessKeyField.setText("");
+            accessKeyField.setEnabled(false);
+        }
+    }//GEN-LAST:event_objectForAKComboKeyTyped
+
+    private void objectForAKComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectForAKComboActionPerformed
+        LTKeyValuePair connAK;
+        int selectedConnAK = objectForAKCombo.getSelectedIndex();
+        
+        if (selectedConnAK != -1) {
+            connAK = objectForAKCombo.getItemAt(selectedConnAK);
+            accessKeyField.setText(connAK.getTwinByLocale(tableModel.getLocalizationCode()).getTextValue());
+            accessKeyField.setEnabled(true);
+        }
+    }//GEN-LAST:event_objectForAKComboActionPerformed
+
+    private void objectForCKComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectForCKComboActionPerformed
+        LTKeyValuePair connCK;
+        int selectedConnCK = objectForCKCombo.getSelectedIndex();
+
+        if (selectedConnCK != -1) {
+            connCK = objectForCKCombo.getItemAt(selectedConnCK);
+            commandKeyField.setText(connCK.getTwinByLocale(tableModel.getLocalizationCode()).getTextValue());
+            commandKeyField.setEnabled(true);
+        }
+    }//GEN-LAST:event_objectForCKComboActionPerformed
+
+    private void objectForCKComboKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectForCKComboKeyTyped
+        if (java.awt.event.KeyEvent.VK_DELETE == evt.getKeyChar()) {
+            connCommandKeyComboModel.setSelectedIndex(-1);
+            commandKeyField.setText("");
+            commandKeyField.setEnabled(false);
+        }
+    }//GEN-LAST:event_objectForCKComboKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField accessKeyField;
     private javax.swing.JLabel accessKeyLabel;
@@ -551,6 +725,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private javax.swing.JTextField commandKeyField;
     private javax.swing.JLabel commandKeyLabel;
     private javax.swing.JToggleButton commentTButton;
+    private net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair> connAccessKeyComboModel;
+    private net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair> connCommandKeyComboModel;
     private javax.swing.JButton copyOrigButton;
     private javax.swing.JButton exitButton;
     private javax.swing.JScrollPane jScrollPane1;
@@ -561,6 +737,10 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private javax.swing.JPanel lowerPanel;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton nextButton;
+    private javax.swing.JComboBox<LTKeyValuePair> objectForAKCombo;
+    private javax.swing.JLabel objectForAKLabel;
+    private javax.swing.JComboBox<LTKeyValuePair> objectForCKCombo;
+    private javax.swing.JLabel objectForCKLabel;
     private javax.swing.JLabel origLabel;
     private javax.swing.JTextPane origTextPane;
     private javax.swing.JButton prevButton;
@@ -578,7 +758,15 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             return;
         }
 
+        origTextPane.setText("");
+        trnsTextArea.setText("");
+        trnsStatusCombo.setSelectedItem(null);
+        accessKeyField.setText("");
+        accessKeyField.setEnabled(false);
+        commandKeyField.setText("");
+        commandKeyField.setEnabled(false);
         commentTButton.setEnabled(false);
+
         int selectedRow = associatedTable.getSelectedRow();
         if (selectedRow != -1) {
             selectedRow = associatedTable.convertRowIndexToModel(selectedRow);
@@ -595,45 +783,27 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     trnsTextArea.setText(trnsElc.getTextValue());
                     trnsStatusCombo.setSelectedItem(trnsElc.getTrnsStatus());
                     keepOriginalCheck.setSelected(trnsElc.isKeepOriginal());
-                    
+
                     if (trnsElc instanceof LTKeyValuePair) {
+                        fillKeyConnections();
                         LTKeyValuePair lkvp = (LTKeyValuePair) trnsElc;
                         LTKeyValuePair connAccessKey = lkvp.getConnAccesskey();
                         LTKeyValuePair connCommandKey = lkvp.getConnCommandkey();
-                        
+
                         commentTButton.setEnabled(((LTKeyValuePair) origLc).getComment() != null);
-                        
+
                         if (connAccessKey != null) {
                             accessKeyField.setText(connAccessKey.getTextValue());
                             accessKeyField.setEnabled(true);
-                        } else {
-                            accessKeyField.setText("");
-                            accessKeyField.setEnabled(false);
+                            connAccessKeyComboModel.setSelectedItem(connAccessKey);
                         }
                         if (connCommandKey != null) {
                             commandKeyField.setText(connCommandKey.getTextValue());
                             commandKeyField.setEnabled(true);
-                        } else {
-                            commandKeyField.setText("");
-                            commandKeyField.setEnabled(false);
+                            connCommandKeyComboModel.setSelectedItem(connCommandKey);
                         }
                     }
-                } else {
-                    trnsTextArea.setText("");
-                    trnsStatusCombo.setSelectedItem(TranslationStatus.Copied);
-                    accessKeyField.setText("");
-                    accessKeyField.setEnabled(false);
-                    commandKeyField.setText("");
-                    commandKeyField.setEnabled(false);
                 }
-            } else {
-                origTextPane.setText("");
-                trnsTextArea.setText("");
-                trnsStatusCombo.setSelectedItem(TranslationStatus.Copied);
-                accessKeyField.setText("");
-                accessKeyField.setEnabled(false);
-                commandKeyField.setText("");
-                commandKeyField.setEnabled(false);
             }
         }
     }
