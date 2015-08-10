@@ -25,7 +25,7 @@
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
       <property name="javax.persistence.jdbc.password" value="sa"/>
-      <property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.logging.level" value="INFO"/>
     </properties>
   </persistence-unit>
 </persistence>
