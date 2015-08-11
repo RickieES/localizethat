@@ -39,7 +39,7 @@ public class PropertiesFile extends ParseableFileAdapter {
     }
 
     @Override
-    protected List<LTContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
+    protected List<LocaleContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

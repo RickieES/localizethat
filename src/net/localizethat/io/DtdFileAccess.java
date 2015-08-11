@@ -10,7 +10,7 @@ import java.io.Reader;
 import java.text.ParseException;
 import java.util.List;
 import net.localizethat.io.parsers.DTDReadHelper;
-import net.localizethat.model.LTContent;
+import net.localizethat.model.LocaleContent;
 
 /**
  * DTD ParseableFileAccess utility class that returns a list of LTContent objects
@@ -19,8 +19,8 @@ import net.localizethat.model.LTContent;
 public class DtdFileAccess implements ParseableFileAccess {
 
     @Override
-    public List<LTContent> parse(Reader is) throws ParseException {
-        List<LTContent> lcList;
+    public List<LocaleContent> parse(Reader is) throws ParseException {
+        List<LocaleContent> lcList;
         LineNumberReader lnr;
 
         if (is instanceof LineNumberReader) {

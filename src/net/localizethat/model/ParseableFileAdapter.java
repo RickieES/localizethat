@@ -45,7 +45,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             return null;
         }
 
-        List<LTContent> parsedContentList = beforeParsingHook(fileReader);
+        List<LocaleContent> parsedContentList = beforeParsingHook(fileReader);
         boolean changed;
 
         try {
@@ -60,7 +60,7 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                 lc.setMarkedForDeletion(true);
             }
 
-            for (LTContent lcObject : parsedContentList) {
+            for (LocaleContent lcObject : parsedContentList) {
                 lcObject.setParent(this);
                 lcObject.setL10nId(this.getL10nId());
                 if (lcObject instanceof LTLicense) {
@@ -193,12 +193,12 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
      * actually parses the file, returning a list of LTContent objects
      * @param fileReader a LineNumberReader with the character stream from the
      *                   file that is to be parsed
-     * @return a list of LTContent objects representing every significant item
+     * @return a list of LocaleContent objects representing every significant item
      *         in the file
      * @throws java.text.ParseException if anything prevents from completing the
      *         parsing
      */
-    protected abstract List<LTContent> beforeParsingHook(LineNumberReader fileReader)
+    protected abstract List<LocaleContent> beforeParsingHook(LineNumberReader fileReader)
             throws ParseException;
 
     protected abstract void afterParsingHook(LineNumberReader fileReader);

@@ -21,10 +21,10 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import net.localizethat.model.CommentType;
 import net.localizethat.model.LTComment;
-import net.localizethat.model.LTContent;
 import net.localizethat.model.LTExternalEntity;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LTLicense;
+import net.localizethat.model.LocaleContent;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -52,7 +52,7 @@ public class DTDReadHelper extends DefaultHandler2 {
     private static final Logger fLogger = Logger.getLogger(DTDReadHelper.class.getPackage().
             getName());
     private final LineNumberReader is;
-    private final List<LTContent> lcList;
+    private final List<LocaleContent> lcList;
     private Locator2 locator;
     
     // FIXME This is not actually a *line* counter, but a *managed token* counter.
@@ -75,7 +75,7 @@ public class DTDReadHelper extends DefaultHandler2 {
         this.locator = locator;
     }
 
-    public List<LTContent> getLocaleContentList() {
+    public List<LocaleContent> getLocaleContentList() {
         if (is == null) {
             return null;
         } else {
