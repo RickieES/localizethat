@@ -218,7 +218,11 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             
             for(LocaleContent lc : sortedChildren) {
                 if (!lc.isDontExport()) {
-                    printLocaleContent(pw, lc);
+                    if (lc.isKeepOriginal()) {
+                        printLocaleContent(pw, lc.getDefLocaleTwin());
+                    } else {
+                        printLocaleContent(pw, lc);
+                    }
                 }
             }
             pw.flush();
