@@ -55,7 +55,7 @@ public class LTContent implements LocaleContent {
     public static Comparator<LocaleContent> orderInFileComparator = new Comparator<LocaleContent>() {
             @Override
             public int compare(LocaleContent o1, LocaleContent o2) {
-                return o2.getOrderInFile() - o1.getOrderInFile();
+                return o1.getOrderInFile() - o2.getOrderInFile();
             }
     };
 
