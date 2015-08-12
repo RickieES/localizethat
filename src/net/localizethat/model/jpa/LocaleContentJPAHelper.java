@@ -134,11 +134,14 @@ public class LocaleContentJPAHelper {
                         LTComment newLtc = new LTComment();
                         newLtc.setCommentType(origLtc.getCommentType());
                         newLtc.setEntityName(origLtc.getEntityName());
-                        newLtc.setTextValue(origLtc.getTextValue());
+                        // By default, we mark comments as Keep Original
+                        newLtc.setKeepOriginal(true);
                         newSibling = newLtc;
                     } else if (defaultTwin instanceof LTIniSection) {
                         LTIniSection origLis = (LTIniSection) defaultTwin;
                         LTIniSection newLis = new LTIniSection();
+                        // By default, we mark INI sections as Keep Original
+                        newLis.setKeepOriginal(true);
                         newSibling = newLis;
                     } else if (defaultTwin instanceof LTKeyValuePair) {
                         LTKeyValuePair origKvp = (LTKeyValuePair) defaultTwin;
@@ -148,12 +151,14 @@ public class LocaleContentJPAHelper {
                     } else if (defaultTwin instanceof LTLicense) {
                         LTLicense origLic = (LTLicense) defaultTwin;
                         LTLicense newLic = new LTLicense();
-                        newLic.setTextValue(origLic.getTextValue());
+                        // By default, we mark the license as Keep Original
+                        newLic.setTextValue("");
                         newSibling = newLic;
                     } else if (defaultTwin instanceof LTWhitespace) {
                         LTWhitespace origWs = (LTWhitespace) defaultTwin;
                         LTWhitespace newWs = new LTWhitespace();
-                        newWs.setTextValue(origWs.getTextValue());
+                        // By default, we mark whitespaces as Keep Original
+                        newWs.setKeepOriginal(true);
                         newSibling = newWs;
                     } else { // Default case
                         newSibling = new LTContent();
@@ -164,6 +169,7 @@ public class LocaleContentJPAHelper {
                     newSibling.setDefLocaleTwin(defaultTwin);
                     newSibling.setL10nId(targetLocale);
                     newSibling.setLastUpdate(opTimeStamp);
+                    newSibling.setOrderInFile(defaultTwin.getOrderInFile());
 
                     // Connect the parent with newSibling
                     twinParent.addChild(newSibling);
