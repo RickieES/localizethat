@@ -17,7 +17,6 @@ import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import net.localizethat.Main;
-import net.localizethat.model.DtdFile;
 import net.localizethat.model.L10n;
 import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContainer;
@@ -311,8 +310,8 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
         boolean result = true;
 
         try {
-            // if (lf instanceof ParseableFile) {
-            if (lf instanceof DtdFile) {
+            if (lf instanceof ParseableFile) {
+            // if (lf instanceof DtdFile) {
                 ParseableFile pf = (ParseableFile) em.merge(lf);
                 newAndModifiedList.addAll(pf.update(this.em, lcntHelper));
 
