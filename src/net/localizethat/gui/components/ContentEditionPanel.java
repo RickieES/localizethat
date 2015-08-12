@@ -773,10 +773,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             selectedLObject = tableModel.getElementAt(selectedRow);
             LocaleContent origLc = selectedLObject.getOriginalNode();
             LocaleContent trnsLc = origLc.getTwinByLocale(tableModel.getLocalizationCode());
+            origTextPane.setText(origLc.getTextValue());
 
             if (origLc instanceof EditableLocaleContent) {
-                origTextPane.setText(((EditableLocaleContent) origLc).getTextValue());
-
                 EditableLocaleContent trnsElc = (EditableLocaleContent) trnsLc;
 
                 if (trnsElc != null) {
