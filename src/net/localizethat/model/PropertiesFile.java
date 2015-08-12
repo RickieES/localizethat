@@ -13,6 +13,7 @@ import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlRootElement;
+import net.localizethat.io.PropertiesFileAccess;
 
 /**
  *
@@ -40,7 +41,9 @@ public class PropertiesFile extends ParseableFileAdapter {
 
     @Override
     protected List<LocaleContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PropertiesFileAccess propFA = new PropertiesFileAccess();
+        List<LocaleContent> parsedContentList = propFA.parse(fileReader);
+        return parsedContentList;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class PropertiesFile extends ParseableFileAdapter {
 
     @Override
     public void printLocaleContent(PrintWriter pw, LTComment lc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        pw.println(lc.getTextValue());
     }
 
     @Override
@@ -70,17 +73,22 @@ public class PropertiesFile extends ParseableFileAdapter {
 
     @Override
     public void printLocaleContent(PrintWriter pw, LTKeyValuePair lc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        StringBuilder sb = new StringBuilder(100);
+
+        sb.append(lc.getName());
+        sb.append("="); // TODO we might want to have a preference to surround '=' with spaces, like ' = '
+        sb.append(lc.getTextValue());
+        pw.println(sb.toString());
     }
 
     @Override
     public void printLocaleContent(PrintWriter pw, LTLicense lc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        pw.println(lc.getTextValue());
     }
 
     @Override
     public void printLocaleContent(PrintWriter pw, LTWhitespace lc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        pw.println(lc.getTextValue());
     }
 
 }
