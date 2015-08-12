@@ -42,7 +42,7 @@ import org.xml.sax.ext.Locator2Impl;
  *
  * @author rpalomares
  */
-public class DTDReadHelper extends DefaultHandler2 {
+public class DTDReadHelper extends DefaultHandler2 implements ReadHelper {
     // In order to get the SAXParser work properly with a DTD file not bound to any XML,
     // we need to trick it into believing it is working with an XML file
     private static final String dummyXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -75,6 +75,7 @@ public class DTDReadHelper extends DefaultHandler2 {
         this.locator = locator;
     }
 
+    @Override
     public List<LocaleContent> getLocaleContentList() {
         if (is == null) {
             return null;
@@ -83,6 +84,7 @@ public class DTDReadHelper extends DefaultHandler2 {
         }
     }
 
+    @Override
     public void parseStream() throws ParseException {
         lineCount = 0;
         try {
@@ -181,7 +183,7 @@ public class DTDReadHelper extends DefaultHandler2 {
     @Override
     public void externalEntityDecl(String name, String publicId, String systemId) {
         int lineNumber = lineCount++;
-        LTExternalEntity ltExtEntity = new LTExternalEntity(name, publicId, systemId);
+        LTExternalEntity ltExtEntity = new LTExternalEntity(name.substring(1), publicId, systemId);
         ltExtEntity.setOrderInFile(lineNumber);
         ltExtEntity.setCreationDate(new Date());
         ltExtEntity.setLastUpdate(ltExtEntity.getCreationDate());
