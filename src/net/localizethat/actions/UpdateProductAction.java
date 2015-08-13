@@ -37,7 +37,7 @@ public class UpdateProductAction extends AbstractAction {
         putValue(MNEMONIC_KEY, MNEMONIC);
         putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC,
                 java.awt.event.InputEvent.CTRL_MASK));
-        ImageIcon icon = new ImageIcon(LocaleManagerAction.class.getResource(
+        ImageIcon icon = new ImageIcon(UpdateProductAction.class.getResource(
                     "/net/localizethat/resources/" + ICON));
         putValue(LARGE_ICON_KEY, icon);
     }

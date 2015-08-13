@@ -25,7 +25,7 @@ public class PreferencesAction extends AbstractAction {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
 
-        ImageIcon icon = new ImageIcon(LocaleManagerAction.class.getResource(
+        ImageIcon icon = new ImageIcon(PreferencesAction.class.getResource(
                     "/net/localizethat/resources/" + ICON));
         putValue(LARGE_ICON_KEY, icon);
     }
