@@ -80,7 +80,7 @@ public class LocaleFile implements LocaleNode, Serializable {
             case "properties":
                 newFile = new PropertiesFile();
                 break;
-            case "ini": // TODO perhaps a different class is needed later
+            case "ini":
                 newFile = new PropertiesFile();
                 break;
             case "gif":

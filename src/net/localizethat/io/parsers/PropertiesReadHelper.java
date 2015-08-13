@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.localizethat.model.CommentType;
 import net.localizethat.model.LTComment;
+import net.localizethat.model.LTIniSection;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LTLicense;
 import net.localizethat.model.LocaleContent;
@@ -34,6 +35,7 @@ public class PropertiesReadHelper implements ReadHelper {
     private static final int STATUS_COMMENT = 3;
     private static final int STATUS_L10N_COMMENT = 4;
     private static final int STATUS_LICENSEHEADER = 5;
+    private static final int STATUS_INISECTION = 6;
     private LineNumberReader lnr;
     private int parseCurrentStatus;
     private final List<LocaleContent> lcList;
@@ -65,10 +67,7 @@ public class PropertiesReadHelper implements ReadHelper {
         Matcher m;
         Pattern p;
         String line;
-        String keyName = null;
-        StringBuilder key = null;
         StringBuilder value = null;
-        StringBuilder l10nComment = null;
         LocaleContent lc = null;
 
         line = getNextLine();
@@ -90,32 +89,34 @@ public class PropertiesReadHelper implements ReadHelper {
 
             // If we're not in the middle of a (multiline) value
             // and the string starts with a comment delimiter
-            if (parseCurrentStatus != PropertiesReadHelper.STATUS_VALUE
-                    && ((c == '#') || (c == '!') || (c == ';'))) {
-                // If previous line was a l10n comment or a header, we're still on it,
-                // else this is just a comment
-                if ((parseCurrentStatus != STATUS_L10N_COMMENT)
-                        && (parseCurrentStatus != STATUS_LICENSEHEADER)) {
-                    parseCurrentStatus = STATUS_COMMENT;
-                }
+            if (parseCurrentStatus != STATUS_VALUE) {
+                switch(c) {
+                    case '#':
+                    case '!':
+                    case ';':
+                        if ((parseCurrentStatus != STATUS_L10N_COMMENT)
+                                && (parseCurrentStatus != STATUS_LICENSEHEADER)) {
+                            parseCurrentStatus = STATUS_COMMENT;
+                        }
 
-                // If the line has "Localization note" inside it, mark it
-                parseCurrentStatus = (line.toUpperCase().contains("LOCALIZATION NOTE"))
-                        ? STATUS_L10N_COMMENT : parseCurrentStatus;
+                        // If the line has "Localization note" inside it, mark it
+                        parseCurrentStatus = (line.toUpperCase().contains("LOCALIZATION NOTE"))
+                                ? STATUS_L10N_COMMENT : parseCurrentStatus;
 
-                // Have we found an MPL1 / MPL2 license block?
-                if ((parseCurrentStatus == PropertiesReadHelper.STATUS_COMMENT)
-                        && (line.contains("*** BEGIN LICENSE BLOCK ***") ||
-                                line.contains("http://mozilla.org/MPL/2.0/"))) {
-                    parseCurrentStatus = PropertiesReadHelper.STATUS_LICENSEHEADER;
-                }
-            } else {
-                // We're definitely NOT reading a comment, since it doesn't
-                // start with # or !; it may be a new key or part of a value
-                // In the second case, parseCurrentStatus will be marking it
-                if (parseCurrentStatus != STATUS_VALUE) {
-                    lc = null;
-                    parseCurrentStatus = STATUS_KEY;
+                        // Have we found an MPL1 / MPL2 license block?
+                        if ((parseCurrentStatus == STATUS_COMMENT)
+                                && (line.contains("*** BEGIN LICENSE BLOCK ***") ||
+                                        line.contains("http://mozilla.org/MPL/2.0/"))) {
+                            parseCurrentStatus = STATUS_LICENSEHEADER;
+                        }
+                        break;
+                    case '[':
+                        parseCurrentStatus = STATUS_INISECTION;
+                        lc = null;
+                        break;
+                    default:
+                        parseCurrentStatus = STATUS_KEY;
+                        lc = null;
                 }
             }
 
@@ -124,23 +125,11 @@ public class PropertiesReadHelper implements ReadHelper {
                     lc = null;
                     break;
                 case STATUS_KEY:
-                    key = new StringBuilder(32);
-
                     // IMPORTANT: we assume keys don't split over several lines
                     // Let's look for the key - value separator, usually '='
                     keyDelimiter = line.indexOf('=');
                     keyDelimiter = (keyDelimiter == -1)
                             ? line.indexOf(':') : keyDelimiter;
-
-                    // We may be dealing with INI files too, so we must manage
-                    // INI section headers, converting
-                    //   [Header]
-                    // to
-                    //   section.[Header]=[Header]
-                    if ((keyDelimiter == -1) && (line.charAt(0) == '[')) {
-                        line = "section." + line + "=" + line;
-                        keyDelimiter = line.indexOf('=');
-                    }
 
                     // If no key delimiter has been found, it is likely a
                     // syntax error, but we will just ignore the line
@@ -226,7 +215,6 @@ public class PropertiesReadHelper implements ReadHelper {
 
                         lc.setTextValue(value.toString());
                         parseCurrentStatus = STATUS_NULL;
-                        key = null;
                         value = null;
                         lc = null;
                     }
@@ -314,8 +302,25 @@ public class PropertiesReadHelper implements ReadHelper {
                         lc.setTextValue(lc.getTextValue() + "\n" + line);
                     }
                     break;
-            }
+                case STATUS_INISECTION:
+                    // IMPORTANT: we assume keys don't split over several lines
+                    // Let's look for the key - value separator, usually '='
+                    keyDelimiter = line.indexOf(']');
 
+                    if (keyDelimiter == -1) {
+                        parseCurrentStatus = STATUS_NULL;
+                        line = getNextLine();
+                        continue;
+                    }
+
+                    lc = new LTIniSection();
+                    lc.setName(line.substring(1, keyDelimiter));
+                    lc.setOrderInFile(lineNumber);
+                    lc.setCreationDate(new Date());
+                    lc.setLastUpdate(lc.getCreationDate());
+                    lcList.add(lc);
+                    break;
+            }
             line = getNextLine();
         }
     }
@@ -351,5 +356,4 @@ public class PropertiesReadHelper implements ReadHelper {
             return "";
         }
     }
-
 }

@@ -74,7 +74,6 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                             thisLicense.setOrderInFile(lt.getOrderInFile());
                             thisLicense.setTextValue(lt.getTextValue());
                             thisLicense.setLastUpdate(lt.getLastUpdate());
-                            thisLicense.setMarkedForDeletion(false);
                             newAndModifiedList.add(thisLicense);
                         }
                     } else {
@@ -102,7 +101,6 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                             existingComment.setOrderInFile(lc.getOrderInFile());
                             existingComment.setTextValue(lc.getTextValue());
                             existingComment.setLastUpdate(lc.getLastUpdate());
-                            existingComment.setMarkedForDeletion(false);
                             newAndModifiedList.add(existingComment);
                             if (lc.getEntityName() != null) {
                                 LocaleContent l = this.getChildByName(lc.getEntityName());
@@ -123,7 +121,23 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                         }
                     }
                 } else if (lcObject instanceof LTIniSection) {
+                    LTIniSection lis = (LTIniSection) lcObject;
+                    LTIniSection existingIniSection = (LTIniSection) this.getChildByName(lis.getName());
 
+                    if (existingIniSection != null) {
+                        existingIniSection.setMarkedForDeletion(false);
+                        changed = (lis.getOrderInFile() != existingIniSection.getOrderInFile());
+
+                        if (changed) {
+                            existingIniSection.setOrderInFile(lis.getOrderInFile());
+                            existingIniSection.setLastUpdate(lis.getLastUpdate());
+                            newAndModifiedList.add(existingIniSection);
+                        }
+                    } else {
+                        this.addChild(lis);
+                        em.persist(lis);
+                        newAndModifiedList.add(lis);
+                    }
                 } else if (lcObject instanceof LTKeyValuePair) {
                     LTKeyValuePair lkvp = (LTKeyValuePair) lcObject;
                     LTKeyValuePair existingKey = (LTKeyValuePair) this.getChildByName(lkvp.getName());
@@ -136,7 +150,6 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                             existingKey.setOrderInFile(lkvp.getOrderInFile());
                             existingKey.setTextValue(lkvp.getTextValue());
                             existingKey.setLastUpdate(lkvp.getLastUpdate());
-                            existingKey.setMarkedForDeletion(false);
                             newAndModifiedList.add(existingKey);
                         }
                     } else {
@@ -145,7 +158,23 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                         newAndModifiedList.add(lkvp);
                     }
                 } else if (lcObject instanceof LTWhitespace) {
+                    LTWhitespace lws = (LTWhitespace) lcObject;
+                    LTWhitespace existingWhitespace = (LTWhitespace) this.getChildByName(lws.getName());
 
+                    if (existingWhitespace != null) {
+                        existingWhitespace.setMarkedForDeletion(false);
+                        changed = (lws.getOrderInFile() != existingWhitespace.getOrderInFile());
+
+                        if (changed) {
+                            existingWhitespace.setOrderInFile(lws.getOrderInFile());
+                            existingWhitespace.setLastUpdate(lws.getLastUpdate());
+                            newAndModifiedList.add(existingWhitespace);
+                        }
+                    } else {
+                        this.addChild(lws);
+                        em.persist(lws);
+                        newAndModifiedList.add(lws);
+                    }
                 } else if (lcObject instanceof LTExternalEntity) {
                     LTExternalEntity lExtEnt = (LTExternalEntity) lcObject;
                     LTExternalEntity existingEntity = (LTExternalEntity) this.getChildByName(lExtEnt.getName());
@@ -158,7 +187,6 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                             existingEntity.setOrderInFile(lExtEnt.getOrderInFile());
                             existingEntity.setTextValue(lExtEnt.getTextValue());
                             existingEntity.setLastUpdate(lExtEnt.getLastUpdate());
-                            existingEntity.setMarkedForDeletion(false);
                             newAndModifiedList.add(existingEntity);
                         }
                     } else {
