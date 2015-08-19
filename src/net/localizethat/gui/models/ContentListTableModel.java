@@ -14,6 +14,7 @@ import net.localizethat.model.L10n;
 import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
+import net.localizethat.model.TranslationStatus;
 
 /**
  * Table model of LTContent objects; the list of objects may come from a
@@ -27,7 +28,8 @@ public class ContentListTableModel extends AbstractTableModel {
     private final List<ContentListObject> list;
     private XTableColumnModel columnModel;
     private final String[] columnHeaders = {"Filename", "Order/Line", "Content Type",
-                                            "Key/Entity", "Original value", "Translated value"};
+                                            "Key/Entity", "Original value", "Translated value",
+                                            "Translation Status"};
 
     public ContentListTableModel() {
         super();
@@ -120,6 +122,17 @@ public class ContentListTableModel extends AbstractTableModel {
                     return ((EditableLocaleContent) lcTarget).getTextValue();
                 } else {
                     return "";
+                }
+            case 6: // Translation Status
+                if ((lcTarget != null) && (lcTarget instanceof EditableLocaleContent)) {
+                    TranslationStatus trnsStatus = ((EditableLocaleContent) lcTarget).getTrnsStatus();
+                    if (trnsStatus != null) {
+                        return trnsStatus.toString();
+                    } else {
+                        return "(undefined)";
+                    }
+                } else {
+                    return "(undefined)";
                 }
         }
         return "";
