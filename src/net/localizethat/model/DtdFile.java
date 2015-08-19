@@ -59,7 +59,7 @@ public class DtdFile extends ParseableFileAdapter {
     }
 
     @Override
-    public List<LTContent> importFromFile(File f) throws ParseException {
+    public List<LocaleContent> importFromFile(File f) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
