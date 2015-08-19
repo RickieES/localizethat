@@ -18,12 +18,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import net.localizethat.Main;
 import net.localizethat.model.L10n;
-import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
+import net.localizethat.model.TextFile;
 import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
 import net.localizethat.model.jpa.LocaleContentJPAHelper;
@@ -34,13 +34,13 @@ import net.localizethat.util.gui.JStatusBar;
  * SwingWorker task that performs an update process in the locale paths passed in the constructor
  * @author rpalomares
  */
-public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
+public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String> {
     private final JTextArea feedbackArea;
     private final JButton editChangesButton;
     private final JStatusBar statusBar;
     private final L10n targetLocale;
     private final Iterator<LocalePath> localePathIterator;
-    private final List<LTContent> newAndModifiedList;
+    private final List<LocaleContent> newAndModifiedList;
     private final EntityManager em;
     private final JPAHelperBundle jhb;
     private int filesAdded;
@@ -63,7 +63,7 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
     }
 
     @Override
-    protected List<LTContent> doInBackground() {
+    protected List<LocaleContent> doInBackground() {
         int totalFilesAdded = 0;
         int totalFilesModified = 0;
         int totalFilesDeleted = 0;
@@ -324,6 +324,16 @@ public class UpdateProductWorker extends SwingWorker<List<LTContent>, String> {
                         result = lcntHelper.createRecursively(lcnt, targetLocale, false);
                     }
                 }
+                if (em.isJoinedToTransaction()) {
+                    em.getTransaction().commit();
+                    em.getTransaction().begin();
+                }
+            } else if (lf instanceof TextFile) {
+                if (!em.isJoinedToTransaction()) {
+                    em.getTransaction().begin();
+                }
+                lf = em.merge(lf);
+                newAndModifiedList.addAll(((TextFile) lf).update(this.em));
                 if (em.isJoinedToTransaction()) {
                     em.getTransaction().commit();
                     em.getTransaction().begin();

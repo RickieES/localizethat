@@ -18,6 +18,7 @@ import net.localizethat.model.LTExternalEntity;
 import net.localizethat.model.LTIniSection;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LTLicense;
+import net.localizethat.model.LTTextContent;
 import net.localizethat.model.LTWhitespace;
 import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
@@ -151,9 +152,15 @@ public class LocaleContentJPAHelper {
                     } else if (defaultTwin instanceof LTLicense) {
                         LTLicense origLic = (LTLicense) defaultTwin;
                         LTLicense newLic = new LTLicense();
-                        // By default, we mark the license as Keep Original
                         newLic.setTextValue("");
                         newSibling = newLic;
+                    } else if (defaultTwin instanceof LTTextContent) {
+                        LTTextContent origText = (LTTextContent) defaultTwin;
+                        LTTextContent newText = new LTTextContent();
+                        newSibling = newText;
+                        Logger.getLogger(LocaleContentJPAHelper.class.getName()).log(Level.WARNING,
+                                "New LTTextContent object created outside of TextFile constructor: {0}, parent {1}",
+                                new Object[]{origText.getName(), twinParent.getName()});
                     } else if (defaultTwin instanceof LTWhitespace) {
                         LTWhitespace origWs = (LTWhitespace) defaultTwin;
                         LTWhitespace newWs = new LTWhitespace();

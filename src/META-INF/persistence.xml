@@ -16,6 +16,7 @@
     <class>net.localizethat.model.LTIniSection</class>
     <class>net.localizethat.model.LTKeyValuePair</class>
     <class>net.localizethat.model.LTLicense</class>
+    <class>net.localizethat.model.LTTextContent</class>
     <class>net.localizethat.model.LTWhitespace</class>
     <class>net.localizethat.model.Product</class>
     <class>net.localizethat.model.PropertiesFile</class>

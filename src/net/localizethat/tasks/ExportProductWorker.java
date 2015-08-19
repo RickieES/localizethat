@@ -21,6 +21,7 @@ import net.localizethat.model.LocaleContainer;
 import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.ParseableFile;
+import net.localizethat.model.TextFile;
 import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
 import net.localizethat.model.jpa.LocaleFileJPAHelper;
@@ -213,15 +214,19 @@ public class ExportProductWorker extends SwingWorker<Void, String> {
 
     private boolean processFile(String filePath, LocaleFile lf) {
         boolean result = false;
-        
-        if (lf instanceof ParseableFile) {
-            ParseableFile plf = (ParseableFile) lf;
-            try {
-                result = plf.exportToFile(new File(filePath));
-            } catch (IOException ex) {
-                Logger.getLogger(ExportProductWorker.class.getName()).log(Level.SEVERE, null, ex);
-                result = false;
+
+        File exportedFile = new File(filePath);
+
+        try {
+            if (lf instanceof ParseableFile) {
+                ParseableFile plf = (ParseableFile) lf;
+                result = plf.exportToFile(exportedFile);
+            } else if (lf instanceof TextFile) {
+                ((TextFile) lf).exportToFile(exportedFile);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(ExportProductWorker.class.getName()).log(Level.SEVERE, null, ex);
+            result = false;
         }
         return result;
     }
