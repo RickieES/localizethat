@@ -45,7 +45,7 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Main entity for LocaleFile instances
  * @author rpalomares
  */
 
@@ -111,12 +111,12 @@ public class LocaleFile implements LocaleNode, Serializable {
             default:
                 newFile = new TextFile();
         }
-        Date creationDate = new Date();
-        newFile.setCreationDate(creationDate);
-        newFile.setLastUpdate(creationDate);
         newFile.setName(fileName);
         newFile.setParent(parent);
         newFile.setL10nId(parent.getL10nId());
+        Date creationDate = new Date();
+        newFile.setCreationDate(creationDate);
+        newFile.setLastUpdate(creationDate);
         return newFile;
     }
     @TableGenerator(name="LOCALENODE", schema="APP", table="COUNTERS", pkColumnName="ENTITY",
@@ -330,10 +330,10 @@ public class LocaleFile implements LocaleNode, Serializable {
                 twin.addTwin(this);
             }
         } else {
-            twin = this.defLocaleTwin;
+            LocaleNode savedTwin = this.defLocaleTwin;
             this.defLocaleTwin = null;
-            if ((twin != null) && (twin.getTwinByLocale(l10nId) == this)) {
-                twin.removeTwin(this);
+            if ((savedTwin != null) && (savedTwin.getTwinByLocale(l10nId) == this)) {
+                savedTwin.removeTwin(this);
             }
         }
     }
