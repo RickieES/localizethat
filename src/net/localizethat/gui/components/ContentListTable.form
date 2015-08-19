@@ -174,10 +174,8 @@
                       <Component id="filterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="filterField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="columnsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="3" groupAlignment="3" attributes="0">
-                          <Component id="rowsInfoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="rowsInfoText" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="rowsInfoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rowsInfoText" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
