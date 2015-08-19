@@ -320,8 +320,8 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
                     // we don't want to create sibling for it
                     if ((!lcnt.isDontExport() && lcnt.getTwinByLocale(targetLocale) == null)) {
                         // em.contains(entity) to know whether an entity is managed or not
-                        lcnt = em.merge(lcnt);
-                        result = lcntHelper.createRecursively(lcnt, targetLocale, false);
+                        LocaleContent mergedLcnt = em.merge(lcnt);
+                        result = lcntHelper.createRecursively(mergedLcnt, targetLocale, false);
                     }
                 }
                 if (em.isJoinedToTransaction()) {
@@ -332,8 +332,8 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
                 if (!em.isJoinedToTransaction()) {
                     em.getTransaction().begin();
                 }
-                lf = em.merge(lf);
-                newAndModifiedList.addAll(((TextFile) lf).update(this.em));
+                TextFile mergedLf = (TextFile) em.merge(lf);
+                newAndModifiedList.addAll(mergedLf.update(this.em));
                 if (em.isJoinedToTransaction()) {
                     em.getTransaction().commit();
                     em.getTransaction().begin();
