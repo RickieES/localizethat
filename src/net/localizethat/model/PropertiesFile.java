@@ -52,7 +52,7 @@ public class PropertiesFile extends ParseableFileAdapter {
     }
 
     @Override
-    public List<LTContent> importFromFile(File f) throws ParseException {
+    public List<LocaleContent> importFromFile(File f) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -68,7 +68,7 @@ public class PropertiesFile extends ParseableFileAdapter {
 
     @Override
     public void printLocaleContent(PrintWriter pw, LTIniSection lc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        pw.println("[" + lc.getName() + "]");
     }
 
     @Override
