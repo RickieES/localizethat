@@ -34,9 +34,9 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
     LTLicense fileLicense;
 
     @Override
-    public List<LTContent> update(EntityManager em, LocaleContentJPAHelper lcntHelper)
+    public List<LocaleContent> update(EntityManager em, LocaleContentJPAHelper lcntHelper)
                 throws ParseException {
-        List<LTContent> newAndModifiedList = new ArrayList<>(10);
+        List<LocaleContent> newAndModifiedList = new ArrayList<>(10);
         // We're parsing the original if this file has no default twin
         boolean isParsingOriginal = (this.getDefLocaleTwin() == null);
 

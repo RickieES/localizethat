@@ -38,7 +38,7 @@ public interface ParseableFile extends LocaleNode {
      * @return a list of LTContent objects added or modified
      * @throws ParseException in case the parsing fails
      */
-    List<LTContent> update(EntityManager em, LocaleContentJPAHelper lcntHelper)
+    List<LocaleContent> update(EntityManager em, LocaleContentJPAHelper lcntHelper)
             throws ParseException;
 
     /**
@@ -51,7 +51,7 @@ public interface ParseableFile extends LocaleNode {
      * @return a list of LTContent objects added or modified
      * @throws ParseException in case the parsing fails
      */
-    List<LTContent> importFromFile(File f) throws ParseException;
+    List<LocaleContent> importFromFile(File f) throws ParseException;
 
     /**
      * Exports a parseable file to disk
