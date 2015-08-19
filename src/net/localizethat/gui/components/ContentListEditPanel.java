@@ -14,7 +14,6 @@ import net.localizethat.Main;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.tabpanels.AbstractTabPanel;
 import net.localizethat.model.L10n;
-import net.localizethat.model.LTContent;
 import net.localizethat.model.LocaleContent;
 
 /**
@@ -38,7 +37,7 @@ public class ContentListEditPanel extends AbstractTabPanel {
         this.contentListTable.addTableListSelectionListener(contentEditionPanel);
     }
 
-    public ContentListEditPanel(EntityManager entityManager, List<LTContent> lcList,
+    public ContentListEditPanel(EntityManager entityManager, List<LocaleContent> lcList,
             L10n targetLocale) {
         emf = Main.emf;
         this.entityManager = entityManager;
