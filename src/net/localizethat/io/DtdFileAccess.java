@@ -5,10 +5,13 @@
  */
 package net.localizethat.io;
 
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.text.ParseException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.localizethat.io.parsers.DTDReadHelper;
 import net.localizethat.model.LocaleContent;
 
@@ -23,15 +26,25 @@ public class DtdFileAccess implements ParseableFileAccess {
         List<LocaleContent> lcList;
         LineNumberReader lnr;
 
-        if (is instanceof LineNumberReader) {
-            lnr = (LineNumberReader) is;
-        } else {
-            lnr = new LineNumberReader(is);
-        }
-        DTDReadHelper dtdReadHelper = new DTDReadHelper(lnr);
+        try {
+            if (is instanceof LineNumberReader) {
+                lnr = (LineNumberReader) is;
+            } else {
+                lnr = new LineNumberReader(is);
+            }
+            DTDReadHelper dtdReadHelper = new DTDReadHelper(lnr);
 
-        dtdReadHelper.parseStream();
-        lcList = dtdReadHelper.getLocaleContentList();
+            dtdReadHelper.parseStream();
+            lcList = dtdReadHelper.getLocaleContentList();
+            lnr.close();
+        } catch (ParseException ex) {
+            Logger.getLogger(DtdFileAccess.class.getName()).log(Level.SEVERE,
+                    "Error parsing DTD file", ex);
+            lcList = null;
+        } catch (IOException ex) {
+            Logger.getLogger(DtdFileAccess.class.getName()).log(Level.SEVERE, null, ex);
+            lcList = null;
+        }
         return lcList;
     }
 }
