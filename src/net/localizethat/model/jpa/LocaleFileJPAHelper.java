@@ -120,13 +120,10 @@ public class LocaleFileJPAHelper {
 
                     newSibling = LocaleFile.createFile(defaultTwin.getName(),
                             defaultParent.getTwinByLocale(targetLocale));
-                    newSibling.setCreationDate(opTimeStamp);
                     newSibling.setDefLocaleTwin(defaultTwin);
-                    newSibling.setL10nId(targetLocale);
-                    newSibling.setLastUpdate(opTimeStamp);
 
                     // Connect the parent with newSibling
-                    defaultParent.getTwinByLocale(targetLocale).addChild(newSibling);
+                    defaultParent.getTwinByLocale(targetLocale).addFileChild(newSibling);
 
                     em.persist(newSibling);
                     if (commitOnSuccess) {
