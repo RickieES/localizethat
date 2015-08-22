@@ -54,7 +54,7 @@ public class DTDReadHelper extends DefaultHandler2 implements ReadHelper {
     private final LineNumberReader is;
     private final List<LocaleContent> lcList;
     private Locator2 locator;
-    
+
     // FIXME This is not actually a *line* counter, but a *managed token* counter.
     // For every callback invoked, we will add 1 to this counter and use it as if
     // it was the line of the file.
@@ -146,11 +146,11 @@ public class DTDReadHelper extends DefaultHandler2 implements ReadHelper {
              * However, sometimes no entity is given
              */
 
-            p = Pattern.compile("LOCALIZATION NOTE\\s+\\(([^)]+)\\):[^$]+$",
+            p = Pattern.compile("LOCALIZATION NOTE\\s+\\(([^)]+)\\)",
                     Pattern.CASE_INSENSITIVE);
             m = p.matcher(thisComment);
 
-            if (m.matches()) {
+            if (m.find()) {
                 entityName = m.group(1);
             }
 

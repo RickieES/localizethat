@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
@@ -39,14 +41,15 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
         List<LocaleContent> newAndModifiedList = new ArrayList<>(10);
         // We're parsing the original if this file has no default twin
         boolean isParsingOriginal = (this.getDefLocaleTwin() == null);
+        boolean changed;
 
         LineNumberReader fileReader = this.getAsLineNumberReader();
         if (fileReader == null) {
             return null;
         }
 
+        // beforeParsingHook is where the actual parsing happens
         List<LocaleContent> parsedContentList = beforeParsingHook(fileReader);
-        boolean changed;
 
         try {
             if (!em.getTransaction().isActive()) {
@@ -63,140 +66,48 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             for (LocaleContent lcObject : parsedContentList) {
                 lcObject.setParent(this);
                 lcObject.setL10nId(this.getL10nId());
-                if (lcObject instanceof LTLicense) {
-                    LTLicense lt = (LTLicense) lcObject;
-                    LTLicense thisLicense = this.getFileLicense();
-                    if (thisLicense != null) {
-                        thisLicense.setMarkedForDeletion(false);
-                        changed = !((lt.getOrderInFile() == thisLicense.getOrderInFile()) &&
-                                    (lt.getTextValue().equals(thisLicense.getTextValue())));
-                        if (changed) {
-                            thisLicense.setOrderInFile(lt.getOrderInFile());
-                            thisLicense.setTextValue(lt.getTextValue());
-                            thisLicense.setLastUpdate(lt.getLastUpdate());
-                            newAndModifiedList.add(thisLicense);
-                        }
-                    } else {
-                        this.setFileLicense(lt);
-                        this.addChild(lt);
-                        em.persist(lt);
-                        newAndModifiedList.add(lt);
-                    }
-                } else if (lcObject instanceof LTComment) {
-                    // Comments do not have a name nor anything that we really can
-                    // use to identify them, besides their order in file (but, as it is
-                    // really the line in the file, it can change at any moment without
-                    // the comment itself having changed), so it is easy that we add and
-                    // delete comments just because they have changed their position in the
-                    // file
-                    LTComment lc = (LTComment) lcObject;
-                    LTComment existingComment = (LTComment)
-                            this.getChildByOrderInFile(lc.getOrderInFile());
 
-                    if (existingComment != null) {
-                        existingComment.setMarkedForDeletion(false);
-                        changed = !((lc.getOrderInFile() == existingComment.getOrderInFile()) &&
-                                    (lc.getTextValue().equals(existingComment.getTextValue())));
-                        if (changed) {
-                            existingComment.setOrderInFile(lc.getOrderInFile());
-                            existingComment.setTextValue(lc.getTextValue());
-                            existingComment.setLastUpdate(lc.getLastUpdate());
-                            newAndModifiedList.add(existingComment);
-                            if (lc.getEntityName() != null) {
-                                LocaleContent l = this.getChildByName(lc.getEntityName());
-                                if (l != null && l instanceof LTKeyValuePair) {
-                                    ((LTKeyValuePair) l).setComment(existingComment);
-                                }
-                            }
-                        }
-                    } else {
-                        this.addChild(lc);
-                        em.persist(lc);
-                        newAndModifiedList.add(lc);
-                        if (lc.getEntityName() != null) {
-                            LocaleContent l = this.getChildByName(lc.getEntityName());
-                            if (l != null && l instanceof LTKeyValuePair) {
-                                ((LTKeyValuePair) l).setComment(lc);
-                            }
-                        }
-                    }
-                } else if (lcObject instanceof LTIniSection) {
-                    LTIniSection lis = (LTIniSection) lcObject;
-                    LTIniSection existingIniSection = (LTIniSection) this.getChildByName(lis.getName());
-
-                    if (existingIniSection != null) {
-                        existingIniSection.setMarkedForDeletion(false);
-                        changed = (lis.getOrderInFile() != existingIniSection.getOrderInFile());
-
-                        if (changed) {
-                            existingIniSection.setOrderInFile(lis.getOrderInFile());
-                            existingIniSection.setLastUpdate(lis.getLastUpdate());
-                            newAndModifiedList.add(existingIniSection);
-                        }
-                    } else {
-                        this.addChild(lis);
-                        em.persist(lis);
-                        newAndModifiedList.add(lis);
-                    }
-                } else if (lcObject instanceof LTKeyValuePair) {
-                    LTKeyValuePair lkvp = (LTKeyValuePair) lcObject;
-                    LTKeyValuePair existingKey = (LTKeyValuePair) this.getChildByName(lkvp.getName());
-
-                    if (existingKey != null) {
-                        existingKey.setMarkedForDeletion(false);
-                        changed = !((lkvp.getOrderInFile() == existingKey.getOrderInFile()) &&
-                                    (lkvp.getTextValue().equals(existingKey.getTextValue())));
-                        if (changed) {
-                            existingKey.setOrderInFile(lkvp.getOrderInFile());
-                            existingKey.setTextValue(lkvp.getTextValue());
-                            existingKey.setLastUpdate(lkvp.getLastUpdate());
-                            newAndModifiedList.add(existingKey);
-                        }
-                    } else {
-                        this.addChild(lkvp);
-                        em.persist(lkvp);
-                        newAndModifiedList.add(lkvp);
-                    }
-                } else if (lcObject instanceof LTWhitespace) {
-                    LTWhitespace lws = (LTWhitespace) lcObject;
-                    LTWhitespace existingWhitespace = (LTWhitespace) this.getChildByName(lws.getName());
-
-                    if (existingWhitespace != null) {
-                        existingWhitespace.setMarkedForDeletion(false);
-                        changed = (lws.getOrderInFile() != existingWhitespace.getOrderInFile());
-
-                        if (changed) {
-                            existingWhitespace.setOrderInFile(lws.getOrderInFile());
-                            existingWhitespace.setLastUpdate(lws.getLastUpdate());
-                            newAndModifiedList.add(existingWhitespace);
-                        }
-                    } else {
-                        this.addChild(lws);
-                        em.persist(lws);
-                        newAndModifiedList.add(lws);
-                    }
-                } else if (lcObject instanceof LTExternalEntity) {
-                    LTExternalEntity lExtEnt = (LTExternalEntity) lcObject;
-                    LTExternalEntity existingEntity = (LTExternalEntity) this.getChildByName(lExtEnt.getName());
-
-                    if (existingEntity != null) {
-                        existingEntity.setMarkedForDeletion(false);
-                        changed = !((lExtEnt.getOrderInFile() == existingEntity.getOrderInFile()) &&
-                                    (lExtEnt.getTextValue().equals(existingEntity.getTextValue())));
-                        if (changed) {
-                            existingEntity.setOrderInFile(lExtEnt.getOrderInFile());
-                            existingEntity.setTextValue(lExtEnt.getTextValue());
-                            existingEntity.setLastUpdate(lExtEnt.getLastUpdate());
-                            newAndModifiedList.add(existingEntity);
-                        }
-                    } else {
-                        this.addChild(lExtEnt);
-                        em.persist(lExtEnt);
-                        newAndModifiedList.add(lExtEnt);
-                    }
-                    
+                switch (lcObject.getClass().getSimpleName()) {
+                    case "LTLicense":
+                        processLocaleContent((LTLicense) lcObject, newAndModifiedList, em);
+                        break;
+                    case "LTComment":
+                        processLocaleContent((LTComment) lcObject, newAndModifiedList, em);
+                        break;
+                    case "LTIniSection":
+                        processLocaleContent((LTIniSection) lcObject, newAndModifiedList, em);
+                        break;
+                    case "LTKeyValuePair":
+                        processLocaleContent((LTKeyValuePair) lcObject, newAndModifiedList, em);
+                        break;
+                    case "LTWhitespace":
+                        processLocaleContent((LTWhitespace) lcObject, newAndModifiedList, em);
+                        break;
+                    case "LTExternalEntity":
+                        processLocaleContent((LTExternalEntity) lcObject, newAndModifiedList, em);
+                        break;
+                    default:
+                        Logger.getLogger(ParseableFileAdapter.class.getName()).log(Level.SEVERE,
+                                "Unhandled LocaleContent subclass found, ID {0} , class {1}",
+                                new Object[]{lcObject.getId(), lcObject.getClass().getSimpleName()});
                 }
             }
+
+            for (LocaleContent lc : this.children) {
+                if (lc instanceof LTComment) {
+                    LTComment ltc = (LTComment) lc;
+                    if (!(ltc.getEntityName() == null || ltc.getEntityName().isEmpty())) {
+                        LocaleContent ent = this.getChildByName(ltc.getEntityName());
+                        // If the entity exists, is a key-value pair and has different
+                        // associated comment than ltc (including having a null one)
+                        if (ent != null && ent instanceof LTKeyValuePair
+                                && ((LTKeyValuePair) ent).getComment() != ltc) {
+                            ((LTKeyValuePair) ent).setComment(ltc);
+                        }
+                    }
+                }
+            }
+
             em.getTransaction().commit();
 
             // Permanently delete obsolete contents
@@ -214,6 +125,156 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
             }
         }
         return newAndModifiedList;
+    }
+
+    private void processLocaleContent(LTLicense lcObject,
+            List<LocaleContent> newAndModifiedList, EntityManager em) {
+        boolean changed;
+
+        LTLicense thisLicense = this.getFileLicense();
+        if (thisLicense != null) {
+            thisLicense.setMarkedForDeletion(false);
+            changed = !((lcObject.getOrderInFile() == thisLicense.getOrderInFile()) &&
+                        (lcObject.getTextValue().equals(thisLicense.getTextValue())));
+            if (changed) {
+                thisLicense.setOrderInFile(lcObject.getOrderInFile());
+                thisLicense.setTextValue(lcObject.getTextValue());
+                thisLicense.setLastUpdate(lcObject.getLastUpdate());
+                newAndModifiedList.add(thisLicense);
+            }
+        } else {
+            this.setFileLicense(lcObject);
+            this.addChild(lcObject);
+            em.persist(lcObject);
+            newAndModifiedList.add(lcObject);
+        }
+    }
+
+    private void processLocaleContent(LTComment lcObject,
+            List<LocaleContent> newAndModifiedList, EntityManager em) {
+        boolean changed;
+        LTComment existingComment = null;
+
+        // Comments do not have a name nor anything that we really can
+        // use to identify them, besides their order in file (but, as it is
+        // really the line in the file, it can change at any moment without
+        // the comment itself having changed), so it is easy that we add and
+        // delete comments just because they have changed their position in the
+        // file
+        if (this.getChildByOrderInFile(lcObject.getOrderInFile()) instanceof LTComment) {
+            existingComment = (LTComment) this.getChildByOrderInFile(lcObject.getOrderInFile());
+        }
+
+        if (existingComment != null) {
+            existingComment.setMarkedForDeletion(false);
+            // EntityName is transient; we will use it later to find connections
+            existingComment.setEntityName(lcObject.getEntityName());
+
+            changed = !((lcObject.getOrderInFile() == existingComment.getOrderInFile())
+                    && (lcObject.getCommentType().equals(existingComment.getCommentType()))
+                    && (lcObject.getTextValue().equals(existingComment.getTextValue())));
+            if (changed) {
+                existingComment.setOrderInFile(lcObject.getOrderInFile());
+                existingComment.setCommentType(lcObject.getCommentType());
+                existingComment.setTextValue(lcObject.getTextValue());
+                existingComment.setLastUpdate(lcObject.getLastUpdate());
+                newAndModifiedList.add(existingComment);
+            }
+        } else {
+            this.addChild(lcObject);
+            em.persist(lcObject);
+            newAndModifiedList.add(lcObject);
+        }
+    }
+
+    private void processLocaleContent(LTIniSection lcObject,
+            List<LocaleContent> newAndModifiedList, EntityManager em) {
+        boolean changed;
+
+        LTIniSection existingIniSection = (LTIniSection) this.getChildByName(lcObject.getName());
+
+        if (existingIniSection != null) {
+            existingIniSection.setMarkedForDeletion(false);
+            changed = (lcObject.getOrderInFile() != existingIniSection.getOrderInFile());
+
+            if (changed) {
+                existingIniSection.setOrderInFile(lcObject.getOrderInFile());
+                existingIniSection.setLastUpdate(lcObject.getLastUpdate());
+                newAndModifiedList.add(existingIniSection);
+            }
+        } else {
+            this.addChild(lcObject);
+            em.persist(lcObject);
+            newAndModifiedList.add(lcObject);
+        }
+    }
+
+    private void processLocaleContent(LTKeyValuePair lcObject,
+            List<LocaleContent> newAndModifiedList, EntityManager em) {
+        boolean changed;
+
+        LTKeyValuePair existingKey = (LTKeyValuePair) this.getChildByName(lcObject.getName());
+
+        if (existingKey != null) {
+            existingKey.setMarkedForDeletion(false);
+            changed = !((lcObject.getOrderInFile() == existingKey.getOrderInFile()) &&
+                        (lcObject.getTextValue().equals(existingKey.getTextValue())));
+            if (changed) {
+                existingKey.setOrderInFile(lcObject.getOrderInFile());
+                existingKey.setTextValue(lcObject.getTextValue());
+                existingKey.setLastUpdate(lcObject.getLastUpdate());
+                newAndModifiedList.add(existingKey);
+            }
+        } else {
+            this.addChild(lcObject);
+            em.persist(lcObject);
+            newAndModifiedList.add(lcObject);
+        }
+    }
+
+    private void processLocaleContent(LTWhitespace lcObject,
+            List<LocaleContent> newAndModifiedList, EntityManager em) {
+        boolean changed;
+
+        LTWhitespace existingWhitespace = (LTWhitespace) this.getChildByName(lcObject.getName());
+
+        if (existingWhitespace != null) {
+            existingWhitespace.setMarkedForDeletion(false);
+            changed = (lcObject.getOrderInFile() != existingWhitespace.getOrderInFile());
+
+            if (changed) {
+                existingWhitespace.setOrderInFile(lcObject.getOrderInFile());
+                existingWhitespace.setLastUpdate(lcObject.getLastUpdate());
+                newAndModifiedList.add(existingWhitespace);
+            }
+        } else {
+            this.addChild(lcObject);
+            em.persist(lcObject);
+            newAndModifiedList.add(lcObject);
+        }
+    }
+
+    private void processLocaleContent(LTExternalEntity lcObject,
+            List<LocaleContent> newAndModifiedList, EntityManager em) {
+        boolean changed;
+
+        LTExternalEntity existingEntity = (LTExternalEntity) this.getChildByName(lcObject.getName());
+
+        if (existingEntity != null) {
+            existingEntity.setMarkedForDeletion(false);
+            changed = !((lcObject.getOrderInFile() == existingEntity.getOrderInFile()) &&
+                        (lcObject.getTextValue().equals(existingEntity.getTextValue())));
+            if (changed) {
+                existingEntity.setOrderInFile(lcObject.getOrderInFile());
+                existingEntity.setTextValue(lcObject.getTextValue());
+                existingEntity.setLastUpdate(lcObject.getLastUpdate());
+                newAndModifiedList.add(existingEntity);
+            }
+        } else {
+            this.addChild(lcObject);
+            em.persist(lcObject);
+            newAndModifiedList.add(lcObject);
+        }
     }
 
     /**

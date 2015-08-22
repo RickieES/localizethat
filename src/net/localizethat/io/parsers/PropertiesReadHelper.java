@@ -252,22 +252,22 @@ public class PropertiesReadHelper implements ReadHelper {
                     // outside of the above if block
                     ((LTComment) lc).setCommentType(CommentType.LOCALIZATION_NOTE);
 
+                    /*
+                     * The localization note format should be: LOCALIZATION NOTE (key): comment
+                     * and the comment may expand across several lines
+                     *
+                     * However, sometimes no key is given
+                     */
+                    p = Pattern.compile("LOCALIZATION NOTE\\s+\\(([^)]+)\\)",
+                            Pattern.CASE_INSENSITIVE);
+                    m = p.matcher(line);
+
+                    if (m.find()) {
+                        ((LTComment) lc).setEntityName(m.group(1));
+                    }
+
                     if ((lc.getTextValue() == null) || (lc.getTextValue().isEmpty())) {
                         lc.setTextValue(line);
-
-                        /*
-                         * The localization note format should be: LOCALIZATION NOTE (key): comment
-                         * and the comment may expand across several lines
-                         *
-                         * However, sometimes no key is given
-                         */
-                        p = Pattern.compile("LOCALIZATION NOTE\\s\\(((.+))\\)",
-                                Pattern.CASE_INSENSITIVE);
-                        m = p.matcher(line);
-
-                        if (m.find()) {
-                            ((LTComment) lc).setEntityName(m.group(1));
-                        }
                     } else {
                         lc.setTextValue(lc.getTextValue() + "\n" + line);
                     }
