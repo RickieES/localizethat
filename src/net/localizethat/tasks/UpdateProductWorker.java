@@ -273,6 +273,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
         } catch (NullPointerException e) {
             Logger.getLogger(UpdateProductWorker.class.getName()).log(Level.SEVERE, null, e);
         } catch (Exception e) {
+            Logger.getLogger(UpdateProductWorker.class.getName()).log(Level.SEVERE, null, e);
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
             }
@@ -311,7 +312,6 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
 
         try {
             if (lf instanceof ParseableFile) {
-            // if (lf instanceof DtdFile) {
                 ParseableFile pf = (ParseableFile) em.merge(lf);
                 newAndModifiedList.addAll(pf.update(this.em, lcntHelper));
 
