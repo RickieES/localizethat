@@ -166,6 +166,7 @@ public class MainWindow extends javax.swing.JFrame {
         updateProductAction = new net.localizethat.actions.UpdateProductAction();
         editContentAction = new net.localizethat.actions.EditContentAction();
         exportProductAction = new net.localizethat.actions.ExportProductAction();
+        importProductAction = new net.localizethat.actions.ImportProductAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
@@ -177,10 +178,12 @@ public class MainWindow extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         updateProductsMenuItem = new javax.swing.JMenuItem();
         exportProductsMenuItem = new javax.swing.JMenuItem();
+        importProductsMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         manageProductsMenuItem = new javax.swing.JMenuItem();
         manageLocalesMenuItem = new javax.swing.JMenuItem();
         manageChannelsMenuItem = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
@@ -241,6 +244,11 @@ public class MainWindow extends javax.swing.JFrame {
         exportProductsMenuItem.setAction(exportProductAction);
         fileMenu.add(exportProductsMenuItem);
 
+        importProductsMenuItem.setAction(importProductAction);
+        importProductsMenuItem.setText("Import Products");
+        fileMenu.add(importProductsMenuItem);
+        fileMenu.add(jSeparator1);
+
         manageProductsMenuItem.setAction(productManagerAction);
         manageProductsMenuItem.setMnemonic('M');
         fileMenu.add(manageProductsMenuItem);
@@ -250,7 +258,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         manageChannelsMenuItem.setAction(channelManagerAction);
         fileMenu.add(manageChannelsMenuItem);
-        fileMenu.add(jSeparator1);
+        fileMenu.add(jSeparator2);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         exitMenuItem.setMnemonic('x');
@@ -355,7 +363,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem exportProductsMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private net.localizethat.actions.ImportProductAction importProductAction;
+    private javax.swing.JMenuItem importProductsMenuItem;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private net.localizethat.actions.LocaleManagerAction localeManagerAction;
     private javax.swing.JToolBar mainToolBar;
     private javax.swing.JMenuItem manageChannelsMenuItem;
