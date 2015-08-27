@@ -76,6 +76,16 @@ public class LTTextContent extends LTContent implements EditableLocaleContent {
     }
 
     @Override
+    public void setKeepOriginal(boolean keepOriginal) {
+        super.setKeepOriginal(keepOriginal);
+        if (keepOriginal) {
+            TextFile parent = (TextFile) getParent();
+            TextFile defaultParent = (TextFile) parent.getDefLocaleTwin();
+            parent.setMd5Hash(defaultParent.getMd5Hash());
+        }
+    }
+
+    @Override
     public boolean isEditable() {
         return true;
     }
