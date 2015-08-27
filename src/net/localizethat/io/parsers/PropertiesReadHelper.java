@@ -105,7 +105,7 @@ public class PropertiesReadHelper implements ReadHelper {
 
                         // Have we found an MPL1 / MPL2 license block?
                         if ((parseCurrentStatus == STATUS_COMMENT)
-                                && (line.contains("*** BEGIN LICENSE BLOCK ***") ||
+                                && (line.contains("*** END LICENSE BLOCK ***") ||
                                         line.contains("http://mozilla.org/MPL/2.0/"))) {
                             parseCurrentStatus = STATUS_LICENSEHEADER;
                         }
@@ -301,6 +301,11 @@ public class PropertiesReadHelper implements ReadHelper {
                     } else {
                         lc.setTextValue(lc.getTextValue() + "\n" + line);
                     }
+                    // We're looking for the end of the license block to mark the status as
+                    // null
+                    parseCurrentStatus = STATUS_NULL;
+                    value = null;
+                    lc = null;
                     break;
                 case STATUS_INISECTION:
                     // IMPORTANT: we assume keys don't split over several lines
