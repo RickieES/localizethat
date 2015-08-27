@@ -150,8 +150,6 @@ public class TextFile extends LocaleFile {
         List<LocaleContent> newAndModifiedList = new ArrayList<>(1);
         String line;
         StringBuilder sb;
-        // We're parsing the original if this file has no default twin
-        boolean isParsingOriginal = (this.getDefLocaleTwin() == null);
 
         LineNumberReader fileReader = this.getAsLineNumberReader();
         if (fileReader == null) {
@@ -189,6 +187,57 @@ public class TextFile extends LocaleFile {
         return newAndModifiedList;
     }
 
+    public List<LocaleContent> importFromFile(File f, EntityManager em,
+            boolean replaceExistingValues) {
+        List<LocaleContent> newAndModifiedList = new ArrayList<>(1);
+        TextFile defaultTwin = (TextFile) getDefLocaleTwin();
+        String line;
+        StringBuilder sb;
+
+        LineNumberReader fileReader = getAsLineNumberReader(f);
+        if (fileReader == null) {
+            return null;
+        }
+        sb = new StringBuilder((int) getFile().length());
+
+        LTTextContent origContent = (LTTextContent) defaultTwin.getChildByName(CHILDNAME);
+        LTTextContent thisContent = (LTTextContent) origContent.getTwinByLocale(getL10nId());
+
+        if (thisContent == null || thisContent.getTextValue() == null
+                || thisContent.getTextValue().isEmpty() || replaceExistingValues) {
+            try {
+                line = fileReader.readLine();
+                while (line != null) {
+                    sb.append(line);
+                    sb.append("\n");
+                    line = fileReader.readLine();
+                }
+                fileReader.close();
+
+                // We will (over)write the value only if it is different
+                // We ask for the MD5 because it is fetched eagerly and, if it is empty, then
+                // also the full file content is empty
+                if (getMd5Hash() == null || getMd5Hash().isEmpty()) {
+                    setFileContent(sb.toString());
+                    setLastUpdate(new Date());
+                    getChildByName(CHILDNAME).setKeepOriginal(false);
+                    newAndModifiedList.add(getChildByName(CHILDNAME));
+                } else {
+                    String newMd5 = BlobChecker.getMD5Hash(sb.toString());
+                    if (newMd5 != null && newMd5.compareTo(getMd5Hash()) != 0) {
+                        setFileContent(sb.toString(), newMd5);
+                        setLastUpdate(new Date());
+                        getChildByName(CHILDNAME).setKeepOriginal(false);
+                        newAndModifiedList.add(getChildByName(CHILDNAME));
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(PropertiesReadHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return newAndModifiedList;
+    }
+
     public boolean exportToFile(File f) throws IOException {
         boolean result = false;
         PrintWriter pw;
@@ -207,5 +256,4 @@ public class TextFile extends LocaleFile {
         }
         return result;
     }
-
 }

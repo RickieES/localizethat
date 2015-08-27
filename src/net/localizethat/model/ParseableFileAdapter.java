@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import javax.persistence.RollbackException;
 import net.localizethat.model.jpa.LocaleContentJPAHelper;
 
 /**
@@ -120,6 +121,93 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                 }
             }
         } catch (Exception e) {
+            if (em.isJoinedToTransaction()) {
+                em.getTransaction().rollback();
+            }
+        }
+        return newAndModifiedList;
+    }
+
+    @Override
+    public List<LocaleContent> importFromFile(File f, EntityManager em,
+            boolean replaceExistingValues) throws ParseException {
+        List<LocaleContent> newAndModifiedList = new ArrayList<>(10);
+        ParseableFile defaultTwin = (ParseableFile) getDefLocaleTwin();
+
+        LineNumberReader fileReader = getAsLineNumberReader(f);
+        if (fileReader == null) {
+            return null;
+        }
+
+        // beforeParsingHook is where the actual parsing happens
+        List<LocaleContent> parsedContentList = beforeParsingHook(fileReader);
+
+        try {
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+
+            for(LocaleContent lcObject : parsedContentList) {
+                if (lcObject.getTextValue() == null || lcObject.getTextValue().isEmpty()) {
+                    continue;
+                }
+                lcObject.setParent(this);
+                lcObject.setL10nId(this.getL10nId());
+                switch (lcObject.getClass().getSimpleName()) {
+                    case "LTLicense":
+                        LTLicense origLicense = defaultTwin.getFileLicense();
+                        if (origLicense != null) {
+                            LTLicense thisLicense = getFileLicense();
+                            if (thisLicense == null || thisLicense.getTextValue() == null
+                                    || thisLicense.getTextValue().isEmpty() || replaceExistingValues) {
+                                if (thisLicense == null) {
+                                    setFileLicense((LTLicense) lcObject);
+                                    thisLicense = getFileLicense();
+                                    em.persist(thisLicense);
+                                    addChild(thisLicense);
+                                    origLicense.addTwin(thisLicense);
+                                }
+
+                                // We will (over)write the value only if it is different
+                                if (thisLicense.getTextValue() == null
+                                        || thisLicense.getTextValue().compareTo(lcObject.getTextValue()) != 0) {
+                                    thisLicense.setTextValue(lcObject.getTextValue());
+                                    thisLicense.setKeepOriginal(false);
+                                    thisLicense.setTrnsStatus(TranslationStatus.Proposed);
+                                    newAndModifiedList.add(origLicense);
+                                }
+                            }
+                        }
+                        break;
+                    case "LTKeyValuePair":
+                        LTKeyValuePair origLkvp = (LTKeyValuePair) defaultTwin.getChildByName(lcObject.getName());
+                        if (origLkvp != null) {
+                            LTKeyValuePair thisValue = (LTKeyValuePair) origLkvp.getTwinByLocale(getL10nId());
+                            if (thisValue == null || thisValue.getTextValue().isEmpty()
+                                    || replaceExistingValues) {
+                                if (thisValue == null) {
+                                    thisValue = (LTKeyValuePair) lcObject;
+                                    origLkvp.addTwin(thisValue);
+                                    addChild(thisValue);
+                                    em.persist(thisValue);
+                                }
+
+                                // We will (over)write the value only if it is different
+                                if (thisValue.getTextValue() == null
+                                        || thisValue.getTextValue().compareTo(lcObject.getTextValue()) != 0) {
+                                    thisValue.setTextValue(lcObject.getTextValue());
+                                    thisValue.setKeepOriginal(false);
+                                    thisValue.setTrnsStatus(TranslationStatus.Proposed);
+                                    newAndModifiedList.add(origLkvp);
+                                }
+                            }
+                        }
+                        break;
+                    default: // Nothing to do for the remaining LocaleContent subclasses
+                }
+            }
+            em.getTransaction().commit();
+        } catch (IllegalStateException | RollbackException e) {
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
             }
@@ -353,6 +441,16 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
     
     @Override
     public LTLicense getFileLicense() {
+        if (fileLicense == null) {
+            LocaleContent licenseInChildren = getChildByName("LTLicenseHeader");
+            if (licenseInChildren != null && licenseInChildren instanceof LTLicense) {
+                // This may or may not get persisted in DB, depending on what is done with
+                // the ParseableFile entity and if it is managed or not, but at least we
+                // give it a change to autofix itself AND return the correct value for the
+                // getter
+                fileLicense = (LTLicense) licenseInChildren;
+            }
+        }
         return fileLicense;
     }
 

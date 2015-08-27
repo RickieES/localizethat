@@ -48,10 +48,13 @@ public interface ParseableFile extends LocaleNode {
      * remaining if they have changed
      *
      * @param f a pointer to the file that will be parsed
+     * @param em an EntityManager used to persist in DB new, modified and deleted records
+     * @param replaceExistingValues true if existing values must be replaced by imported values
      * @return a list of LTContent objects added or modified
      * @throws ParseException in case the parsing fails
      */
-    List<LocaleContent> importFromFile(File f) throws ParseException;
+    List<LocaleContent> importFromFile(File f, EntityManager em, boolean replaceExistingValues)
+            throws ParseException;
 
     /**
      * Exports a parseable file to disk

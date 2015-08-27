@@ -5,7 +5,6 @@
  */
 package net.localizethat.model;
 
-import java.io.File;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -48,11 +47,6 @@ public class PropertiesFile extends ParseableFileAdapter {
 
     @Override
     protected void afterParsingHook(LineNumberReader fileReader) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<LocaleContent> importFromFile(File f) throws ParseException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
