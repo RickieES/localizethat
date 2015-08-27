@@ -257,10 +257,10 @@ public class LocaleContainer implements LocaleNode, Serializable {
                 twin.addTwin(this);
             }
         } else {
-            twin = this.defLocaleTwin;
+            LocaleNode existingTwin = this.defLocaleTwin;
             this.defLocaleTwin = null;
-            if ((twin != null) && (twin.getTwinByLocale(l10nId) == this)) {
-                twin.removeTwin(this);
+            if ((existingTwin != null) && (existingTwin.getTwinByLocale(l10nId) == this)) {
+                existingTwin.removeTwin(this);
             }
         }
     }
@@ -389,6 +389,33 @@ public class LocaleContainer implements LocaleNode, Serializable {
             sb.append(lp.getFilePath());
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns the LocalePath from which this LocaleContainer hangs, either directly or through
+     * a waterfall of LocaleContainer parent-child relationships
+     * @param onlyDirectParent true if it should return a LocalePath only if this LocaleContainer
+     *                         is directly related to a LocalePath (ie., is a base LocaleContainer)
+     * @return the (great-grand)-parent LocalePath or null if: onlyDirectParent is true and this
+     *         is not a base LocaleContainer; or if no LocalePath antecessor is found
+     */
+    public LocalePath getLocalePath(boolean onlyDirectParent) {
+        LocaleContainer lc = getParent();
+
+        if (lc != null && onlyDirectParent) {
+            return null;
+        }
+
+        if (lc != null) {
+            return lc.getLocalePath(onlyDirectParent);
+        } else {
+            EntityManager entityManager = Main.emf.createEntityManager();
+            TypedQuery<LocalePath> localePathQuery = entityManager.createNamedQuery(
+                    "LocalePath.findByLocaleContainer", LocalePath.class);
+            localePathQuery.setParameter("localecontainer", this);
+            LocalePath lp = localePathQuery.getSingleResult();
+            return lp;
+        }
     }
 
     public boolean addFileChild(LocaleFile node) {
