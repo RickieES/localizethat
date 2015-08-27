@@ -32,7 +32,7 @@ public class Main {
      * - Minor: 0 == 0
      * - Bugrelease: "b4" &lt; "r3"
      */
-    public static final String version = "0.7";
+    public static final String version = "0.8";
 
     /**
      * Reference to the application settings
