@@ -188,7 +188,9 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
                     }
                 }
             }
-            em.getTransaction().commit();
+            if (em.isJoinedToTransaction()) {
+                em.getTransaction().commit();
+            }
         } catch (Exception e) {
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
