@@ -24,7 +24,6 @@ public class LocaleContainerJPAHelper {
     private int transactMaxCount;
     private int transactCounter;
     private EntityManager em;
-    private boolean isTransactionOpen;
     private LocaleFileJPAHelper lfHelper;
     private LocaleContentJPAHelper lcntHelper;
 
@@ -37,11 +36,9 @@ public class LocaleContainerJPAHelper {
         transactCounter = 0;
         if (em == null) {
             this.em = Main.emf.createEntityManager();
-            isTransactionOpen = false;
         } else {
             this.em = em;
             // Does the passed EntityManager have a transaction open?
-            isTransactionOpen = this.em.isJoinedToTransaction();
         }
         this.transactMaxCount = transactMaxCount;
     }
@@ -130,6 +127,7 @@ public class LocaleContainerJPAHelper {
 
                     if (commitOnSuccess) {
                         em.getTransaction().commit();
+                        em.getTransaction().begin();
                     }
                 }
             }
@@ -248,7 +246,7 @@ public class LocaleContainerJPAHelper {
             em.getTransaction().commit();
         }
 
-        if (this.isTransactionOpen && depth > 0) {
+        if (!em.isJoinedToTransaction() && depth > 0) {
             // If needed, let the EntityManager in the same status we got it
             // (i.e., with an open transaction)
             em.getTransaction().begin();

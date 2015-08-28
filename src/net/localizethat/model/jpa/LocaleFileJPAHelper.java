@@ -5,7 +5,6 @@
  */
 package net.localizethat.model.jpa;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +29,6 @@ public class LocaleFileJPAHelper {
     private EntityManager em;
     private LocaleContainerJPAHelper lcHelper;
     private LocaleContentJPAHelper lcntHelper;
-    private boolean isTransactionOpen;
 
     private LocaleFileJPAHelper() {
         // Empty private constructor to avoid isolated construction, instead of using
@@ -41,11 +39,8 @@ public class LocaleFileJPAHelper {
         transactCounter = 0;
         if (em == null) {
             this.em = Main.emf.createEntityManager();
-            isTransactionOpen = false;
         } else {
             this.em = em;
-            // Does the passed EntityManager have a transaction open?
-            this.isTransactionOpen = this.em.isJoinedToTransaction();
         }
         this.transactMaxCount = transactMaxCount;
     }
@@ -85,7 +80,6 @@ public class LocaleFileJPAHelper {
         LocaleFile sibling;
         LocaleContainer defaultParent;
         LocaleFile newSibling;
-        Date opTimeStamp = new Date();
 
         // Only the real defaultTwin has no DefLocaleTwin; we can only process defaultTwins
         result = (defaultTwin.getDefLocaleTwin() == null);
@@ -128,6 +122,7 @@ public class LocaleFileJPAHelper {
                     em.persist(newSibling);
                     if (commitOnSuccess) {
                         em.getTransaction().commit();
+                        em.getTransaction().begin();
                     }
                 }
             }
@@ -226,6 +221,7 @@ public class LocaleFileJPAHelper {
                 transactCounter++;
                 if (transactCounter > transactMaxCount) {
                     em.getTransaction().commit();
+                    em.getTransaction().begin();
                     transactCounter = 0;
                 }
             }
@@ -233,19 +229,16 @@ public class LocaleFileJPAHelper {
             Logger.getLogger(LocaleFileJPAHelper.class.getName()).log(Level.SEVERE, null, e);
             if (em.isJoinedToTransaction()) {
                 em.getTransaction().rollback();
+                em.getTransaction().begin();
             }
             result = false;
         }
 
         if (em.isJoinedToTransaction() && transactCounter > 0) {
             em.getTransaction().commit();
-        }
-
-        if (this.isTransactionOpen) {
-            // If needed, let the EntityManager in the same status we got it
-            // (i.e., with an open transaction)
             em.getTransaction().begin();
         }
+
         return result;
     }
 }
