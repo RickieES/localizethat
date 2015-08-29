@@ -68,8 +68,8 @@ public class ProductManager extends AbstractTabPanel {
             productSourceTypeListModel.addElement(pst);
         }
         prodSourceTypeCombo.invalidate();
-
-        productList.getSelectionModel().addListSelectionListener(new ProductManager.ProductListRowListener());
+        productList.getSelectionModel().addListSelectionListener(
+                new ProductManager.ProductListRowListener());
     }
 
     private void clearProductFields() {
@@ -79,8 +79,10 @@ public class ProductManager extends AbstractTabPanel {
         prodSourceTypeCombo.setSelectedIndex(-1);
         prodNotesArea.setText("");
         prodColorValue.setBackground(Color.gray);
+        newPathField.setText("");
         origPathTableModel.clearAll();
         origPathTableModel.fireTableDataChanged();
+        targetPathTableModel.clearAll();
         targetPathTableModel.fireTableDataChanged();
     }
 
@@ -225,7 +227,7 @@ public class ProductManager extends AbstractTabPanel {
         importPathDialog.pack();
         importPathDialog.setLocationRelativeTo(null);
         jScrollPanePathImportList = new javax.swing.JScrollPane();
-        importOrigPathList = new javax.swing.JList();
+        importOrigPathList = new javax.swing.JList<LocalePath>();
         jScrollPanePathImportTable = new javax.swing.JScrollPane();
         importtargetPathTable = new javax.swing.JTable();
         pathsForThisProductLabel = new javax.swing.JLabel();
@@ -236,17 +238,17 @@ public class ProductManager extends AbstractTabPanel {
         importOrigPathListModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath>();
         importTargetPathTableModel = new net.localizethat.gui.models.PathTableModel();
         scrollProductList = new javax.swing.JScrollPane();
-        productList = new javax.swing.JList();
+        productList = new javax.swing.JList<Product>();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         productInfoPanel = new javax.swing.JPanel();
         prodNameLabel = new javax.swing.JLabel();
         prodNameField = new javax.swing.JTextField();
         prodDefL10nLabel = new javax.swing.JLabel();
-        prodDefL10nCombo = new javax.swing.JComboBox();
+        prodDefL10nCombo = new javax.swing.JComboBox<L10n>();
         prodChannelLabel = new javax.swing.JLabel();
-        prodChannelCombo = new javax.swing.JComboBox();
+        prodChannelCombo = new javax.swing.JComboBox<Channel>();
         sourceTypeLabel = new javax.swing.JLabel();
-        prodSourceTypeCombo = new javax.swing.JComboBox();
+        prodSourceTypeCombo = new javax.swing.JComboBox<ProductSourceType>();
         prodColorLabel = new javax.swing.JLabel();
         prodColorValue = new javax.swing.JLabel();
         prodNotesLabel = new javax.swing.JLabel();
@@ -264,7 +266,7 @@ public class ProductManager extends AbstractTabPanel {
         delOrigPathButton = new javax.swing.JButton();
         importPathButton = new javax.swing.JButton();
         newPathField = new net.localizethat.util.gui.JPathField();
-        pathL10nCombo = new javax.swing.JComboBox();
+        pathL10nCombo = new javax.swing.JComboBox<L10n>();
         jScrollPane1 = new javax.swing.JScrollPane();
         targetPathTable = new javax.swing.JTable();
         addTargetPathButton = new javax.swing.JButton();
@@ -370,6 +372,7 @@ public class ProductManager extends AbstractTabPanel {
 
         prodSourceTypeCombo.setModel(productSourceTypeListModel);
 
+        prodColorLabel.setLabelFor(prodColorValue);
         prodColorLabel.setText("Mnemonic color:");
 
         prodColorValue.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
@@ -759,7 +762,7 @@ public class ProductManager extends AbstractTabPanel {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while saving",
                 "Error while saving changes", ex);
         }
-
+        clearProductFields();
     }//GEN-LAST:event_saveProductButtonActionPerformed
 
     private void deleteProductButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteProductButtonActionPerformed
@@ -1166,7 +1169,7 @@ public class ProductManager extends AbstractTabPanel {
     private javax.swing.JButton delTargetPathButton;
     private javax.swing.JButton deleteProductButton;
     private javax.persistence.EntityManager entityManager;
-    private javax.swing.JList importOrigPathList;
+    private javax.swing.JList<LocalePath> importOrigPathList;
     private net.localizethat.gui.models.ListComboBoxGenericModel<LocalePath> importOrigPathListModel;
     private javax.swing.JButton importPathButton;
     private javax.swing.JDialog importPathDialog;
@@ -1183,26 +1186,26 @@ public class ProductManager extends AbstractTabPanel {
     private javax.swing.JButton okButton;
     private javax.swing.JTable origPathTable;
     private net.localizethat.gui.models.PathTableModel origPathTableModel;
-    private javax.swing.JComboBox pathL10nCombo;
+    private javax.swing.JComboBox<L10n> pathL10nCombo;
     private net.localizethat.gui.models.ListComboBoxGenericModel<L10n> pathL10nListModel;
     private javax.swing.JLabel pathsForProductLabel;
     private javax.swing.JLabel pathsForThisProductLabel;
-    private javax.swing.JComboBox prodChannelCombo;
+    private javax.swing.JComboBox<Channel> prodChannelCombo;
     private javax.swing.JLabel prodChannelLabel;
     private javax.swing.JLabel prodColorLabel;
     private javax.swing.JLabel prodColorValue;
     private javax.swing.JTextField prodCreationDateField;
-    private javax.swing.JComboBox prodDefL10nCombo;
+    private javax.swing.JComboBox<L10n> prodDefL10nCombo;
     private javax.swing.JLabel prodDefL10nLabel;
     private javax.swing.JTextField prodLastUpdatedField;
     private javax.swing.JTextField prodNameField;
     private javax.swing.JLabel prodNameLabel;
     private javax.swing.JTextArea prodNotesArea;
     private javax.swing.JLabel prodNotesLabel;
-    private javax.swing.JComboBox prodSourceTypeCombo;
+    private javax.swing.JComboBox<ProductSourceType> prodSourceTypeCombo;
     private javax.swing.JPanel productDetailsPanel;
     private javax.swing.JPanel productInfoPanel;
-    private javax.swing.JList productList;
+    private javax.swing.JList<Product> productList;
     private net.localizethat.gui.models.ListComboBoxGenericModel<Product> productListModel;
     private net.localizethat.gui.models.ListComboBoxGenericModel<ProductSourceType> productSourceTypeListModel;
     private javax.swing.JButton saveProductButton;
@@ -1218,9 +1221,10 @@ public class ProductManager extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
-        if (entityManager == null) {
+        if (entityManager == null || !entityManager.isOpen()) {
             entityManager = emf.createEntityManager();
             entityManager.getTransaction().begin();
+            jhb = JPAHelperBundle.getInstance(entityManager);
         }
         refreshProductList();
         refreshL10nList(l10nListModel);

@@ -110,7 +110,6 @@ public class UpdateProductPanel extends AbstractTabPanel {
         }
         originalpathsList.repaint();
 
-
         // Synchronize the check/uncheck all select box with the list
         // selection status
         boolean allSelected = true;
@@ -413,6 +412,10 @@ public class UpdateProductPanel extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
+        if (entityManager == null || !entityManager.isOpen()) {
+            entityManager = emf.createEntityManager();
+            entityManager.getTransaction().begin();
+        }
         refreshProductList();
         refreshL10nList(listL10nModel);
         originalPathsListModel.clearAll();
