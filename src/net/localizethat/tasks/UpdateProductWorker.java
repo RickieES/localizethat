@@ -143,6 +143,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
     private void processContainer(String currentPath, LocaleContainer lc) {
         File curDir = new File(currentPath);
         File[] childFiles = curDir.listFiles();
+        LocaleContainer managedLc;
         LocaleContainerJPAHelper lcHelper = jhb.getLocaleContainerJPAHelper();
         LocaleFileJPAHelper lfHelper = jhb.getLocaleFileJPAHelper();
 
@@ -155,6 +156,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
             if (!em.isJoinedToTransaction()) {
                 em.getTransaction().begin();
             }
+            managedLc = em.merge(lc);
             for (File curFile : childFiles) {
                 if (isCancelled()) {
                     if (em.isJoinedToTransaction()) {
@@ -166,9 +168,9 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
                 if (curFile.isDirectory()) {
                     boolean exists = (lc.hasChild(curFile.getName(), true));
                     if (!exists) {
-                        LocaleContainer newLc = new LocaleContainer(curFile.getName(), lc);
-                        newLc.setL10nId(lc.getL10nId());
-                        lc.addChild(newLc);
+                        LocaleContainer newLc = new LocaleContainer(curFile.getName(), managedLc);
+                        newLc.setL10nId(managedLc.getL10nId());
+                        managedLc.addChild(newLc);
                         foldersAdded++;
                         em.persist(newLc);
                         
@@ -176,10 +178,10 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
                         lcHelper.createRecursively(newLc, targetLocale, false);
                     }
                 } else {
-                    boolean exists = (lc.hasFileChild(curFile.getName(), true));
+                    boolean exists = (managedLc.hasFileChild(curFile.getName(), true));
                     if (!exists) {
-                        LocaleFile lf = LocaleFile.createFile(curFile.getName(), lc);
-                        lc.addFileChild(lf);
+                        LocaleFile lf = LocaleFile.createFile(curFile.getName(), managedLc);
+                        managedLc.addFileChild(lf);
                         filesAdded++;
                         em.persist(lf);
 
@@ -208,7 +210,8 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
         // Remove directories (LocaleContainer items) no longer present in the disk
         try {
             em.getTransaction().begin();
-            for (Iterator<LocaleContainer> iterator = lc.getChildren().iterator(); iterator.hasNext();) {
+            managedLc = em.merge(managedLc);
+            for (Iterator<LocaleContainer> iterator = managedLc.getChildren().iterator(); iterator.hasNext();) {
                 if (isCancelled()) {
                     if (em.isJoinedToTransaction()) {
                         em.getTransaction().rollback();
@@ -250,7 +253,8 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
         // Remove files (LocaleFiles items) no longer present in the disk
         try {
             em.getTransaction().begin();
-            for(Iterator<? extends LocaleFile> iterator = lc.getFileChildren().iterator(); iterator.hasNext();) {
+            managedLc = em.merge(managedLc);
+            for(Iterator<? extends LocaleFile> iterator = managedLc.getFileChildren().iterator(); iterator.hasNext();) {
                 if (isCancelled()) {
                     if (em.isJoinedToTransaction()) {
                         em.getTransaction().rollback();
@@ -292,12 +296,12 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
         // At this point, the datamodel for currentPath matches the disk contents
 
         // Traverse the datamodel LocaleContainers (folders/dirs)
-        for(LocaleContainer lcChild : lc.getChildren()) {
+        for(LocaleContainer lcChild : managedLc.getChildren()) {
             processContainer(currentPath + "/" + lcChild.getName(), lcChild);
         }
 
         // Traverse the datamodel LocaleFiles (files)
-        for(LocaleFile lfChild : lc.getFileChildren()) {
+        for(LocaleFile lfChild : managedLc.getFileChildren()) {
             if (isCancelled()) {
                 if (em.isJoinedToTransaction()) {
                     em.getTransaction().rollback();

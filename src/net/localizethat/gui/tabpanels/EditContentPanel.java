@@ -23,7 +23,6 @@ import net.localizethat.model.LocaleFile;
 import net.localizethat.model.LocaleNode;
 import net.localizethat.model.LocalePath;
 import net.localizethat.model.Product;
-import net.localizethat.util.gui.JStatusBar;
 
 /**
  * Panel that shows the tree of the desired product/paths and, on clicking a parseable file,
@@ -34,7 +33,6 @@ public class EditContentPanel extends AbstractTabPanel {
     private static final long serialVersionUID = 1L;
     private LocaleNodeTreeModel lntm;
     private final EntityManagerFactory emf;
-    private final JStatusBar statusBar;
     private final TreeListeners tl;
     private L10n targetLocale;
 
@@ -42,9 +40,6 @@ public class EditContentPanel extends AbstractTabPanel {
      * Creates new form EditContentPanel
      */
     public EditContentPanel() {
-        Product p;
-
-        statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
         initComponents();
         tl = new TreeListeners();
@@ -55,7 +50,6 @@ public class EditContentPanel extends AbstractTabPanel {
     }
 
     public void refreshTree(Product p) {
-        p = entityManager.merge(p);
         lntm = LocaleNodeTreeModel.createFromProduct(p);
         dataTree.setModel(lntm);
     }
@@ -183,7 +177,10 @@ public class EditContentPanel extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
-        // Nothing to do here
+        if (entityManager == null || !entityManager.isOpen()) {
+            entityManager = emf.createEntityManager();
+            entityManager.getTransaction().begin();
+        }
     }
 
     @Override
@@ -202,19 +199,18 @@ public class EditContentPanel extends AbstractTabPanel {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                     dataTree.getLastSelectedPathComponent();
 
-            if (node == null) {
+            if (node == null || node.getUserObject() == null
+                    || !(node.getUserObject() instanceof LocaleNode)) {
                 return;
             }
 
-            LocaleNode nodeObject = (LocaleNode) node.getUserObject();
+            LocaleNode nodeObject = entityManager.merge((LocaleNode) node.getUserObject());
             pathText.setText(nodeObject.getFilePath());
-            if (node.isLeaf()) {
-                if (nodeObject instanceof LocaleFile) {
-                    LocaleFile lf = (LocaleFile) nodeObject;
-                    ContentListTableModel tableModel = contentListTable.getTableModel();
-                    tableModel.setLocalizationCode(targetLocale);
-                    tableModel.replaceData(lf.getChildren());
-                }
+            if (node.isLeaf() && (nodeObject instanceof LocaleFile)) {
+                LocaleFile lf = (LocaleFile) nodeObject;
+                ContentListTableModel tableModel = contentListTable.getTableModel();
+                tableModel.setLocalizationCode(targetLocale);
+                tableModel.replaceData(lf.getChildren());
             }
         }
 
