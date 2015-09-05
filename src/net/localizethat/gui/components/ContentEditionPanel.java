@@ -5,6 +5,7 @@
  */
 package net.localizethat.gui.components;
 
+import java.awt.Rectangle;
 import java.beans.Beans;
 import java.util.Date;
 import javax.persistence.EntityManager;
@@ -104,74 +105,81 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         }
     }
 
-    /**
-     * This method checks if there is anything to be updated in the target locale, to
-     * avoid wasting resources modifying the DB when there is no reason to do it
-     * @return true if something has to be updated/persisted in the DB
-     */
-    private boolean hasTargetLocaleChanged(LocaleContent lc) {
-        boolean result;
-        EditableLocaleContent elc = null;
-        LTKeyValuePair lkvp;
-        LTKeyValuePair connAccessKey;
-        LTKeyValuePair connCommandKey;
-
-
-        if (lc instanceof EditableLocaleContent) {
-            elc = (EditableLocaleContent) lc;
-        }
-
-        if (lc != null) {
-            result = (trnsTextArea.getText() != null)
-                    && (!trnsTextArea.getText().isEmpty())
-                    && (trnsTextArea.getText().compareTo(lc.getTextValue()) != 0);
-            result |= (lc.isKeepOriginal() != keepOriginalCheck.isSelected());
-
-            if (elc != null) {
-                if (trnsStatusCombo.getSelectedItem() != null) {
-                    result |= (!trnsStatusCombo.getSelectedItem().equals(elc.getTrnsStatus()));
-                }
-
-                if (elc instanceof LTKeyValuePair) {
-                    lkvp = (LTKeyValuePair) elc;
-                    connAccessKey = lkvp.getConnAccesskey();
-                    connCommandKey = lkvp.getConnCommandkey();
-                    result |= (
-                            ((connAccessKey == null) && (objectForAKCombo.getSelectedItem() != null))
-                            ||
-                            ((connAccessKey != null) && (connAccessKey.getTextValue() != null)
-                                && (connAccessKey.getTextValue().compareTo(accessKeyField.getText()) != 0))
-                            );
-                    result |= (
-                            ((connCommandKey == null) && (objectForCKCombo.getSelectedItem() != null))
-                            ||
-                            ((connCommandKey != null) && (connCommandKey.getTextValue() != null)
-                                && (connCommandKey.getTextValue().compareTo(commandKeyField.getText()) != 0))
-                            );
-                }
-            }
-        } else {
-            result = (trnsTextArea.getText() != null)
-                    && (!trnsTextArea.getText().isEmpty());
-            result |= (keepOriginalCheck.isSelected());
-        }
-        return result;
-    }
+//    Code commented because we need to update TranslationStatus even in some ocassions where
+//    nothing has changed in the UI. After some time, this commente code could be safely deleted
+//    /**
+//     * This method checks if there is anything to be updated in the target locale, to
+//     * avoid wasting resources modifying the DB when there is no reason to do it
+//     * @return true if something has to be updated/persisted in the DB
+//     */
+//    private boolean hasTargetLocaleChanged() {
+//        boolean result;
+//        LocaleContent origLc = selectedLObject.getOriginalNode();
+//        EditableLocaleContent elc;
+//        LTKeyValuePair lkvp;
+//        LTKeyValuePair connAccessKey;
+//        LTKeyValuePair connCommandKey;
+//
+//        if (!(origLc instanceof EditableLocaleContent)) {
+//            return false;
+//        }
+//
+//        // elc can be null, but if not, it will be of the same type of original node, thus
+//        // an EditableLocaleContent (because otherwise we would have returned false above)
+//        elc = (EditableLocaleContent) selectedLObject.getSiblingNode();
+//
+//        if (elc == null) {
+//            result = (trnsTextArea.getText() != null)
+//                    && (!trnsTextArea.getText().isEmpty());
+//            result |= (keepOriginalCheck.isSelected());
+//        } else {
+//            result = (trnsTextArea.getText() != null)
+//                    && (!trnsTextArea.getText().isEmpty())
+//                    && (trnsTextArea.getText().compareTo(elc.getTextValue()) != 0);
+//            result |= (elc.isKeepOriginal() != keepOriginalCheck.isSelected());
+//
+//            if (trnsStatusCombo.getSelectedItem() != null) {
+//                result |= (!trnsStatusCombo.getSelectedItem().equals(elc.getTrnsStatus()));
+//            }
+//
+//            if (elc instanceof LTKeyValuePair) {
+//                lkvp = (LTKeyValuePair) elc;
+//                connAccessKey = lkvp.getConnAccesskey();
+//                connCommandKey = lkvp.getConnCommandkey();
+//                result |= (
+//                        ((connAccessKey == null) && (objectForAKCombo.getSelectedItem() != null))
+//                        ||
+//                        ((connAccessKey != null) && (connAccessKey.getTextValue() != null)
+//                            && (connAccessKey.getTextValue().compareTo(accessKeyField.getText()) != 0))
+//                        );
+//                result |= (
+//                        ((connCommandKey == null) && (objectForCKCombo.getSelectedItem() != null))
+//                        ||
+//                        ((connCommandKey != null) && (connCommandKey.getTextValue() != null)
+//                            && (connCommandKey.getTextValue().compareTo(commandKeyField.getText()) != 0))
+//                        );
+//            }
+//        }
+//        return result;
+//    }
 
     private void updateTargetLocale() {
-        LocaleContent lc = selectedLObject.getSiblingNode();
+        EditableLocaleContent elc;
+        String previousTextValue;
         LocaleContentJPAHelper lcntjh = jhb.getLocaleContentJPAHelper();
+        TranslationStatus trnsStatus = trnsStatusCombo.getItemAt(trnsStatusCombo.getSelectedIndex());
 
-        if (!hasTargetLocaleChanged(lc)) {
+        if (!(selectedLObject.getOriginalNode() instanceof EditableLocaleContent)) {
             return;
         }
 
-        if (lc == null) {
+        elc = (EditableLocaleContent) selectedLObject.getSiblingNode();
+        if (elc == null) {
             if (!lcntjh.createRecursively(selectedLObject.getOriginalNode(),
                     tableModel.getLocalizationCode(),
                     true)) {
                 Main.mainWindow.getStatusBar().setErrorText(
-                        "Error creating the localized value in DB");
+                        "Error creating the localized content in DB; changes will be lost");
                 return;
             }
         }
@@ -180,23 +188,40 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             entityManager.getTransaction().begin();
         }
 
-        EditableLocaleContent elc = (EditableLocaleContent) selectedLObject.getOriginalNode()
+        elc = (EditableLocaleContent) selectedLObject.getOriginalNode()
                 .getTwinByLocale(tableModel.getLocalizationCode());
-        elc = entityManager.merge(elc);
+        elc = (EditableLocaleContent) entityManager.find(elc.getClass(), elc.getId());
         // Update in-memory table model with the merged object from EntityManager
         selectedLObject.setSiblingNode(elc);
+        previousTextValue = (elc.getTextValue() == null) ? "" : elc.getTextValue();
 
         elc.setTextValue(trnsTextArea.getText());
         elc.setKeepOriginal(keepOriginalCheck.isSelected());
 
-        if (trnsStatusCombo.getSelectedItem() != null) {
-            elc.setTrnsStatus((TranslationStatus) trnsStatusCombo.getSelectedItem());
+        // If the user has not changed the translation text
+        if (previousTextValue.equals(trnsTextArea.getText())) {
+            // If the translation status is Copied or Proposed, it probably comes from
+            // an auto-translation or import, and by not modifying it, the user is
+            // validating it as Translated; otherwise, we set whatever is in the UI
+            if (trnsStatus == TranslationStatus.Copied
+                    || trnsStatus == TranslationStatus.Proposed) {
+                elc.setTrnsStatus(TranslationStatus.Translated);
+            } else {
+                elc.setTrnsStatus(trnsStatus);
+            }
         } else {
-            elc.setTrnsStatus(TranslationStatus.Translated);
+            // else -> the user has changed the translation text
+
+            // If the user has also changed the status in UI, use this
+            if (elc.getTrnsStatus() != trnsStatus) {
+                elc.setTrnsStatus(trnsStatus);
+            } else {
+                // else, by providing his own text value, he is translating it
+                elc.setTrnsStatus(TranslationStatus.Translated);
+            }
         }
 
         if (elc instanceof LTKeyValuePair) {
-            LTKeyValuePair lkvpOrig = (LTKeyValuePair) selectedLObject.getOriginalNode();
             LTKeyValuePair lkvpTrns = (LTKeyValuePair) elc;
             
             // We'll use the same variable to manage updating of both access and command
@@ -611,6 +636,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     elc = (EditableLocaleContent) lc;
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
                     editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
+                    Rectangle rect = associatedTable.getCellRect(editingRowInView, 0, true);
+                    associatedTable.scrollRectToVisible(rect);
                     tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
                     trnsTextArea.requestFocusInWindow();
                 }
@@ -643,6 +670,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                     elc = (EditableLocaleContent) lc;
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
                     editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
+                    Rectangle rect = associatedTable.getCellRect(editingRowInView, 0, true);
+                    associatedTable.scrollRectToVisible(rect);
                     tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
                     trnsTextArea.requestFocusInWindow();
                 }
