@@ -238,10 +238,10 @@ public class LTContent implements LocaleContent {
                 twin.addTwin(this);
             }
         } else {
-            twin = this.defLocaleTwin;
+            LocaleNode existingTwin = this.defLocaleTwin;
             this.defLocaleTwin = null;
-            if ((twin != null) && (twin.getTwinByLocale(l10nId) == this)) {
-                twin.removeTwin(this);
+            if ((existingTwin != null) && (existingTwin.getTwinByLocale(l10nId) == this)) {
+                existingTwin.removeTwin(this);
             }
         }
     }
