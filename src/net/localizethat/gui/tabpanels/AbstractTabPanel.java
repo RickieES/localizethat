@@ -6,14 +6,16 @@
 package net.localizethat.gui.tabpanels;
 
 /**
- *
+ * JPanel extension class that mandates subclasses to implement two methods
+ * to be executed whenever the tabpanel is added or removed to the UI. Those
+ * two methods work as "visual" initializers and finalizers
  * @author rpalomares
  */
 public abstract class AbstractTabPanel extends javax.swing.JPanel {
+    private static final long serialVersionUID = 1L;
 
     public AbstractTabPanel() {
         super();
-        // addComponentListener(this);
     }
 
     public abstract void onTabPanelAdded();
