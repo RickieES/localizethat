@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "LocalePath.countAll", query = "SELECT COUNT(lp) FROM LocalePath lp"),
     @NamedQuery(name = "LocalePath.countById", query = "SELECT COUNT(lp) FROM LocalePath lp WHERE lp.id = :id"),
     @NamedQuery(name = "LocalePath.countByPath", query = "SELECT COUNT(lp) FROM LocalePath lp WHERE lp.path = :path"),
+    @NamedQuery(name = "LocalePath.countByL10n", query = "SELECT COUNT(lp) FROM LocalePath lp WHERE lp.l10nId = :l10nid"),
     @NamedQuery(name = "LocalePath.findByL10n", query = "SELECT lp FROM LocalePath lp WHERE lp.l10nId = :l10nid ORDER by lp.path"),
     @NamedQuery(name = "LocalePath.findOriginals",
             query = "SELECT lp FROM LocalePath lp WHERE lp.localeContainer.defLocaleTwin is null ORDER by lp.path"),

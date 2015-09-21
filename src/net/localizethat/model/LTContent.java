@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "LocaleContent.countAll", query = "SELECT COUNT(lc) FROM LocaleContent lc"),
-    @NamedQuery(name = "LocaleContent.count", query = "SELECT COUNT(lc) FROM LocaleContent lc")
+    @NamedQuery(name = "LocaleContent.countByL10n", query = "SELECT COUNT(lc) FROM LocaleContent lc WHERE lc.l10nId = :l10nid"),
 })
 public class LTContent implements LocaleContent {
     private static final long serialVersionUID = 1L;

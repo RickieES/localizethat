@@ -56,7 +56,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "LocaleFile.countAll", query = "SELECT COUNT(lf) FROM LocaleFile lf"),
-    @NamedQuery(name = "LocaleFile.count", query = "SELECT COUNT(lf) FROM LocaleFile lf")
+    @NamedQuery(name = "LocaleFile.countByL10n", query = "SELECT COUNT(lf) FROM LocaleFile lf WHERE lf.l10nId = :l10nid"),
 })
 public class LocaleFile implements LocaleNode, Serializable {
     private static final int LOCALENODENAME_LENGTH = 128;
