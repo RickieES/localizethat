@@ -40,7 +40,7 @@ import net.localizethat.Main;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "LocaleContainer.countAll", query = "SELECT COUNT(lc) FROM LocaleContainer lc"),
-    @NamedQuery(name = "LocaleContainer.count", query = "SELECT COUNT(lc) FROM LocaleContainer lc")
+    @NamedQuery(name = "LocaleContainer.countByL10n", query = "SELECT COUNT(lc) FROM LocaleContainer lc WHERE lc.l10nId = :l10nid"),
 })
 public class LocaleContainer implements LocaleNode, Serializable {
     private static final int LOCALENODENAME_LENGTH = 128;
