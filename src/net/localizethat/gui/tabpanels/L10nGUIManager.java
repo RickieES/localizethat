@@ -57,6 +57,16 @@ public class L10nGUIManager extends AbstractTabPanel {
     }
 
     private boolean validateOnSave() {
+        // Validation 0: if we're updating an existing non-empty locale, we can't modify its
+        // code
+        if ((selectedL10n != null) && (!selectedL10n.getCode().isEmpty())
+                && (!l10nCodeField.getText().trim().equals(selectedL10n.getCode()))) {
+            statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
+                    "Error while saving: you can't change the L10n code",
+                    "The L10n code, once it is set, can't be changed");
+            return false;
+        }
+
         // Validation 1: the L10n code can't be shorter than 2
         if ((l10nCodeField.getText().trim().length() < 2)
                 || (l10nCodeField.getText().trim().length() > 6)) {
@@ -80,7 +90,7 @@ public class L10nGUIManager extends AbstractTabPanel {
             L10n l10nInDB = listL10n.get(0);
             isOk = (Objects.equals(l10nInDB.getId(), selectedL10n.getId()));
         } else {
-            // This should never be reached, since we don't allow more than one product
+            // This should never be reached, since we don't allow more than one locale
             // with the same name, but it is checked just as defensive programming
             isOk = false;
         }
