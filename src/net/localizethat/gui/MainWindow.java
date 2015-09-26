@@ -176,13 +176,14 @@ public class MainWindow extends javax.swing.JFrame {
         tabPanel = new javax.swing.JTabbedPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        tableMaintenanceMenu = new javax.swing.JMenu();
+        manageLocalesMenuItem = new javax.swing.JMenuItem();
+        manageProductsMenuItem = new javax.swing.JMenuItem();
+        manageChannelsMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         updateProductsMenuItem = new javax.swing.JMenuItem();
         exportProductsMenuItem = new javax.swing.JMenuItem();
         importProductsMenuItem = new javax.swing.JMenuItem();
-        jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        manageProductsMenuItem = new javax.swing.JMenuItem();
-        manageLocalesMenuItem = new javax.swing.JMenuItem();
-        manageChannelsMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
@@ -237,6 +238,22 @@ public class MainWindow extends javax.swing.JFrame {
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
+        tableMaintenanceMenu.setMnemonic('T');
+        tableMaintenanceMenu.setText("Table Maintenance");
+
+        manageLocalesMenuItem.setAction(localeManagerAction);
+        tableMaintenanceMenu.add(manageLocalesMenuItem);
+
+        manageProductsMenuItem.setAction(productManagerAction);
+        manageProductsMenuItem.setMnemonic('M');
+        tableMaintenanceMenu.add(manageProductsMenuItem);
+
+        manageChannelsMenuItem.setAction(channelManagerAction);
+        tableMaintenanceMenu.add(manageChannelsMenuItem);
+
+        fileMenu.add(tableMaintenanceMenu);
+        fileMenu.add(jSeparator1);
+
         updateProductsMenuItem.setAction(updateProductAction);
         updateProductsMenuItem.setText("Update Products");
         fileMenu.add(updateProductsMenuItem);
@@ -245,19 +262,7 @@ public class MainWindow extends javax.swing.JFrame {
         fileMenu.add(exportProductsMenuItem);
 
         importProductsMenuItem.setAction(importProductAction);
-        importProductsMenuItem.setText("Import Products");
         fileMenu.add(importProductsMenuItem);
-        fileMenu.add(jSeparator1);
-
-        manageProductsMenuItem.setAction(productManagerAction);
-        manageProductsMenuItem.setMnemonic('M');
-        fileMenu.add(manageProductsMenuItem);
-
-        manageLocalesMenuItem.setAction(localeManagerAction);
-        fileMenu.add(manageLocalesMenuItem);
-
-        manageChannelsMenuItem.setAction(channelManagerAction);
-        fileMenu.add(manageChannelsMenuItem);
         fileMenu.add(jSeparator2);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
@@ -380,6 +385,7 @@ public class MainWindow extends javax.swing.JFrame {
     private net.localizethat.actions.ProductManagerAction productManagerAction;
     private net.localizethat.util.gui.JStatusBar statusBar;
     private javax.swing.JTabbedPane tabPanel;
+    private javax.swing.JMenu tableMaintenanceMenu;
     private net.localizethat.actions.UpdateProductAction updateProductAction;
     private javax.swing.JButton updateProductsButton;
     private javax.swing.JMenuItem updateProductsMenuItem;
