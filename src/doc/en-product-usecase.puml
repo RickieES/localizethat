@@ -1,0 +1,9 @@
+@startuml
+:User: as U1
+(Create product) as PC
+(Edit product) as PE
+(Delete product) as PD
+U1 -- PC
+U1 -- PE
+U1 -- PD
+@enduml

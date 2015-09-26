@@ -1,0 +1,9 @@
+@startuml
+:User: as U1
+(Create locale) as LC
+(Edit locale) as LE
+(Delete locale) as LD
+U1 -- LC
+U1 -- LE
+U1 -- LD
+@enduml

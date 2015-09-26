@@ -1,0 +1,9 @@
+@startuml
+:Usuario: as U1
+(Crear idioma) as LC
+(Modificar idioma) as LE
+(Eliminar idioma) as LD
+U1 -- LC
+U1 -- LE
+U1 -- LD
+@enduml
