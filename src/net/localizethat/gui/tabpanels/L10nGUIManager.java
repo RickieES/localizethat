@@ -226,10 +226,10 @@ public class L10nGUIManager extends AbstractTabPanel {
         lblL10nUrl.setText("URL");
 
         lblL10nCreated.setLabelFor(l10nCreationDateField);
-        lblL10nCreated.setText("Creation Date");
+        lblL10nCreated.setText("Creation date");
 
         lblL10nLastUpdated.setLabelFor(l10nLastUpdatedField);
-        lblL10nLastUpdated.setText("Last updated");
+        lblL10nLastUpdated.setText("Last update");
 
         l10nCreationDateField.setEditable(false);
         l10nCreationDateField.setEnabled(false);

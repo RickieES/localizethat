@@ -22,7 +22,7 @@ public class L10nTableModel extends AbstractTableModel {
     public static final int COLUMN_HEADER_URL          = 3;
     public static final int COLUMN_HEADER_CREATIONDATE = 4;
     public static final int COLUMN_HEADER_LASTUPDATE   = 5;
-    final String[] columnNames = {"Code", "Name", "Team Name", "URL", "Creation Date", "Last update"};
+    final String[] columnNames = {"Code", "Description", "Team name", "URL", "Creation Date", "Last update"};
     List<L10n> l10nList;
     int selectComboItem = -1;
 
