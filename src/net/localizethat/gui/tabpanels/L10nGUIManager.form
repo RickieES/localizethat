@@ -35,28 +35,21 @@
                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblL10nURL" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblL10nTeamName" min="-2" pref="99" max="-2" attributes="0"/>
+                          <Component id="lblL10nLastUpdated" alignment="0" max="-2" attributes="0"/>
+                          <Component id="lblL10nCreated" alignment="0" max="-2" attributes="0"/>
+                          <Component id="lblL10nCode" alignment="0" max="-2" attributes="0"/>
+                          <Component id="lblL10nDescription" alignment="0" max="-2" attributes="0"/>
+                          <Component id="lblL10nTeamName" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblL10nUrl" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="l10nUrlField" pref="483" max="32767" attributes="0"/>
-                          <Component id="l10nTeamNameField" pref="483" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblL10nLastUpdated" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblL10nCode" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblL10nCreated" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblL10nDescription" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="l10nCodeField" pref="483" max="32767" attributes="0"/>
-                          <Component id="l10nDescriptionField" alignment="0" pref="483" max="32767" attributes="0"/>
+                          <Component id="l10nUrlField" alignment="1" max="32767" attributes="0"/>
+                          <Component id="l10nTeamNameField" alignment="1" max="32767" attributes="0"/>
+                          <Component id="l10nLastUpdatedField" alignment="1" max="32767" attributes="0"/>
                           <Component id="l10nCreationDateField" max="32767" attributes="0"/>
-                          <Component id="l10nLastUpdatedField" alignment="0" max="32767" attributes="0"/>
+                          <Component id="l10nDescriptionField" alignment="1" max="32767" attributes="0"/>
+                          <Component id="l10nCodeField" alignment="1" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -80,14 +73,14 @@
                   <Component id="l10nDescriptionField" min="-2" pref="24" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblL10nTeamName" min="-2" max="-2" attributes="0"/>
-                  <Component id="l10nTeamNameField" min="-2" pref="24" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="l10nTeamNameField" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="lblL10nTeamName" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblL10nURL" min="-2" max="-2" attributes="0"/>
-                  <Component id="l10nUrlField" min="-2" pref="24" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="l10nUrlField" alignment="3" min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="lblL10nUrl" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -145,12 +138,12 @@
       <Properties>
         <Property name="displayedMnemonic" type="int" value="84"/>
         <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="lblL10nTeamName"/>
+          <ComponentRef name="l10nTeamNameField"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Team Name"/>
+        <Property name="text" type="java.lang.String" value="Team name"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblL10nURL">
+    <Component class="javax.swing.JLabel" name="lblL10nUrl">
       <Properties>
         <Property name="displayedMnemonic" type="int" value="85"/>
         <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
@@ -161,11 +154,17 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblL10nCreated">
       <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="l10nCreationDateField"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Creation Date"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblL10nLastUpdated">
       <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="l10nLastUpdatedField"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Last updated"/>
       </Properties>
     </Component>
@@ -196,7 +195,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="refreshButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="325" max="32767" attributes="0"/>
                   <Component id="newButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="saveButton" min="-2" max="-2" attributes="0"/>

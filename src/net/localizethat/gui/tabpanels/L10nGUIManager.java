@@ -191,7 +191,7 @@ public class L10nGUIManager extends AbstractTabPanel {
         lblL10nCode = new javax.swing.JLabel();
         lblL10nDescription = new javax.swing.JLabel();
         lblL10nTeamName = new javax.swing.JLabel();
-        lblL10nURL = new javax.swing.JLabel();
+        lblL10nUrl = new javax.swing.JLabel();
         lblL10nCreated = new javax.swing.JLabel();
         lblL10nLastUpdated = new javax.swing.JLabel();
         l10nCodeField = new javax.swing.JTextField();
@@ -218,15 +218,17 @@ public class L10nGUIManager extends AbstractTabPanel {
         lblL10nDescription.setText("Description");
 
         lblL10nTeamName.setDisplayedMnemonic('T');
-        lblL10nTeamName.setLabelFor(lblL10nTeamName);
-        lblL10nTeamName.setText("Team Name");
+        lblL10nTeamName.setLabelFor(l10nTeamNameField);
+        lblL10nTeamName.setText("Team name");
 
-        lblL10nURL.setDisplayedMnemonic('U');
-        lblL10nURL.setLabelFor(l10nUrlField);
-        lblL10nURL.setText("URL");
+        lblL10nUrl.setDisplayedMnemonic('U');
+        lblL10nUrl.setLabelFor(l10nUrlField);
+        lblL10nUrl.setText("URL");
 
+        lblL10nCreated.setLabelFor(l10nCreationDateField);
         lblL10nCreated.setText("Creation Date");
 
+        lblL10nLastUpdated.setLabelFor(l10nLastUpdatedField);
         lblL10nLastUpdated.setText("Last updated");
 
         l10nCreationDateField.setEditable(false);
@@ -277,7 +279,7 @@ public class L10nGUIManager extends AbstractTabPanel {
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addComponent(refreshButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 325, Short.MAX_VALUE)
                 .addComponent(newButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveButton)
@@ -307,24 +309,20 @@ public class L10nGUIManager extends AbstractTabPanel {
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblL10nURL)
-                            .addComponent(lblL10nTeamName, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(l10nUrlField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-                            .addComponent(l10nTeamNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblL10nLastUpdated)
-                            .addComponent(lblL10nCode)
                             .addComponent(lblL10nCreated)
-                            .addComponent(lblL10nDescription))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lblL10nCode)
+                            .addComponent(lblL10nDescription)
+                            .addComponent(lblL10nTeamName)
+                            .addComponent(lblL10nUrl))
+                        .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(l10nCodeField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-                            .addComponent(l10nDescriptionField, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                            .addComponent(l10nUrlField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(l10nTeamNameField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(l10nLastUpdatedField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(l10nCreationDateField)
-                            .addComponent(l10nLastUpdatedField))))
+                            .addComponent(l10nDescriptionField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(l10nCodeField, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -341,13 +339,13 @@ public class L10nGUIManager extends AbstractTabPanel {
                     .addComponent(lblL10nDescription)
                     .addComponent(l10nDescriptionField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblL10nTeamName)
-                    .addComponent(l10nTeamNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(l10nTeamNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblL10nTeamName))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblL10nURL)
-                    .addComponent(l10nUrlField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(l10nUrlField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblL10nUrl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblL10nCreated)
@@ -479,7 +477,7 @@ public class L10nGUIManager extends AbstractTabPanel {
     private javax.swing.JLabel lblL10nDescription;
     private javax.swing.JLabel lblL10nLastUpdated;
     private javax.swing.JLabel lblL10nTeamName;
-    private javax.swing.JLabel lblL10nURL;
+    private javax.swing.JLabel lblL10nUrl;
     private javax.swing.JButton newButton;
     private javax.swing.JButton refreshButton;
     private javax.swing.JButton saveButton;
