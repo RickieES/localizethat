@@ -820,6 +820,7 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Copy"/>
             <Property name="toolTipText" type="java.lang.String" value="Make a copy of this project"/>
+            <Property name="enabled" type="boolean" value="false"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[117, 42]"/>
             </Property>

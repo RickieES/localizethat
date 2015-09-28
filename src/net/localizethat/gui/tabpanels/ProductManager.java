@@ -32,6 +32,7 @@ import net.localizethat.model.Product;
 import net.localizethat.model.ProductSourceType;
 import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContainerJPAHelper;
+import net.localizethat.system.AppSettings;
 import net.localizethat.util.gui.JStatusBar;
 
 /**
@@ -96,7 +97,7 @@ public class ProductManager extends AbstractTabPanel {
 
         saveProductButton.setEnabled(activate);
         deleteProductButton.setEnabled(activate);
-        copyProductButton.setEnabled(activate);
+        // copyProductButton.setEnabled(activate); TODO Commented out until we actually implement the feature
 
         origPathTable.setEnabled(activate);
         targetPathTable.setEnabled(activate);
@@ -202,8 +203,28 @@ public class ProductManager extends AbstractTabPanel {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
                     "Error while saving: product name can't be empty",
                     "The product name must not be empty");
+            prodNameField.requestFocusInWindow();
             return false;
         }
+
+        // Validation 3: the default language can't be empty
+        if (l10nListModel.getSelectedTypedItem() == null) {
+            statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
+                    "Error while saving: default L10n can't be empty",
+                    "The product default, or original, language code must not be empty");
+            prodDefL10nCombo.requestFocusInWindow();
+            return false;
+        }
+
+        // Validation 4: the product source type can't be empty
+        if (this.prodSourceTypeCombo.getSelectedItem() == null) {
+            statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
+                    "Error while saving: product source type can't be empty",
+                    "The product source type must not be empty; if unsure, choose MANUAL");
+            prodSourceTypeCombo.requestFocusInWindow();
+            return false;
+        }
+
         return true;
     }
 
@@ -649,6 +670,7 @@ public class ProductManager extends AbstractTabPanel {
         copyProductButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/edit-copy.png"))); // NOI18N
         copyProductButton.setText("Copy");
         copyProductButton.setToolTipText("Make a copy of this project");
+        copyProductButton.setEnabled(false);
         copyProductButton.setMaximumSize(new java.awt.Dimension(117, 42));
         copyProductButton.setMinimumSize(new java.awt.Dimension(117, 42));
         copyProductButton.setPreferredSize(new java.awt.Dimension(117, 42));
@@ -710,7 +732,14 @@ public class ProductManager extends AbstractTabPanel {
     private void newProductButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProductButtonActionPerformed
         Product p = new Product();
         p.setName("(new product)");
-        p.setL10nId(null); // TODO if we define an user preference for default original L10n
+        p.setL10nId(null);
+        String defL10nCode = Main.appSettings.getString(AppSettings.PREF_DEFAULT_ORIGINAL_LANGUAGE);
+        for(L10n l : l10nListModel.getAll()) {
+            if (l.getCode().equals(defL10nCode)) {
+                p.setL10nId(l);
+                break;
+            }
+        }
         p.setChannelId(null);
         p.setSrcType(ProductSourceType.HG);
         p.setColor("DDDDDD");
