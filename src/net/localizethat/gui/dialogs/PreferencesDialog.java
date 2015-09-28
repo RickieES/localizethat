@@ -273,9 +273,9 @@ public void showDialog() {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         okButton.setText("OK");
-        okButton.setMaximumSize(new java.awt.Dimension(54, 27));
-        okButton.setMinimumSize(new java.awt.Dimension(54, 27));
-        okButton.setPreferredSize(new java.awt.Dimension(54, 27));
+        okButton.setMaximumSize(new java.awt.Dimension(81, 25));
+        okButton.setMinimumSize(new java.awt.Dimension(81, 25));
+        okButton.setPreferredSize(new java.awt.Dimension(81, 25));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonPressed(evt);
@@ -570,7 +570,7 @@ public void showDialog() {
                     .addComponent(baseDirForReposButton))
                 .addGap(18, 18, 18)
                 .addComponent(jPathField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-io.png")), prefIOPanel, "Input/Output"); // NOI18N
@@ -632,7 +632,7 @@ public void showDialog() {
                     .addComponent(percentCoincidenceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autoTranslateCheck)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-trns-asist.png")), prefTrnsAssistPanel, "Translation Assistance"); // NOI18N
@@ -740,7 +740,7 @@ public void showDialog() {
                     .addComponent(akeyPatternLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(akeyCaseCheck))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(suffixInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
+                .addComponent(suffixInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/autoassign-ak.png")), prefKeyConnPanel, "Key Connections"); // NOI18N
@@ -829,7 +829,7 @@ public void showDialog() {
                 .addGroup(prefAutoTestsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pairedCharsListField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pairedCharsListLabel))
-                .addContainerGap(127, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-qa-tests.png")), prefAutoTestsPanel, "Automated Tests"); // NOI18N
@@ -884,7 +884,7 @@ public void showDialog() {
                     .addComponent(pathGlossaryButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(useOneFilePerProductCheck)
-                .addContainerGap(194, Short.MAX_VALUE))
+                .addContainerGap(196, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-db.png")), prefDataStorePanel, "Data Store"); // NOI18N
