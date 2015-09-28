@@ -11,12 +11,16 @@ import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.List;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import net.localizethat.Main;
+import net.localizethat.gui.models.ListComboBoxGenericModel;
+import net.localizethat.model.L10n;
 import net.localizethat.system.AppSettings;
 import net.localizethat.util.gui.GuiUtils;
 import net.localizethat.util.gui.SimpleFontChooser;
@@ -26,6 +30,7 @@ import net.localizethat.util.gui.SimpleFontChooser;
  * @author rpalomares
  */
 public class PreferencesDialog extends javax.swing.JDialog {
+    private final EntityManagerFactory emf;
     private boolean okay;
     private final List<String> availableLafs;
   
@@ -34,17 +39,34 @@ public class PreferencesDialog extends javax.swing.JDialog {
      */
     public PreferencesDialog() {
         super(Main.mainWindow, "LocalizeThat! preferences", true);
+        emf = Main.emf;
+        // The following code is executed inside initComponents()
+        // entityManager = emf.createEntityManager();
+
         availableLafs = GuiUtils.getAvailableLookAndFeels();
         initComponents();
         // JDialogHelper.setupOKCancelHotkeys(this, okButton, cancelButton);
+    }
+
+    private void refreshL10nList(ListComboBoxGenericModel<L10n> listModel) {
+        TypedQuery<L10n> l10nQuery = entityManager.createNamedQuery("L10n.findAll",
+                L10n.class);
+        listModel.clearAll();
+        listModel.addAll(l10nQuery.getResultList());
     }
 
 /**
  * Shows the dialog (in a modal way)
  */
 public void showDialog() {
-        okay = false;
+        L10n defL10n = null;
         AppSettings appSettings = Main.appSettings;
+        okay = false;
+
+        if (entityManager == null || !entityManager.isOpen()) {
+            entityManager = emf.createEntityManager();
+        }
+        refreshL10nList(defaultLanguageComboModel);
 
         // Display Tab
         Font f;
@@ -67,13 +89,20 @@ public void showDialog() {
         tsclCopied.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_COPIED));
         tsclTranslated.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_TRANSLATED));
 
+        String defL10nCode = appSettings.getString(AppSettings.PREF_DEFAULT_ORIGINAL_LANGUAGE);
+        for(L10n l : defaultLanguageComboModel.getAll()) {
+            if (l.getCode().equals(defL10nCode)) {
+                defL10n = l;
+                break;
+            }
+        }
+        if (defL10n != null) {
+            defaultLanguageCombo.setSelectedItem(defL10n);
+        }
+
         /*
         // Input/Output Tab
         replaceEnUSCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_REPLACE_ENUS));
-        useExtZipCheck.setSelected(appSettings.getBoolean(AppSettings.USE_EXTERNAL_ZIP));
-        zipPathTextField.setText(appSettings.getString(AppSettings.EXTERNAL_ZIP_PATH));
-        unzipPathTextField.setText(appSettings.getString(AppSettings.EXTERNAL_UNZIP_PATH));
-        defContributorTextField.setText(appSettings.getString(AppSettings.LICENSE_CONTRIBUTOR));
         exportOnlyModifFilesCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_ONLY_MODIFIED));
         emptyTrnsAsOriginalCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_ENUS_VALUE_ON_EMPTY_TRANSLATIONS));
         baseDirForReposField.setText(appSettings.getString(AppSettings.REPOSITORIES_BASE));
@@ -125,13 +154,12 @@ public void showDialog() {
             appSettings.setColor(AppSettings.PREF_TRNS_STATUS_COPIED, tsclCopied.getBackground());
             appSettings.setColor(AppSettings.PREF_TRNS_STATUS_TRANSLATED, tsclTranslated.getBackground());
 
+            defL10n = defaultLanguageComboModel.getSelectedTypedItem();
+            appSettings.setString(AppSettings.PREF_DEFAULT_ORIGINAL_LANGUAGE, defL10n.getCode());
+
             /*
             // Input/Output Tab
             appSettings.setBoolean(AppSettings.EXPORT_REPLACE_ENUS, replaceEnUSCheck.isSelected());
-            appSettings.setBoolean(AppSettings.USE_EXTERNAL_ZIP, useExtZipCheck.isSelected());
-            appSettings.setString(AppSettings.EXTERNAL_ZIP_PATH, zipPathTextField.getText());
-            appSettings.setString(AppSettings.EXTERNAL_UNZIP_PATH, unzipPathTextField.getText());
-            appSettings.setString(AppSettings.LICENSE_CONTRIBUTOR, defContributorTextField.getText());
             appSettings.setBoolean(AppSettings.EXPORT_ONLY_MODIFIED, exportOnlyModifFilesCheck.isSelected());
             appSettings.setBoolean(AppSettings.DATAMODEL_ONE_FILE_PER_PRODUCT, useOneFilePerProductCheck.isSelected());
             appSettings.setString(AppSettings.REPOSITORIES_BASE, baseDirForReposField.getText());
@@ -172,6 +200,8 @@ public void showDialog() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        defaultLanguageComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<L10n>();
+        entityManager = emf.createEntityManager();
         buttonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -191,21 +221,18 @@ public void showDialog() {
         tsclProposed = new javax.swing.JLabel();
         tsclCopied = new javax.swing.JLabel();
         tsclTranslated = new javax.swing.JLabel();
+        generalLabel = new javax.swing.JLabel();
+        defaultLanguageLabel = new javax.swing.JLabel();
+        defaultLanguageCombo = new javax.swing.JComboBox<L10n>();
         prefIOPanel = new javax.swing.JPanel();
         importExportLabel = new javax.swing.JLabel();
         replaceEnUSCheck = new javax.swing.JCheckBox();
-        useExtZipCheck = new javax.swing.JCheckBox();
-        zipPathLabel = new javax.swing.JLabel();
-        zipPathTextField = new javax.swing.JTextField();
-        zipPathButton = new javax.swing.JButton();
-        unzipPathLabel = new javax.swing.JLabel();
-        unzipPathTextField = new javax.swing.JTextField();
-        unzipPathButton = new javax.swing.JButton();
         exportOnlyModifFilesCheck = new javax.swing.JCheckBox();
         emptyTrnsAsOriginalCheck = new javax.swing.JCheckBox();
         baseDirForReposLabel = new javax.swing.JLabel();
         baseDirForReposField = new javax.swing.JTextField();
         baseDirForReposButton = new javax.swing.JButton();
+        jPathField1 = new net.localizethat.util.gui.JPathField();
         prefTrnsAssistPanel = new javax.swing.JPanel();
         translationSuggestionsLabel = new javax.swing.JLabel();
         useSuggCheckBox = new javax.swing.JCheckBox();
@@ -368,6 +395,13 @@ public void showDialog() {
             }
         });
 
+        generalLabel.setText("General");
+
+        defaultLanguageLabel.setText("Default language");
+
+        defaultLanguageCombo.setModel(defaultLanguageComboModel);
+        defaultLanguageCombo.setToolTipText("Default language code for new products. Doesn't affect existing products");
+
         javax.swing.GroupLayout prefDisplayPanelLayout = new javax.swing.GroupLayout(prefDisplayPanel);
         prefDisplayPanel.setLayout(prefDisplayPanelLayout);
         prefDisplayPanelLayout.setHorizontalGroup(
@@ -376,45 +410,55 @@ public void showDialog() {
                 .addContainerGap()
                 .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(prefDisplayPanelLayout.createSequentialGroup()
-                        .addGap(272, 272, 272)
-                        .addComponent(tsColorsLabel))
-                    .addGroup(prefDisplayPanelLayout.createSequentialGroup()
-                        .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(appearanceLabel)
                             .addGroup(prefDisplayPanelLayout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(prefDisplayPanelLayout.createSequentialGroup()
+                                            .addComponent(lookAndFeelLabel)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(lookAndFeelCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(prefDisplayPanelLayout.createSequentialGroup()
+                                            .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(editPhraseFontLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(tableViewFontLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(editPhraseChooseButton)
+                                                .addComponent(tableViewChooseButton))))
                                     .addGroup(prefDisplayPanelLayout.createSequentialGroup()
-                                        .addComponent(lookAndFeelLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lookAndFeelCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(prefDisplayPanelLayout.createSequentialGroup()
-                                        .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(editPhraseFontLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(tableViewFontLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(defaultLanguageLabel)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(editPhraseChooseButton)
-                                            .addComponent(tableViewChooseButton))))))
+                                        .addComponent(defaultLanguageCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addGap(18, 18, 18)
                         .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tsclApproximated, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                            .addComponent(tsclUntranslated, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                            .addComponent(tsclCopied, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tsclModified, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-                            .addComponent(tsclProposed, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tsclTranslated, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(prefDisplayPanelLayout.createSequentialGroup()
+                                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(tsclApproximated, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                                    .addComponent(tsclUntranslated, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                                    .addComponent(tsclCopied, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(tsclModified, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                                    .addComponent(tsclProposed, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(tsclTranslated, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(prefDisplayPanelLayout.createSequentialGroup()
+                                .addComponent(tsColorsLabel)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(prefDisplayPanelLayout.createSequentialGroup()
+                        .addComponent(generalLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         prefDisplayPanelLayout.setVerticalGroup(
             prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(prefDisplayPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(appearanceLabel)
-                    .addComponent(tsColorsLabel))
+                    .addComponent(tsColorsLabel, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(prefDisplayPanelLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
@@ -438,7 +482,13 @@ public void showDialog() {
                     .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lookAndFeelLabel)
                         .addComponent(lookAndFeelCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(154, 154, 154))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(generalLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(prefDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(defaultLanguageLabel)
+                    .addComponent(defaultLanguageCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-display.png")), prefDisplayPanel, "Display"); // NOI18N
@@ -447,47 +497,17 @@ public void showDialog() {
         importExportLabel.setText("Import/Export");
 
         replaceEnUSCheck.setMnemonic('R');
-        replaceEnUSCheck.setText("Replace en-US directories name by ab-CD on exporting/writing");
-        replaceEnUSCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-
-        useExtZipCheck.setMnemonic('U');
-        useExtZipCheck.setText("Use external ZIP binaries when exporting");
-        useExtZipCheck.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        useExtZipCheck.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                useExtZipCheckStateChanged(evt);
-            }
-        });
-
-        zipPathLabel.setDisplayedMnemonic('Z');
-        zipPathLabel.setLabelFor(zipPathTextField);
-        zipPathLabel.setText("Path to ZIP binary:");
-
-        zipPathButton.setMnemonic('C');
-        zipPathButton.setText("Choose...");
-        zipPathButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                zipPathButtonActionPerformed(evt);
-            }
-        });
-
-        unzipPathLabel.setDisplayedMnemonic('N');
-        unzipPathLabel.setLabelFor(unzipPathTextField);
-        unzipPathLabel.setText("Path to UNZIP binary:");
-
-        unzipPathButton.setMnemonic('h');
-        unzipPathButton.setText("Choose...");
-        unzipPathButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                unzipPathButtonActionPerformed(evt);
-            }
-        });
+        replaceEnUSCheck.setText("Replace original directories name with target on exporting/writing");
+        replaceEnUSCheck.setToolTipText("<html>Subdirectories named after the original language code (e.g.: en-US) <br/>\nwill be renamed to the target language code (e.g.: fr, es-ES, etc.).</html>");
+        replaceEnUSCheck.setBorder(javax.swing.BorderFactory.createCompoundBorder());
 
         exportOnlyModifFilesCheck.setMnemonic('E');
         exportOnlyModifFilesCheck.setText("Export only modified files");
+        exportOnlyModifFilesCheck.setBorder(javax.swing.BorderFactory.createCompoundBorder());
 
         emptyTrnsAsOriginalCheck.setMnemonic('x');
-        emptyTrnsAsOriginalCheck.setText("Export empty translations as original (en-US) value");
+        emptyTrnsAsOriginalCheck.setText("Export empty translations as original value");
+        emptyTrnsAsOriginalCheck.setBorder(javax.swing.BorderFactory.createCompoundBorder());
 
         baseDirForReposLabel.setDisplayedMnemonic('B');
         baseDirForReposLabel.setLabelFor(baseDirForReposField);
@@ -505,48 +525,32 @@ public void showDialog() {
         prefIOPanel.setLayout(prefIOPanelLayout);
         prefIOPanelLayout.setHorizontalGroup(
             prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, prefIOPanelLayout.createSequentialGroup()
-                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+            .addGroup(prefIOPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(prefIOPanelLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(exportOnlyModifFilesCheck, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(replaceEnUSCheck, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(emptyTrnsAsOriginalCheck))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, prefIOPanelLayout.createSequentialGroup()
+                        .addComponent(importExportLabel)
+                        .addContainerGap(529, Short.MAX_VALUE))
+                    .addGroup(prefIOPanelLayout.createSequentialGroup()
+                        .addComponent(baseDirForReposLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                        .addComponent(zipPathLabel)
-                                        .addGap(31, 31, 31)
-                                        .addComponent(zipPathTextField)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(zipPathButton))
-                                    .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                        .addComponent(unzipPathLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(unzipPathTextField)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(unzipPathButton))))
+                                .addComponent(jPathField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addComponent(baseDirForReposLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(baseDirForReposField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(baseDirForReposButton))
-                            .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(useExtZipCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(exportOnlyModifFilesCheck)
-                                    .addComponent(emptyTrnsAsOriginalCheck))
-                                .addGap(0, 145, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
-                        .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(importExportLabel))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, prefIOPanelLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(replaceEnUSCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 461, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(13, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(baseDirForReposButton)
+                                .addGap(25, 25, 25))))))
         );
         prefIOPanelLayout.setVerticalGroup(
             prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -556,30 +560,18 @@ public void showDialog() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(replaceEnUSCheck)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(useExtZipCheck)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(zipPathLabel)
-                    .addComponent(zipPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(zipPathButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(unzipPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(unzipPathLabel)
-                    .addComponent(unzipPathButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(exportOnlyModifFilesCheck)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(emptyTrnsAsOriginalCheck)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(baseDirForReposLabel)
                     .addComponent(baseDirForReposField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(baseDirForReposButton))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPathField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(113, Short.MAX_VALUE))
         );
-
-        prefIOPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {unzipPathTextField, zipPathTextField});
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-io.png")), prefIOPanel, "Input/Output"); // NOI18N
 
@@ -904,7 +896,7 @@ public void showDialog() {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane1)
                     .addComponent(buttonPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -949,47 +941,6 @@ public void showDialog() {
         okay = false;
         setVisible(false);
     }//GEN-LAST:event_cancelButtonPressed
-
-    private void useExtZipCheckStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_useExtZipCheckStateChanged
-        unzipPathTextField.setEnabled(useExtZipCheck.isSelected());
-        unzipPathButton.setEnabled(useExtZipCheck.isSelected());
-        zipPathTextField.setEnabled(useExtZipCheck.isSelected());
-        zipPathButton.setEnabled(useExtZipCheck.isSelected());
-    }//GEN-LAST:event_useExtZipCheckStateChanged
-
-    private void zipPathButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zipPathButtonActionPerformed
-        File defaultFile;
-        JFileChooser chooser;
-        int result;
-
-        defaultFile = new File(zipPathTextField.getText());
-        chooser = new JFileChooser(".");
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setDialogTitle("Select a ZIP utility accepting parameters ala InfoZIP style");
-        chooser.setSelectedFile(defaultFile);
-        result = chooser.showDialog(this, "Choose");
-        if (result == JFileChooser.APPROVE_OPTION) {
-            defaultFile = chooser.getSelectedFile();
-            zipPathTextField.setText(defaultFile.toString());
-        }
-    }//GEN-LAST:event_zipPathButtonActionPerformed
-
-    private void unzipPathButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unzipPathButtonActionPerformed
-        File defaultFile;
-        JFileChooser chooser;
-        int result;
-
-        defaultFile = new File(unzipPathTextField.getText());
-        chooser = new JFileChooser(".");
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setDialogTitle("Select a UNZIP utility accepting parameters ala InfoZIP style");
-        chooser.setSelectedFile(defaultFile);
-        result = chooser.showDialog(this, "Choose");
-        if (result == JFileChooser.APPROVE_OPTION) {
-            defaultFile = chooser.getSelectedFile();
-            unzipPathTextField.setText(defaultFile.toString());
-        }
-    }//GEN-LAST:event_unzipPathButtonActionPerformed
 
     private void pairedCharsListFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pairedCharsListFieldFocusLost
         if (pairedCharsListField.getText().length() % 2 != 0) {
@@ -1062,17 +1013,23 @@ public void showDialog() {
     private javax.swing.JCheckBox ckeyCaseCheck;
     private javax.swing.JTextField ckeyPatternField;
     private javax.swing.JLabel ckeyPatternLabel;
+    private javax.swing.JComboBox<L10n> defaultLanguageCombo;
+    private net.localizethat.gui.models.ListComboBoxGenericModel<L10n> defaultLanguageComboModel;
+    private javax.swing.JLabel defaultLanguageLabel;
     private javax.swing.JLabel descripLabel;
     private javax.swing.JButton editPhraseChooseButton;
     private javax.swing.JLabel editPhraseFontLabel;
     private javax.swing.JCheckBox emptyTrnsAsOriginalCheck;
     private javax.swing.JTextField endingCheckedCharsField;
     private javax.swing.JLabel endingCheckedCharsLabel;
+    private javax.persistence.EntityManager entityManager;
     private javax.swing.JCheckBox exportOnlyModifFilesCheck;
+    private javax.swing.JLabel generalLabel;
     private javax.swing.JLabel ignoredOrigEntLabel;
     private javax.swing.JLabel ignoredTrnsEntLabel;
     private javax.swing.JLabel importExportLabel;
     private javax.swing.JLabel jLabel1;
+    private net.localizethat.util.gui.JPathField jPathField1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel keyConnLabel;
     private javax.swing.JCheckBox labelCaseCheck;
@@ -1110,14 +1067,7 @@ public void showDialog() {
     private javax.swing.JLabel tsclProposed;
     private javax.swing.JLabel tsclTranslated;
     private javax.swing.JLabel tsclUntranslated;
-    private javax.swing.JButton unzipPathButton;
-    private javax.swing.JLabel unzipPathLabel;
-    private javax.swing.JTextField unzipPathTextField;
-    private javax.swing.JCheckBox useExtZipCheck;
     private javax.swing.JCheckBox useOneFilePerProductCheck;
     private javax.swing.JCheckBox useSuggCheckBox;
-    private javax.swing.JButton zipPathButton;
-    private javax.swing.JLabel zipPathLabel;
-    private javax.swing.JTextField zipPathTextField;
     // End of variables declaration//GEN-END:variables
 }

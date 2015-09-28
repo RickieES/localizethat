@@ -65,12 +65,6 @@ public class AppSettings {
     public static final String PREF_FONT_TABLEVIEW_SIZE = "font.tableview.size";
 
     /**
-     * Keys for logging preferences
-     */
-    public static final String PREF_LOGGING_FILENAME = "logging.filename";
-    public static final String PREF_LOGGING_LOGLEVEL = "logging.loglevel";
-
-    /**
      * Keys for colors used for string translation status
      */
     public static final String PREF_TRNS_STATUS = "gui.trnscolor.";
@@ -80,6 +74,17 @@ public class AppSettings {
     public static final String PREF_TRNS_STATUS_PROPOSED = PREF_TRNS_STATUS + "proposed";
     public static final String PREF_TRNS_STATUS_TRANSLATED = PREF_TRNS_STATUS + "translated";
     public static final String PREF_TRNS_STATUS_UNTRANSLATED = PREF_TRNS_STATUS + "untranslated";
+
+    /**
+     * Key for default language code
+     */
+    public static final String PREF_DEFAULT_ORIGINAL_LANGUAGE = "general.default.original.language";
+
+    /**
+     * Keys for logging preferences
+     */
+    public static final String PREF_LOGGING_FILENAME = "logging.filename";
+    public static final String PREF_LOGGING_LOGLEVEL = "logging.loglevel";
 
 
     private Properties prefValues;
@@ -295,6 +300,8 @@ public class AppSettings {
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_NAME, "Sans Serif");
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_STYLE, Integer.toString(Font.PLAIN));
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_SIZE, "12");
+
+        defaultPrefs.setProperty(PREF_DEFAULT_ORIGINAL_LANGUAGE, "en-US");
 
         return defaultPrefs;
     }
