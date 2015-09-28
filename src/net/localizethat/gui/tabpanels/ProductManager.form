@@ -341,7 +341,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="scrollNotesArea" pref="157" max="32767" attributes="0"/>
+                          <Component id="scrollNotesArea" pref="159" max="32767" attributes="0"/>
                           <Component id="prodNotesLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -500,8 +500,8 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="pathL10nCombo" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="scrollPathTable" alignment="0" pref="476" max="32767" attributes="0"/>
+                                  <Component id="scrollTargetPathTable" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="scrollOriginalPathTable" alignment="0" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="targetPathsForProductLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -535,25 +535,25 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="importPathButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="scrollPathTable" min="-2" pref="156" max="-2" attributes="0"/>
+                          <Component id="scrollOriginalPathTable" min="-2" pref="140" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="newPathField" alignment="1" min="-2" pref="24" max="-2" attributes="0"/>
-                          <Component id="pathL10nCombo" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="newPathField" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+                          <Component id="pathL10nCombo" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="targetPathsForProductLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="scrollTargetPathTable" min="-2" pref="140" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="addTargetPathButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="delTargetPathButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane1" min="-2" pref="122" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -564,7 +564,7 @@
                 <Property name="text" type="java.lang.String" value="Paths in default locale for this product"/>
               </Properties>
             </Component>
-            <Container class="javax.swing.JScrollPane" name="scrollPathTable">
+            <Container class="javax.swing.JScrollPane" name="scrollOriginalPathTable">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -656,7 +656,7 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;L10n&gt;"/>
               </AuxValues>
             </Component>
-            <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+            <Container class="javax.swing.JScrollPane" name="scrollTargetPathTable">
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -715,7 +715,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="targetPathsForProductLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Paths for other locales linked to the above selected path"/>
+                <Property name="text" type="java.lang.String" value="Paths in other locales for this product"/>
               </Properties>
             </Component>
           </SubComponents>

@@ -281,14 +281,14 @@ public class ProductManager extends AbstractTabPanel {
         lastUpdatedLabel = new javax.swing.JLabel();
         productDetailsPanel = new javax.swing.JPanel();
         pathsForProductLabel = new javax.swing.JLabel();
-        scrollPathTable = new javax.swing.JScrollPane();
+        scrollOriginalPathTable = new javax.swing.JScrollPane();
         origPathTable = new javax.swing.JTable();
         addOrigPathButton = new javax.swing.JButton();
         delOrigPathButton = new javax.swing.JButton();
         importPathButton = new javax.swing.JButton();
         newPathField = new net.localizethat.util.gui.JPathField();
         pathL10nCombo = new javax.swing.JComboBox<L10n>();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        scrollTargetPathTable = new javax.swing.JScrollPane();
         targetPathTable = new javax.swing.JTable();
         addTargetPathButton = new javax.swing.JButton();
         delTargetPathButton = new javax.swing.JButton();
@@ -491,7 +491,7 @@ public class ProductManager extends AbstractTabPanel {
                     .addComponent(lastUpdatedLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollNotesArea, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+                    .addComponent(scrollNotesArea, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                     .addComponent(prodNotesLabel))
                 .addContainerGap())
         );
@@ -502,7 +502,7 @@ public class ProductManager extends AbstractTabPanel {
 
         origPathTable.setAutoCreateRowSorter(true);
         origPathTable.setModel(origPathTableModel);
-        scrollPathTable.setViewportView(origPathTable);
+        scrollOriginalPathTable.setViewportView(origPathTable);
 
         addOrigPathButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-list-add.png"))); // NOI18N
         addOrigPathButton.setToolTipText("Add the path in the fields below the table");
@@ -543,7 +543,7 @@ public class ProductManager extends AbstractTabPanel {
 
         targetPathTable.setAutoCreateRowSorter(true);
         targetPathTable.setModel(targetPathTableModel);
-        jScrollPane1.setViewportView(targetPathTable);
+        scrollTargetPathTable.setViewportView(targetPathTable);
 
         addTargetPathButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-list-add.png"))); // NOI18N
         addTargetPathButton.setToolTipText("Add the path in the fields above the table");
@@ -567,7 +567,7 @@ public class ProductManager extends AbstractTabPanel {
             }
         });
 
-        targetPathsForProductLabel.setText("Paths for other locales linked to the above selected path");
+        targetPathsForProductLabel.setText("Paths in other locales for this product");
 
         javax.swing.GroupLayout productDetailsPanelLayout = new javax.swing.GroupLayout(productDetailsPanel);
         productDetailsPanel.setLayout(productDetailsPanelLayout);
@@ -585,8 +585,8 @@ public class ProductManager extends AbstractTabPanel {
                                 .addComponent(newPathField, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(pathL10nCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(scrollPathTable, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                            .addComponent(scrollTargetPathTable, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(scrollOriginalPathTable, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, productDetailsPanelLayout.createSequentialGroup()
                                 .addComponent(targetPathsForProductLabel)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -612,21 +612,21 @@ public class ProductManager extends AbstractTabPanel {
                         .addComponent(delOrigPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(importPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(scrollPathTable, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(scrollOriginalPathTable, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(newPathField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pathL10nCombo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(newPathField, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pathL10nCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(targetPathsForProductLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrollTargetPathTable, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(productDetailsPanelLayout.createSequentialGroup()
                         .addComponent(addTargetPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(delTargetPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(delTargetPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Locales and paths", productDetailsPanel);
@@ -1204,7 +1204,6 @@ public class ProductManager extends AbstractTabPanel {
     private javax.swing.JDialog importPathDialog;
     private net.localizethat.gui.models.PathTableModel importTargetPathTableModel;
     private javax.swing.JTable importtargetPathTable;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPanePathImportList;
     private javax.swing.JScrollPane jScrollPanePathImportTable;
     private javax.swing.JTabbedPane jTabbedPane1;
@@ -1239,8 +1238,9 @@ public class ProductManager extends AbstractTabPanel {
     private net.localizethat.gui.models.ListComboBoxGenericModel<ProductSourceType> productSourceTypeListModel;
     private javax.swing.JButton saveProductButton;
     private javax.swing.JScrollPane scrollNotesArea;
-    private javax.swing.JScrollPane scrollPathTable;
+    private javax.swing.JScrollPane scrollOriginalPathTable;
     private javax.swing.JScrollPane scrollProductList;
+    private javax.swing.JScrollPane scrollTargetPathTable;
     private javax.swing.JLabel sourceTypeLabel;
     private javax.swing.JTable targetPathTable;
     private net.localizethat.gui.models.PathTableModel targetPathTableModel;
