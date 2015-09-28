@@ -389,7 +389,7 @@ public class ProductManager extends AbstractTabPanel {
 
         prodChannelCombo.setModel(channelListModel);
 
-        sourceTypeLabel.setText("Source Type:");
+        sourceTypeLabel.setText("Source type:");
 
         prodSourceTypeCombo.setModel(productSourceTypeListModel);
 
@@ -418,9 +418,9 @@ public class ProductManager extends AbstractTabPanel {
         prodLastUpdatedField.setEditable(false);
         prodLastUpdatedField.setEnabled(false);
 
-        creationDateLabel.setText("Creation Date:");
+        creationDateLabel.setText("Creation date:");
 
-        lastUpdatedLabel.setText("Last updated:");
+        lastUpdatedLabel.setText("Last update:");
 
         javax.swing.GroupLayout productInfoPanelLayout = new javax.swing.GroupLayout(productInfoPanel);
         productInfoPanel.setLayout(productInfoPanelLayout);
@@ -455,7 +455,7 @@ public class ProductManager extends AbstractTabPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(sourceTypeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(prodSourceTypeCombo, 0, 189, Short.MAX_VALUE))
+                        .addComponent(prodSourceTypeCombo, 0, 191, Short.MAX_VALUE))
                     .addComponent(scrollNotesArea)
                     .addComponent(prodCreationDateField))
                 .addContainerGap())
@@ -629,7 +629,7 @@ public class ProductManager extends AbstractTabPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Locales and Paths", productDetailsPanel);
+        jTabbedPane1.addTab("Locales and paths", productDetailsPanel);
 
         newProductButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-new.png"))); // NOI18N
         newProductButton.setMnemonic('N');

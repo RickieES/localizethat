@@ -295,7 +295,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="sourceTypeLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="prodSourceTypeCombo" pref="189" max="32767" attributes="0"/>
+                              <Component id="prodSourceTypeCombo" pref="191" max="32767" attributes="0"/>
                           </Group>
                           <Component id="scrollNotesArea" max="32767" attributes="0"/>
                           <Component id="prodCreationDateField" alignment="0" max="32767" attributes="0"/>
@@ -392,7 +392,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="sourceTypeLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Source Type:"/>
+                <Property name="text" type="java.lang.String" value="Source type:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="prodSourceTypeCombo">
@@ -464,12 +464,12 @@
             </Component>
             <Component class="javax.swing.JLabel" name="creationDateLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Creation Date:"/>
+                <Property name="text" type="java.lang.String" value="Creation date:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lastUpdatedLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Last updated:"/>
+                <Property name="text" type="java.lang.String" value="Last update:"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -477,8 +477,8 @@
         <Container class="javax.swing.JPanel" name="productDetailsPanel">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Locales and Paths">
-                <Property name="tabTitle" type="java.lang.String" value="Locales and Paths"/>
+              <JTabbedPaneConstraints tabName="Locales and paths">
+                <Property name="tabTitle" type="java.lang.String" value="Locales and paths"/>
               </JTabbedPaneConstraints>
             </Constraint>
           </Constraints>
