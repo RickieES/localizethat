@@ -163,10 +163,10 @@ public class MainWindow extends javax.swing.JFrame {
         localeManagerAction = new net.localizethat.actions.LocaleManagerAction();
         channelManagerAction = new net.localizethat.actions.ChannelManagerAction();
         productManagerAction = new net.localizethat.actions.ProductManagerAction();
-        updateProductAction = new net.localizethat.actions.UpdateProductAction();
+        updateProductAction = new net.localizethat.actions.UpdateProductsAction();
         editContentAction = new net.localizethat.actions.EditContentAction();
-        exportProductAction = new net.localizethat.actions.ExportProductAction();
-        importProductAction = new net.localizethat.actions.ImportProductAction();
+        exportProductAction = new net.localizethat.actions.ExportProductsAction();
+        importProductAction = new net.localizethat.actions.ImportProductsAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
@@ -364,11 +364,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem editContentMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
-    private net.localizethat.actions.ExportProductAction exportProductAction;
+    private net.localizethat.actions.ExportProductsAction exportProductAction;
     private javax.swing.JMenuItem exportProductsMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private net.localizethat.actions.ImportProductAction importProductAction;
+    private net.localizethat.actions.ImportProductsAction importProductAction;
     private javax.swing.JMenuItem importProductsMenuItem;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -386,7 +386,7 @@ public class MainWindow extends javax.swing.JFrame {
     private net.localizethat.util.gui.JStatusBar statusBar;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JMenu tableMaintenanceMenu;
-    private net.localizethat.actions.UpdateProductAction updateProductAction;
+    private net.localizethat.actions.UpdateProductsAction updateProductAction;
     private javax.swing.JButton updateProductsButton;
     private javax.swing.JMenuItem updateProductsMenuItem;
     // End of variables declaration//GEN-END:variables

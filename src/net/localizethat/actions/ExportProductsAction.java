@@ -20,7 +20,7 @@ import net.localizethat.tasks.CreateEntityManagerTask;
  * Opens a tab with the Export product panel in the main window
  * @author rpalomares
  */
-public class ExportProductAction extends AbstractAction {
+public class ExportProductsAction extends AbstractAction {
     private static final String TITLE = "Export Products";
     private static final String DESCRIPTION = "Opens " + TITLE + " panel";
     private static final String ICON = "view-refresh.png"; // TODO change icon
@@ -30,12 +30,12 @@ public class ExportProductAction extends AbstractAction {
     /**
      * Action representing the launching of ExportProductPanel as a tab in main window
      */
-    public ExportProductAction() {
+    public ExportProductsAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
         putValue(MNEMONIC_KEY, MNEMONIC);
         // putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC, java.awt.event.InputEvent.CTRL_MASK));
-        ImageIcon icon = new ImageIcon(ExportProductAction.class.getResource(
+        ImageIcon icon = new ImageIcon(ExportProductsAction.class.getResource(
                     "/net/localizethat/resources/" + ICON));
         putValue(LARGE_ICON_KEY, icon);
     }
@@ -58,7 +58,7 @@ public class ExportProductAction extends AbstractAction {
             Main.mainWindow.addTab(exportProductPanel, TITLE);
             Main.mainWindow.getStatusBar().clearText();
         } catch (InterruptedException ex) {
-            Logger.getLogger(ExportProductAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExportProductsAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

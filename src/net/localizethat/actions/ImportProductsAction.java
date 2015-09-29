@@ -20,7 +20,7 @@ import net.localizethat.tasks.CreateEntityManagerTask;
  * Opens a tab with the Import product panel in the main window
  * @author rpalomares
  */
-public class ImportProductAction extends AbstractAction {
+public class ImportProductsAction extends AbstractAction {
     private static final String TITLE = "Import Products";
     private static final String DESCRIPTION = "Opens " + TITLE + " panel";
     private static final String ICON = "view-refresh.png"; // TODO change icon
@@ -30,12 +30,12 @@ public class ImportProductAction extends AbstractAction {
     /**
      * Action representing the launching of ImxportProductPanel as a tab in main window
      */
-    public ImportProductAction() {
+    public ImportProductsAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
         putValue(MNEMONIC_KEY, MNEMONIC);
         // putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC, java.awt.event.InputEvent.CTRL_MASK));
-        ImageIcon icon = new ImageIcon(ImportProductAction.class.getResource(
+        ImageIcon icon = new ImageIcon(ImportProductsAction.class.getResource(
                     "/net/localizethat/resources/" + ICON));
         putValue(LARGE_ICON_KEY, icon);
     }
@@ -58,7 +58,7 @@ public class ImportProductAction extends AbstractAction {
             Main.mainWindow.addTab(importProductPanel, TITLE);
             Main.mainWindow.getStatusBar().clearText();
         } catch (InterruptedException ex) {
-            Logger.getLogger(ImportProductAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImportProductsAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

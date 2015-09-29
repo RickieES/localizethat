@@ -12,13 +12,13 @@
     </Component>
     <Component class="net.localizethat.actions.ProductManagerAction" name="productManagerAction">
     </Component>
-    <Component class="net.localizethat.actions.UpdateProductAction" name="updateProductAction">
+    <Component class="net.localizethat.actions.UpdateProductsAction" name="updateProductAction">
     </Component>
     <Component class="net.localizethat.actions.EditContentAction" name="editContentAction">
     </Component>
-    <Component class="net.localizethat.actions.ExportProductAction" name="exportProductAction">
+    <Component class="net.localizethat.actions.ExportProductsAction" name="exportProductAction">
     </Component>
-    <Component class="net.localizethat.actions.ImportProductAction" name="importProductAction">
+    <Component class="net.localizethat.actions.ImportProductsAction" name="importProductAction">
     </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
