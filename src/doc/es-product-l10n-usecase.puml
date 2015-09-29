@@ -1,0 +1,11 @@
+@startuml
+:Usuario: as U1
+(Actualizar producto) as PU
+(Exportar traducción) as PE
+(Importar traducción) as PI
+(Editar contenido) as CE
+U1 -- PU
+U1 -- PE
+U1 -- PI
+U1 -- CE
+@enduml
