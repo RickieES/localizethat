@@ -5,6 +5,9 @@
     <class>net.localizethat.model.Channel</class>
     <class>net.localizethat.model.ConfigValue</class>
     <class>net.localizethat.model.DtdFile</class>
+    <class>net.localizethat.model.Glossary</class>
+    <class>net.localizethat.model.GlsEntry</class>
+    <class>net.localizethat.model.GlsTranslation</class>
     <class>net.localizethat.model.ImageFile</class>
     <class>net.localizethat.model.L10n</class>
     <class>net.localizethat.model.LocaleContainer</class>
