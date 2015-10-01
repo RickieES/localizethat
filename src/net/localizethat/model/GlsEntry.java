@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "APP.GLSENTRY")
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "GlsEntry.countByGlossary", query = "SELECT COUNT(ge) FROM GlsEntry ge WHERE ge.glosId = :glosid"),
     @NamedQuery(name = "GlsEntry.findAll", query = "SELECT ge FROM GlsEntry ge ORDER BY ge.term"),
     @NamedQuery(name = "GlsEntry.findAllForGlossary", query = "SELECT ge FROM GlsEntry ge WHERE ge.glosId = :gid ORDER BY ge.term"),
     @NamedQuery(name = "GlsEntry.findById", query = "SELECT ge FROM GlsEntry ge WHERE ge.id = :id"),
