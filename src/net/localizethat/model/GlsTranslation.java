@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "GlsTranslation.findById", query = "SELECT gt FROM GlsTranslation gt WHERE gt.id = :id"),
     @NamedQuery(name = "GlsTranslation.findByValue", query = "SELECT gt FROM GlsTranslation gt WHERE gt.value = :glstvalue"),
     @NamedQuery(name = "GlsTranslation.findByEntryAndLocale", query = "SELECT gt FROM GlsTranslation gt WHERE gt.glseId = :glseid AND gt.l10nId = :l10nid"),
+    @NamedQuery(name = "GlsTranslation.findByEntryAndLocaleAndValue", query = "SELECT gt FROM GlsTranslation gt WHERE gt.glseId = :glseid AND gt.l10nId = :l10nid AND gt.value = :value"),
     @NamedQuery(name = "GlsTranslation.findByCreationDate", query = "SELECT gt FROM GlsTranslation gt WHERE gt.creationDate = :glstcreationdate"),
     @NamedQuery(name = "GlsTranslation.findByLastUpdate", query = "SELECT gt FROM GlsTranslation gt WHERE gt.lastUpdate = :glstlastupdate")})
 public class GlsTranslation implements Serializable {

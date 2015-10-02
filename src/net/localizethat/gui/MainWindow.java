@@ -168,6 +168,7 @@ public class MainWindow extends javax.swing.JFrame {
         exportProductAction = new net.localizethat.actions.ExportProductsAction();
         importProductAction = new net.localizethat.actions.ImportProductsAction();
         glossaryManagerAction = new net.localizethat.actions.GlossaryManagerAction();
+        glsEntriesManagerAction = new net.localizethat.actions.GlsEntriesManagerAction();
         statusBar = new net.localizethat.util.gui.JStatusBar();
         mainToolBar = new javax.swing.JToolBar();
         preferencesButton = new javax.swing.JButton();
@@ -183,6 +184,7 @@ public class MainWindow extends javax.swing.JFrame {
         manageChannelsMenuItem = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         manageGlossaryMenuItem = new javax.swing.JMenuItem();
+        manageGlsEntriesMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         updateProductsMenuItem = new javax.swing.JMenuItem();
         exportProductsMenuItem = new javax.swing.JMenuItem();
@@ -256,8 +258,11 @@ public class MainWindow extends javax.swing.JFrame {
         tableMaintenanceMenu.add(jSeparator3);
 
         manageGlossaryMenuItem.setAction(glossaryManagerAction);
-        manageGlossaryMenuItem.setText("Glossary Manager");
         tableMaintenanceMenu.add(manageGlossaryMenuItem);
+
+        manageGlsEntriesMenuItem.setAction(glsEntriesManagerAction);
+        manageGlsEntriesMenuItem.setText("Glossary Entries Manager");
+        tableMaintenanceMenu.add(manageGlsEntriesMenuItem);
 
         fileMenu.add(tableMaintenanceMenu);
         fileMenu.add(jSeparator1);
@@ -375,6 +380,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem exportProductsMenuItem;
     private javax.swing.JMenu fileMenu;
     private net.localizethat.actions.GlossaryManagerAction glossaryManagerAction;
+    private net.localizethat.actions.GlsEntriesManagerAction glsEntriesManagerAction;
     private javax.swing.JMenu helpMenu;
     private net.localizethat.actions.ImportProductsAction importProductAction;
     private javax.swing.JMenuItem importProductsMenuItem;
@@ -385,6 +391,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JToolBar mainToolBar;
     private javax.swing.JMenuItem manageChannelsMenuItem;
     private javax.swing.JMenuItem manageGlossaryMenuItem;
+    private javax.swing.JMenuItem manageGlsEntriesMenuItem;
     private javax.swing.JMenuItem manageLocalesMenuItem;
     private javax.swing.JMenuItem manageProductsMenuItem;
     private javax.swing.JMenuBar menuBar;

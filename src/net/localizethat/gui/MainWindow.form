@@ -22,6 +22,8 @@
     </Component>
     <Component class="net.localizethat.actions.GlossaryManagerAction" name="glossaryManagerAction">
     </Component>
+    <Component class="net.localizethat.actions.GlsEntriesManagerAction" name="glsEntriesManagerAction">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
@@ -65,7 +67,14 @@
                     <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
                       <ComponentRef name="glossaryManagerAction"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Glossary Manager"/>
+                  </Properties>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="manageGlsEntriesMenuItem">
+                  <Properties>
+                    <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                      <ComponentRef name="glsEntriesManagerAction"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Glossary Entries Manager"/>
                   </Properties>
                 </MenuItem>
               </SubComponents>

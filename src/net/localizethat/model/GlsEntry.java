@@ -50,8 +50,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GlsEntry.findById", query = "SELECT ge FROM GlsEntry ge WHERE ge.id = :id"),
     @NamedQuery(name = "GlsEntry.findByGlsTerm", query = "SELECT ge FROM GlsEntry ge WHERE ge.term = :glseterm"),
     @NamedQuery(name = "GlsEntry.findByGlsAndTerm", query = "SELECT ge FROM GlsEntry ge WHERE ge.glosId = :glosid AND ge.term = :glseterm"),
+    @NamedQuery(name = "GlsEntry.findByGlsAndTermAndPoS", query = "SELECT ge FROM GlsEntry ge WHERE ge.glosId = :glosid AND ge.term = :glseterm AND ge.partOfSpeech = :partofspeech"),
     @NamedQuery(name = "GlsEntry.findByGlsTermLoCase", query = "SELECT ge FROM GlsEntry ge WHERE LOWER(ge.term) = LOWER(:glseterm)"),
     @NamedQuery(name = "GlsEntry.findByGlsAndTermLoCase", query = "SELECT ge FROM GlsEntry ge WHERE ge.glosId = :glosid AND LOWER(ge.term) = LOWER(:glseterm)"),
+    @NamedQuery(name = "GlsEntry.findByGlsAndTermLoCaseAndPoS", query = "SELECT ge FROM GlsEntry ge WHERE ge.glosId = :glosid AND LOWER(ge.term) = LOWER(:glseterm) AND ge.partOfSpeech = :partofspeech"),
     @NamedQuery(name = "GlsEntry.findByGlsecreationdate", query = "SELECT ge FROM GlsEntry ge WHERE ge.creationDate = :glsecreationdate"),
     @NamedQuery(name = "GlsEntry.findByGlselastupdate", query = "SELECT ge FROM GlsEntry ge WHERE ge.lastUpdate = :glselastupdate")})
 public class GlsEntry implements Serializable {
