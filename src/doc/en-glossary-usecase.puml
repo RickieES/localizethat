@@ -1,0 +1,23 @@
+@startuml
+:User: as U1
+(Create glossary) as GLOSC
+(Edit glossary) as GLOSE
+(Delete glossary) as GLOSD
+(Import glossary) as GLOSI
+(Create glossary entry) as GLESC
+(Edit glossary entry) as GLESE
+(Delete glossary entry) as GLESD
+(Create glossary translation) as GLSTC
+(Edit glossary translation) as GLSTE
+(Delete glossary translation) as GLSTD
+U1 -- GLOSC
+U1 -- GLOSE
+U1 -- GLOSD
+U1 -- GLOSI
+U1 --- GLESC
+U1 --- GLESE
+U1 --- GLESD
+U1 ---- GLSTC
+U1 ---- GLSTE
+U1 ---- GLSTD
+@enduml

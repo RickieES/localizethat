@@ -1,0 +1,23 @@
+@startuml
+:Usuario: as U1
+(Crear glosario) as GLOSC
+(Modificar glosario) as GLOSE
+(Eliminar glosario) as GLOSD
+(Importar glosario) as GLOSI
+(Crear entrada de glosario) as GLESC
+(Modificar entrada de glosario) as GLESE
+(Eliminar entrada de glosario) as GLESD
+(Crear traducc. entrada glosario) as GLSTC
+(Modificar traducc. entrada glosario) as GLSTE
+(Eliminar traducc. entrada glosario) as GLSTD
+U1 -- GLOSC
+U1 -- GLOSE
+U1 -- GLOSD
+U1 -- GLOSI
+U1 --- GLESC
+U1 --- GLESE
+U1 --- GLESD
+U1 ---- GLSTC
+U1 ---- GLSTE
+U1 ---- GLSTD
+@enduml
