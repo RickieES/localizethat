@@ -25,7 +25,7 @@ import net.localizethat.util.gui.JStatusBar;
  * L10n GUI Manager form as a JPanel that can be embedded in a TabPane or a JDialog
  * @author rpalomares
  */
-public class L10nGUIManager extends AbstractTabPanel {
+public class L10nGuiManager extends AbstractTabPanel {
     private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
     JStatusBar statusBar;
@@ -35,7 +35,7 @@ public class L10nGUIManager extends AbstractTabPanel {
     /**
      * Creates new form L10nGUIManager
      */
-    public L10nGUIManager() {
+    public L10nGuiManager() {
         dateFormat = new SimpleDateFormat("HH:mm:ss");
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
@@ -406,7 +406,7 @@ public class L10nGUIManager extends AbstractTabPanel {
             l10nTable.scrollRectToVisible(l10nTable.getCellRect(index, 0, true));
             l10nCodeField.requestFocus();
         } catch (Exception ex) {
-            Logger.getLogger(L10nGUIManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(L10nGuiManager.class.getName()).log(Level.SEVERE, null, ex);
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while creating",
                 "Error while creating element", ex);
         }
@@ -432,7 +432,7 @@ public class L10nGUIManager extends AbstractTabPanel {
             l10nTableModel.fireTableRowsUpdated(index, index);
             statusBar.setText(JStatusBar.LogMsgType.INFO, "Changes saved");
         } catch (Exception ex) {
-            Logger.getLogger(L10nGUIManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(L10nGuiManager.class.getName()).log(Level.SEVERE, null, ex);
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while saving",
                 "Error while saving changes", ex);
         }
@@ -469,7 +469,7 @@ public class L10nGUIManager extends AbstractTabPanel {
                 refreshL10nList();
                 statusBar.setText(JStatusBar.LogMsgType.INFO, "Locale deleted");
             } catch (IllegalArgumentException ex) {
-                Logger.getLogger(L10nGUIManager.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(L10nGuiManager.class.getName()).log(Level.SEVERE, null, ex);
                 statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while deleting",
                         "Error while deleting locale", ex);
             }

@@ -25,7 +25,7 @@ import net.localizethat.util.gui.JStatusBar;
  * Channel GUI Manager form as a JPanel that can be embedded in a TabPane or a JDialog
  * @author rpalomares
  */
-public class ChannelGUIManager extends AbstractTabPanel {
+public class ChannelGuiManager extends AbstractTabPanel {
     private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
     JStatusBar statusBar;
@@ -35,7 +35,7 @@ public class ChannelGUIManager extends AbstractTabPanel {
     /**
      * Creates new form ChannelsManager
      */
-    public ChannelGUIManager() {
+    public ChannelGuiManager() {
         super();
         dateFormat = new SimpleDateFormat("HH:mm:ss");
         statusBar = Main.mainWindow.getStatusBar();
@@ -47,7 +47,7 @@ public class ChannelGUIManager extends AbstractTabPanel {
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
-        channelTable.getSelectionModel().addListSelectionListener(new ChannelGUIManager.ChannelTableRowListener());
+        channelTable.getSelectionModel().addListSelectionListener(new ChannelGuiManager.ChannelTableRowListener());
     }
 
     private void refreshChannelList() {
@@ -336,7 +336,7 @@ public class ChannelGUIManager extends AbstractTabPanel {
             channelTable.scrollRectToVisible(channelTable.getCellRect(index, 0, true));
             channelNameField.requestFocus();
         } catch (Exception ex) {
-            Logger.getLogger(ChannelGUIManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChannelGuiManager.class.getName()).log(Level.SEVERE, null, ex);
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while creating",
                 "Error while creating element", ex);
         }
@@ -361,7 +361,7 @@ public class ChannelGUIManager extends AbstractTabPanel {
             channelTableModel.fireTableRowsUpdated(index, index);
             statusBar.setText(JStatusBar.LogMsgType.INFO, "Changes saved");
         } catch (Exception ex) {
-            Logger.getLogger(ChannelGUIManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ChannelGuiManager.class.getName()).log(Level.SEVERE, null, ex);
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while saving",
                 "Error while saving changes", ex);
         }
@@ -384,7 +384,7 @@ public class ChannelGUIManager extends AbstractTabPanel {
                 refreshChannelList();
                 statusBar.setText(JStatusBar.LogMsgType.INFO, "Channel deleted");
             } catch (IllegalArgumentException ex) {
-                Logger.getLogger(L10nGUIManager.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ChannelGuiManager.class.getName()).log(Level.SEVERE, null, ex);
                 statusBar.logMessage(JStatusBar.LogMsgType.ERROR, "Error while deleting",
                         "Error while deleting channel", ex);
             }

@@ -9,7 +9,7 @@ package net.localizethat.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import net.localizethat.Main;
-import net.localizethat.gui.tabpanels.ChannelGUIManager;
+import net.localizethat.gui.tabpanels.ChannelGuiManager;
 
 /**
  * Opens a tab with the locale manager in the main window
@@ -19,7 +19,7 @@ public class ChannelManagerAction extends AbstractAction {
     private static final String TITLE = "Channel Manager";
     private static final String DESCRIPTION = "Opens " + TITLE;
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_C;
-    private ChannelGUIManager channelGuiMgr;
+    private ChannelGuiManager channelGuiMgr;
 
     /**
      * Action representing the launching of LocaleManager panel as a tab in main window
@@ -36,7 +36,7 @@ public class ChannelManagerAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         Main.mainWindow.getStatusBar().setInfoText("Creating window, please wait...");
         if (channelGuiMgr == null) {
-            channelGuiMgr = new ChannelGUIManager();
+            channelGuiMgr = new ChannelGuiManager();
         }
         Main.mainWindow.addTab(channelGuiMgr, TITLE);
     }
