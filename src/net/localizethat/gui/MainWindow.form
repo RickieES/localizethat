@@ -24,6 +24,8 @@
     </Component>
     <Component class="net.localizethat.actions.GlsEntriesManagerAction" name="glsEntriesManagerAction">
     </Component>
+    <Component class="net.localizethat.actions.ImportCSVGlossaryAction" name="importCSVGlossaryAction">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
@@ -74,7 +76,6 @@
                     <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
                       <ComponentRef name="glsEntriesManagerAction"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Glossary Entries Manager"/>
                   </Properties>
                 </MenuItem>
               </SubComponents>
@@ -85,20 +86,6 @@
               <Properties>
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
                   <ComponentRef name="updateProductAction"/>
-                </Property>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="exportProductsMenuItem">
-              <Properties>
-                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                  <ComponentRef name="exportProductAction"/>
-                </Property>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="importProductsMenuItem">
-              <Properties>
-                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                  <ComponentRef name="importProductAction"/>
                 </Property>
               </Properties>
             </MenuItem>
@@ -155,6 +142,37 @@
                   <ComponentRef name="preferencesAction"/>
                 </Property>
                 <Property name="mnemonic" type="int" value="102"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="toolsMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Tools"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="importProductsMenuItem">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="importProductAction"/>
+                </Property>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="exportProductsMenuItem">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="exportProductAction"/>
+                </Property>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="importCSVGlossaryMenuItem">
+              <Properties>
+                <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="importCSVGlossaryAction"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Import CSV Glossary"/>
               </Properties>
             </MenuItem>
           </SubComponents>
