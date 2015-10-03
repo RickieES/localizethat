@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @UniqueConstraint(columnNames = {"GLSTVALUE"})})
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "GlsTranslation.countByL10n", query = "SELECT COUNT(gt) FROM GlsTranslation gt WHERE gt.l10nId = :l10nid"),
     @NamedQuery(name = "GlsTranslation.findAll", query = "SELECT gt FROM GlsTranslation gt"),
     @NamedQuery(name = "GlsTranslation.findById", query = "SELECT gt FROM GlsTranslation gt WHERE gt.id = :id"),
     @NamedQuery(name = "GlsTranslation.findByValue", query = "SELECT gt FROM GlsTranslation gt WHERE gt.value = :glstvalue"),

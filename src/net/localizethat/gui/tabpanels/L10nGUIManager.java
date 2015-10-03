@@ -169,6 +169,24 @@ public class L10nGUIManager extends AbstractTabPanel {
             failedCheckLongMessage.append("* ").append(recordCount).append(" locale content(s)\n");
         }
 
+        // Check that no Glossary is using it
+        validationQuery = entityManager.createNamedQuery("Glossary.countByL10n", Long.class);
+        validationQuery.setParameter("l10nid", l);
+        recordCount = validationQuery.getSingleResult();
+        if (recordCount > 0) {
+            okToDelete = false;
+            failedCheckLongMessage.append("* ").append(recordCount).append(" glossary(ies)\n");
+        }
+
+        // Check that no GlsTranslation is using it
+        validationQuery = entityManager.createNamedQuery("GlsTranslation.countByL10n", Long.class);
+        validationQuery.setParameter("l10nid", l);
+        recordCount = validationQuery.getSingleResult();
+        if (recordCount > 0) {
+            okToDelete = false;
+            failedCheckLongMessage.append("* ").append(recordCount).append(" glossary entry translation(s)\n");
+        }
+
         if (okToDelete) {
             return "";
         } else {

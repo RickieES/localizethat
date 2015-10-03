@@ -41,6 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @UniqueConstraint(columnNames = {"GLOSNAME"})})
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "Glossary.countByL10n", query = "SELECT COUNT(g) FROM Glossary g WHERE g.l10nId = :l10nid"),
     @NamedQuery(name = "Glossary.findAll", query = "SELECT g FROM Glossary g ORDER BY g.name"),
     @NamedQuery(name = "Glossary.findById", query = "SELECT g FROM Glossary g WHERE g.id = :id"),
     @NamedQuery(name = "Glossary.findByGlosname", query = "SELECT g FROM Glossary g WHERE g.name = :name"),
