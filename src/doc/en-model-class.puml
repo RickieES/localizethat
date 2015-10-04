@@ -1,0 +1,87 @@
+@startuml
+abstract class net.localizethat.model.ParseableFileAdapter
+class net.localizethat.model.Channel
+class net.localizethat.model.ConfigValue
+class net.localizethat.model.DtdFile
+class net.localizethat.model.Glossary
+class net.localizethat.model.GlsEntry
+class net.localizethat.model.GlsTranslation
+class net.localizethat.model.ImageFile
+class net.localizethat.model.L10n
+class net.localizethat.model.LTComment
+class net.localizethat.model.LTContent
+class net.localizethat.model.LTExternalEntity
+class net.localizethat.model.LTIniSection
+class net.localizethat.model.LTKeyValuePair
+class net.localizethat.model.LTLicense
+class net.localizethat.model.LTTextContent
+class net.localizethat.model.LTWhitespace
+class net.localizethat.model.LocaleContainer
+class net.localizethat.model.LocaleFile
+class net.localizethat.model.LocalePath
+class net.localizethat.model.Product
+class net.localizethat.model.PropertiesFile
+class net.localizethat.model.TextFile
+enum net.localizethat.model.CommentType
+enum net.localizethat.model.PartOfSpeech
+enum net.localizethat.model.ProductSourceType
+enum net.localizethat.model.TranslationStatus
+interface net.localizethat.model.EditableLocaleContent
+interface net.localizethat.model.LocaleContent
+interface net.localizethat.model.LocaleNode
+interface net.localizethat.model.ParseableFile
+
+net.localizethat.model.LocaleContainer --|> net.localizethat.model.LocaleNode
+net.localizethat.model.LocaleFile --|> net.localizethat.model.LocaleNode
+net.localizethat.model.ParseableFile --|> net.localizethat.model.LocaleNode
+net.localizethat.model.LocaleContent --|> net.localizethat.model.LocaleNode
+
+net.localizethat.model.ImageFile --|> net.localizethat.model.LocaleFile
+net.localizethat.model.TextFile --|> net.localizethat.model.LocaleFile
+net.localizethat.model.ParseableFileAdapter --|> net.localizethat.model.LocaleFile
+
+net.localizethat.model.ParseableFileAdapter --|> net.localizethat.model.ParseableFile
+
+net.localizethat.model.PropertiesFile --|> net.localizethat.model.ParseableFileAdapter
+net.localizethat.model.DtdFile --|> net.localizethat.model.ParseableFileAdapter
+
+net.localizethat.model.LTContent --|> net.localizethat.model.LocaleContent
+net.localizethat.model.EditableLocaleContent --|> net.localizethat.model.LocaleContent
+
+net.localizethat.model.LTComment --|> net.localizethat.model.LTContent
+net.localizethat.model.LTExternalEntity --|> net.localizethat.model.LTContent
+net.localizethat.model.LTIniSection --|> net.localizethat.model.LTContent
+net.localizethat.model.LTKeyValuePair --|> net.localizethat.model.LTContent
+net.localizethat.model.LTLicense --|> net.localizethat.model.LTContent
+net.localizethat.model.LTTextContent --|> net.localizethat.model.LTContent
+net.localizethat.model.LTWhitespace --|> net.localizethat.model.LTContent
+
+net.localizethat.model.LTKeyValuePair --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTLicense --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTTextContent --|> net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTWhitespace --|> net.localizethat.model.EditableLocaleContent
+
+net.localizethat.model.CommentType o-- net.localizethat.model.LTComment
+
+net.localizethat.model.TranslationStatus o-- net.localizethat.model.LTKeyValuePair
+net.localizethat.model.TranslationStatus o-- net.localizethat.model.LTLicense
+net.localizethat.model.TranslationStatus o-- net.localizethat.model.LTTextContent
+net.localizethat.model.TranslationStatus o-- net.localizethat.model.LTWhitespace
+
+net.localizethat.model.Channel o-- net.localizethat.model.Product
+net.localizethat.model.ProductSourceType o-- net.localizethat.model.Product
+
+net.localizethat.model.PartOfSpeech o-- net.localizethat.model.GlsEntry
+
+net.localizethat.model.LocalePath "n" -- "m" net.localizethat.model.Product
+net.localizethat.model.LocaleContainer "1" -- "1" net.localizethat.model.LocalePath
+net.localizethat.model.LocaleContainer "*" -- "1" net.localizethat.model.LocaleContainer
+net.localizethat.model.LocaleFile "*" -- "1" net.localizethat.model.LocaleContainer
+net.localizethat.model.LocaleContent "*" -- "1" net.localizethat.model.LocaleFile
+
+net.localizethat.model.Glossary "1" -- "n" net.localizethat.model.GlsEntry
+net.localizethat.model.GlsEntry "1" -- "n" net.localizethat.model.GlsTranslation
+
+net.localizethat.model.L10n "1" -- "n" net.localizethat.model.Glossary
+net.localizethat.model.L10n "1" -- "n" net.localizethat.model.GlsTranslation
+@enduml

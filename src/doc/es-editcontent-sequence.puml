@@ -1,0 +1,29 @@
+@startuml
+actor Usuario as U1
+participant ChooseTreePanel as CTP
+participant EditContentPanel as ECP
+participant ContentEditionPanel as CEP
+database BasedeDatos as DB
+
+CTP <- DB  : Lee productos, rutas e idiomas
+U1  -> CTP : Elige origen (productos o rutas) e idioma
+CTP -> ECP : Crea panel con origen e idioma
+ECP <- DB  : Lee carpetas y archivos de origen
+ECP -> U1  : Muestra árbol de origen, carpetas y archivos
+group Interacción con árbol
+    U1  -> ECP : Elige archivo
+    ECP <- DB  : Lee contenido de archivos desde base de datos
+    U1  <- ECP : Muestra tabla de contenidos
+    group Interacción con tabla
+        alt Clic en fila de tabla
+            U1  -> ECP : Elige fila
+        else Uso de botones Prev/Next
+            U1  -> CEP : Pulsa botón Prev/Next
+            CEP -> ECP : Cambia a fila editable anterior/siguiente
+        end
+        ECP -> CEP : Rellena valores de contenido
+        U1  -> CEP : Añade/edita traducción
+        CEP -> DB  : Actualiza base de datos
+    end
+end
+@enduml

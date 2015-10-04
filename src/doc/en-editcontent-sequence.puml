@@ -1,0 +1,29 @@
+@startuml
+actor User as U1
+participant ChooseTreePanel as CTP
+participant EditContentPanel as ECP
+participant ContentEditionPanel as CEP
+database Database as DB
+
+CTP <- DB  : Read products, locale paths and locales
+U1  -> CTP : Choose source (products or paths) and locale
+CTP -> ECP : Create panel with source and locale
+ECP <- DB  : Read folders and files from sources
+ECP -> U1  : Display sources tree with folders and files
+group Tree interaction
+    U1  -> ECP : Choose file
+    ECP <- DB  : Read file contents from database
+    U1  <- ECP : Display content table
+    group Table interaction
+        alt Click row in table
+            U1  -> ECP : Choose row
+        else Use of Prev/Next buttons
+            U1  -> CEP : Click Prev/Next buttons
+            CEP -> ECP : Change to prev/next editable row
+        end
+        ECP -> CEP : Fill content values
+        U1  -> CEP : Add/edit translation
+        CEP -> DB  : Update database
+    end
+end
+@enduml

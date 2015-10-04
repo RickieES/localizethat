@@ -1,0 +1,14 @@
+@startuml
+actor User as U1
+participant UpdateProductPanel as UPP
+participant UpdateProductWorker as UPW
+database Database as DB
+U1  -> UPP : Open Update Product Panel
+U1  <- UPP : Present available products and locales
+U1  -> UPP : Choose products and locale and click Update
+UPP -> UPW : Launch update product background task
+UPP <- UPW : Provide feedback during task
+UPW -> DB  : Update database
+UPP <- UPW : Provide final report
+U1  <- UPP : Display final report
+@enduml

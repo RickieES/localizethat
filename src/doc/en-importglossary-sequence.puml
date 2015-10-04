@@ -1,0 +1,27 @@
+@startuml
+actor User as U1
+participant ImportCSVGlossaryDialog as ICG
+participant FileHeadReaderWorker as FHW
+participant FileLinesCounterWorker as LCW
+participant CSVHeaderReaderWorker as CHW
+participant CSVImporterWorker as CIW
+database Database as DB
+
+group First CSV Import Dialog tab
+    U1   -> ICG : Provide file and target glossary
+end
+group Second CSV Import Dialog tab
+    ICG <-> FHW : Read first lines of file
+    ICG <-> LCW : Count total lines of file
+    U1  <-  ICG : Display first lines of file
+    U1   -> ICG : Provide general CSV import values
+end
+group Third CSV Import Dialog tab
+    ICG  -> CHW : Initial CSV parsing to get column headers
+    U1  <-  ICG : Display table fields with CSV column headers
+    U1   -> ICG : Connect table fields with column headers
+    U1   -> ICG : Click Import
+    ICG  -> CIW : Launch background task to import CSV glossary
+    CIW <-> DB  : Add/edit database glossary entries
+end
+@enduml

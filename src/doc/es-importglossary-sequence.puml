@@ -1,0 +1,27 @@
+@startuml
+actor Usuario as U1
+participant ImportCSVGlossaryDialog as ICG
+participant FileHeadReaderWorker as FHW
+participant FileLinesCounterWorker as LCW
+participant CSVHeaderReaderWorker as CHW
+participant CSVImporterWorker as CIW
+database BasedeDatos as DB
+
+group Primera pestaña diálogo importación CSV
+    U1   -> ICG : Indica archivo y glosario destino
+end
+group Segunda pestaña diálogo importación CSV
+    ICG <-> FHW : Lee primeras líneas de archivo
+    ICG <-> LCW : Cuenta líneas totales del archivo
+    U1  <-  ICG : Muestra primeras líneas de archivo
+    U1   -> ICG : Indica valores generales import. CSV
+end
+group Tercera pestaña diálogo importación CSV
+    ICG  -> CHW : Análisis inicial CSV para obtener columnas
+    U1  <-  ICG : Muestra campos de tablas y columnas CSV
+    U1   -> ICG : Conecta campos de tablas con columnas CSV
+    U1   -> ICG : Pulsa Import
+    ICG  -> CIW : Lanza tarea para importar glosario CSV
+    CIW <-> DB  : Añade/edita entradas de glosario en BD
+end
+@enduml
