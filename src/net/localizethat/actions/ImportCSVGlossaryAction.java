@@ -9,7 +9,7 @@ package net.localizethat.actions;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import net.localizethat.Main;
-import net.localizethat.gui.dialogs.ImportCSVGlossary;
+import net.localizethat.gui.dialogs.ImportCSVGlossaryDialog;
 import net.localizethat.util.gui.ModalDialog;
 
 /**
@@ -21,10 +21,10 @@ public class ImportCSVGlossaryAction extends AbstractAction {
     private static final String DESCRIPTION = "Opens " + TITLE + " dialog";
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_I;
 
-    private ImportCSVGlossary csvImportPanel;
+    private ImportCSVGlossaryDialog csvImportPanel;
 
     /**
-     * Action representing the launching of ImportCSVGlossary panel as a modal dialog
+     * Action representing the launching of ImportCSVGlossaryDialog panel as a modal dialog
      */
     public ImportCSVGlossaryAction() {
         super(TITLE);
@@ -36,7 +36,7 @@ public class ImportCSVGlossaryAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        csvImportPanel = new ImportCSVGlossary();
+        csvImportPanel = new ImportCSVGlossaryDialog();
         ModalDialog csvDialog = new ModalDialog(Main.mainWindow, csvImportPanel);
         csvDialog.showDialog();
         csvImportPanel = null;

@@ -39,7 +39,7 @@ import net.localizethat.util.gui.ProgressBarListener;
  * Import CSV Glossary panel to be used in a modal dialog
  * @author rpalomares
  */
-public class ImportCSVGlossary extends javax.swing.JPanel implements ModalDialogComponent {
+public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements ModalDialogComponent {
     private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
     JStatusBar statusBar;
@@ -51,7 +51,7 @@ public class ImportCSVGlossary extends javax.swing.JPanel implements ModalDialog
     /**
      * Creates new form ImportCSVGlossary
      */
-    public ImportCSVGlossary() {
+    public ImportCSVGlossaryDialog() {
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
 
@@ -653,13 +653,13 @@ public class ImportCSVGlossary extends javax.swing.JPanel implements ModalDialog
         FormListener() {}
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             if (evt.getSource() == multipleValuesInTrnsCheck) {
-                ImportCSVGlossary.this.multipleValuesInTrnsCheckActionPerformed(evt);
+                ImportCSVGlossaryDialog.this.multipleValuesInTrnsCheckActionPerformed(evt);
             }
             else if (evt.getSource() == okButton) {
-                ImportCSVGlossary.this.okButtonActionPerformed(evt);
+                ImportCSVGlossaryDialog.this.okButtonActionPerformed(evt);
             }
             else if (evt.getSource() == cancelButton) {
-                ImportCSVGlossary.this.cancelButtonActionPerformed(evt);
+                ImportCSVGlossaryDialog.this.cancelButtonActionPerformed(evt);
             }
         }
 
@@ -668,7 +668,7 @@ public class ImportCSVGlossary extends javax.swing.JPanel implements ModalDialog
 
         public void focusLost(java.awt.event.FocusEvent evt) {
             if (evt.getSource() == multipleValuesInTrnsCheck) {
-                ImportCSVGlossary.this.multipleValuesInTrnsCheckFocusLost(evt);
+                ImportCSVGlossaryDialog.this.multipleValuesInTrnsCheckFocusLost(evt);
             }
         }
     }// </editor-fold>//GEN-END:initComponents

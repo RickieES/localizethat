@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingWorker;
-import net.localizethat.gui.dialogs.ImportCSVGlossary;
+import net.localizethat.gui.dialogs.ImportCSVGlossaryDialog;
 
 /**
  * SwingWorker task that reads the CSV file to grab the first line to import as headers
@@ -27,10 +27,10 @@ public class CSVHeaderReaderWorker extends SwingWorker<List<String>, Void> {
     private List<String> headers;
     private final List<DefaultComboBoxModel<String>> headerModelList;
     boolean firstRowHasHeaders;
-    ImportCSVGlossary icg;
+    ImportCSVGlossaryDialog icg;
 
     public CSVHeaderReaderWorker(File csvFile, CSV csvSettings, List<DefaultComboBoxModel<String>> headerModelList,
-            boolean firstRowHasHeaders, ImportCSVGlossary icg) {
+            boolean firstRowHasHeaders, ImportCSVGlossaryDialog icg) {
 
         this.csvFile = csvFile;
         this.csvEnvironment = csvSettings;
