@@ -17,12 +17,12 @@ public interface EditableLocaleContent extends LocaleContent {
      * Returns the Translation Status for this editable locale content
      * @return the translation status of this EditableLocaleContent.
      */
-    public TranslationStatus getTrnsStatus();
+    TranslationStatus getTrnsStatus();
 
     /**
      * Sets the Translation Status for this editable locale content
      * @param trnsStatus the translation status value to assign to this
      * EditableLocaleContent
      */
-    public void setTrnsStatus(TranslationStatus trnsStatus);
+    void setTrnsStatus(TranslationStatus trnsStatus);
 }
