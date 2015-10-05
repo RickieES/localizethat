@@ -1,0 +1,58 @@
+@startuml
+interface net.localizethat.model.LocaleNode
+interface net.localizethat.model.LocaleContent {
+    boolean isEditable();
+    boolean isDontExport();
+    void setDontExport(boolean dontExport);
+    boolean isMarkedForDeletion();
+    void setMarkedForDeletion(boolean markedForDeletion);
+    int getOrderInFile();
+    void setOrderInFile(int orderInFile);
+    String getTextValue();
+    void setTextValue(String value);
+    boolean isKeepOriginal();
+    void setKeepOriginal(boolean keepOriginal);
+}
+interface net.localizethat.model.EditableLocaleContent {
+    TranslationStatus getTrnsStatus();
+    void setTrnsStatus(TranslationStatus trnsStatus);
+}
+
+class net.localizethat.model.LTContent
+class net.localizethat.model.LTComment {
+    CommentType getCommentType();
+    void setCommentType(CommentType commentType);
+    boolean isL10NNote();
+}
+class net.localizethat.model.LTExternalEntity {
+    String getPublicId();
+    void setPublicId(String publicId);
+}
+class net.localizethat.model.LTIniSection
+class net.localizethat.model.LTKeyValuePair {
+    LTComment getComment();
+    void setComment(LTComment Comment);
+    public LTKeyValuePair getConnAccesskey();
+    public void setConnAccesskey(LTKeyValuePair connAccesskey);
+    public LTKeyValuePair getConnCommandkey();
+    public void setConnCommandkey(LTKeyValuePair connCommandkey);
+}
+class net.localizethat.model.LTLicense
+class net.localizethat.model.LTTextContent
+class net.localizethat.model.LTWhitespace
+
+net.localizethat.model.LocaleNode <|.. net.localizethat.model.LocaleContent
+net.localizethat.model.LocaleContent <|.. net.localizethat.model.LTContent
+net.localizethat.model.LocaleContent <|.. net.localizethat.model.EditableLocaleContent
+net.localizethat.model.LTContent <|--- net.localizethat.model.LTComment
+net.localizethat.model.LTContent <|--- net.localizethat.model.LTExternalEntity
+net.localizethat.model.LTContent <|--- net.localizethat.model.LTIniSection
+net.localizethat.model.LTContent <|-- net.localizethat.model.LTKeyValuePair
+net.localizethat.model.LTContent <|-- net.localizethat.model.LTLicense
+net.localizethat.model.LTContent <|-- net.localizethat.model.LTTextContent
+net.localizethat.model.LTContent <|-- net.localizethat.model.LTWhitespace
+net.localizethat.model.EditableLocaleContent <|.. net.localizethat.model.LTKeyValuePair
+net.localizethat.model.EditableLocaleContent <|.. net.localizethat.model.LTLicense
+net.localizethat.model.EditableLocaleContent <|.. net.localizethat.model.LTTextContent
+net.localizethat.model.EditableLocaleContent <|.. net.localizethat.model.LTWhitespace
+@enduml

@@ -1,0 +1,44 @@
+@startuml
+interface net.localizethat.model.LocaleNode
+
+interface net.localizethat.model.ParseableFile {
+    List<LocaleContent> update();
+    List<LocaleContent> importFromFile(File f);
+    boolean exportToFile(File f);
+    void printLocaleContent(PrintWriter pw, LocaleContent lc);
+    LTLicense getFileLicense();
+}
+
+class net.localizethat.model.LocaleFile {
+    {static} createFile(String fileName, LocaleContainer parent);
+}
+class net.localizethat.model.DtdFile
+class net.localizethat.model.ImageFile {
+    public byte[] getImageData();
+    public void setImageData(byte[] imageData);
+    public void clearImageData();
+    public String getMd5Hash();
+    public void setMd5Hash(String md5Hash);
+}
+class net.localizethat.model.PropertiesFile
+class net.localizethat.model.TextFile {
+    public String getFileContent();
+    public void setFileContent(String fileContent);
+    public void clearFileContent();
+    public void setFileContent(String fileContent, String md5Hash);
+    public String getMd5Hash();
+    public void setMd5Hash(String md5Hash);
+}
+abstract class net.localizethat.model.ParseableFileAdapter
+
+net.localizethat.model.LocaleNode <|.. net.localizethat.model.ParseableFile
+net.localizethat.model.LocaleNode <|.. net.localizethat.model.LocaleFile
+net.localizethat.model.ParseableFile <|.. net.localizethat.model.ParseableFileAdapter
+net.localizethat.model.ParseableFileAdapter <|-- net.localizethat.model.DtdFile
+net.localizethat.model.ParseableFileAdapter <|-- net.localizethat.model.PropertiesFile
+
+net.localizethat.model.LocaleFile <|-- net.localizethat.model.ParseableFileAdapter
+net.localizethat.model.LocaleFile <|-- net.localizethat.model.ImageFile
+net.localizethat.model.LocaleFile <|-- net.localizethat.model.TextFile
+
+@enduml
