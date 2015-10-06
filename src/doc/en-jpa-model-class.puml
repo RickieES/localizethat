@@ -1,0 +1,38 @@
+@startuml
+class javax.persistence.EntityManager
+class net.localizethat.model.jpa.JPAHelperBundle {
+    {static} JPAHelperBundle getInstance(EntityManager em);
+    LocaleContainerJPAHelper getLocaleContainerJPAHelper();
+    LocaleFileJPAHelper getLocaleFileJPAHelper();
+    LocaleContentJPAHelper getLocaleContentJPAHelper();
+}
+class net.localizethat.model.jpa.LocaleContainerJPAHelper {
+    boolean createRecursively();
+    boolean removeRecursively();
+}
+class net.localizethat.model.jpa.LocaleContentJPAHelper {
+    boolean createRecursively();
+    boolean removeRecursively();
+}
+class net.localizethat.model.jpa.LocaleFileJPAHelper {
+    boolean createRecursively();
+    boolean removeRecursively();
+}
+class net.localizethat.tasks.ImportProductWorker
+class net.localizethat.tasks.ExportProductWorker
+class net.localizethat.tasks.UpdateProductWorker
+
+net.localizethat.model.jpa.JPAHelperBundle ...> javax.persistence.EntityManager
+net.localizethat.model.jpa.LocaleContainerJPAHelper --o net.localizethat.model.jpa.JPAHelperBundle
+net.localizethat.model.jpa.LocaleContainerJPAHelper ...> javax.persistence.EntityManager
+net.localizethat.model.jpa.LocaleFileJPAHelper --o net.localizethat.model.jpa.JPAHelperBundle
+net.localizethat.model.jpa.LocaleFileJPAHelper ...> javax.persistence.EntityManager
+net.localizethat.model.jpa.LocaleContentJPAHelper --o net.localizethat.model.jpa.JPAHelperBundle
+net.localizethat.model.jpa.LocaleContentJPAHelper ...> javax.persistence.EntityManager
+net.localizethat.tasks.ImportProductWorker ..> net.localizethat.model.jpa.JPAHelperBundle
+net.localizethat.tasks.ExportProductWorker ..> net.localizethat.model.jpa.JPAHelperBundle
+net.localizethat.tasks.UpdateProductWorker ..> net.localizethat.model.jpa.JPAHelperBundle
+net.localizethat.tasks.ImportProductWorker ...> javax.persistence.EntityManager
+net.localizethat.tasks.ExportProductWorker ...> javax.persistence.EntityManager
+net.localizethat.tasks.UpdateProductWorker ...> javax.persistence.EntityManager
+@enduml
