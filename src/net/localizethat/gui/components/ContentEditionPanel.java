@@ -313,8 +313,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         buttonPanel = new javax.swing.JPanel();
         nextButton = new javax.swing.JButton();
         prevButton = new javax.swing.JButton();
-        exitButton = new javax.swing.JButton();
-        quitButton = new javax.swing.JButton();
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
@@ -557,25 +555,12 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             }
         });
 
-        exitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-system-log-out.png"))); // NOI18N
-        exitButton.setMnemonic('C');
-        exitButton.setText("Close");
-
-        quitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-process-stop.png"))); // NOI18N
-        quitButton.setMnemonic('x');
-        quitButton.setText("Exit");
-        quitButton.setToolTipText("");
-
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(exitButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(quitButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(prevButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nextButton)
@@ -587,9 +572,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nextButton)
-                    .addComponent(prevButton)
-                    .addComponent(exitButton)
-                    .addComponent(quitButton))
+                    .addComponent(prevButton))
                 .addContainerGap())
         );
 
@@ -757,7 +740,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair> connAccessKeyComboModel;
     private net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair> connCommandKeyComboModel;
     private javax.swing.JButton copyOrigButton;
-    private javax.swing.JButton exitButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
@@ -773,7 +755,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private javax.swing.JLabel origLabel;
     private javax.swing.JTextPane origTextPane;
     private javax.swing.JButton prevButton;
-    private javax.swing.JButton quitButton;
     private javax.swing.JButton sugButton;
     private javax.swing.JLabel trnsLabel;
     private javax.swing.JComboBox<TranslationStatus> trnsStatusCombo;
