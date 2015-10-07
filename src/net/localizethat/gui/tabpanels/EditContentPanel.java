@@ -94,8 +94,31 @@ public class EditContentPanel extends AbstractTabPanel {
         contentListTable = new net.localizethat.gui.components.ContentListTable();
         contentEditionPanel = new net.localizethat.gui.components.ContentEditionPanel();
 
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(86, 48));
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(88, 48));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(99, 403));
 
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Paths for...");
+        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Path 1");
+        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Folder 1");
+        javax.swing.tree.DefaultMutableTreeNode treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("File 1");
+        treeNode3.add(treeNode4);
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Folder 2");
+        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("File 2");
+        treeNode3.add(treeNode4);
+        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("File 3");
+        treeNode3.add(treeNode4);
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Path 2");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Folder 3");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Folder 4");
+        treeNode4 = new javax.swing.tree.DefaultMutableTreeNode("File 5");
+        treeNode3.add(treeNode4);
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        dataTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         dataTree.setMinimumSize(new java.awt.Dimension(83, 48));
         jScrollPane1.setViewportView(dataTree);
 
