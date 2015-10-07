@@ -306,6 +306,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
+        toolsMenu.setMnemonic('T');
         toolsMenu.setText("Tools");
 
         importProductsMenuItem.setAction(importProductAction);
