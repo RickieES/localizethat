@@ -1,0 +1,124 @@
+@startuml
+package net.localizethat.actions {
+    class EditContentAction
+    class ExportProductsAction
+    class GlossaryManagerAction
+    class L10nManagerAction
+    class ProductManagerAction
+    note "Other actions linked to menu items" as N1
+}
+
+package net.localizethat.gui {
+    package components {
+        class ContentEditionPanel
+        class ContentListEditPanel
+        class ContentListTable
+        class EllipsisUnicodeCharKeyAdapter
+        note bottom: "Allows to get ellipsis char quickly"
+    }
+    package dialogs {
+        class ChooseTreePanel
+        class ImportCSVGlossaryDialog
+        class PreferencesDialog
+        note "Other dialog and support classes" as N2
+    }
+    package models {
+        class ContentListTableModel
+        class GlosEntryTableModel
+        class GlosTranslationTableModel
+        class GlossaryTableModel
+        class L10nTableModel
+        class ListComboBoxGenericModel
+        note "Other table models and support classes" as N3
+    }
+    package renderers {
+        class SelectableListItem
+    }
+    package tabpanels {
+        abstract class AbstractTabPanel
+        class EditContentPanel
+        class ExportProductPanel
+        class GlossaryGuiManager
+        class ImportProductPanel
+        class L10nGuiManager
+        class ProductManager
+        class UpdateProductPanel
+        AbstractTabPanel <|-- EditContentPanel
+        AbstractTabPanel <|-- ExportProductPanel
+        AbstractTabPanel <|-- GlossaryGuiManager
+        AbstractTabPanel <|-- ImportProductPanel
+        AbstractTabPanel <|-- L10nGuiManager
+        AbstractTabPanel <|-- ProductManager
+        AbstractTabPanel <|-- UpdateProductPanel
+    }
+    class MainWindow
+}
+package net.localizethat.io {
+    package parsers {
+        class DTDReadHelper
+        class PropertiesReadHelper
+        interface ReadHelper
+        ReadHelper <|.. DTDReadHelper
+        ReadHelper <|.. PropertiesReadHelper
+    }
+    class DtdFileAccess
+    interface ParseableFileAccess
+    class PropertiesFileAccess
+    ParseableFileAccess <|.. DtdFileAccess
+    ParseableFileAccess <|.. PropertiesFileAccess
+}
+package net.localizethat.model {
+    package jpa {
+        class JPAHelperBundle
+        class LocaleContainerJPAHelper
+        class LocaleFileJPAHelper
+        class LocaleContentJPAHelper
+        JPAHelperBundle *-- LocaleContainerJPAHelper
+        JPAHelperBundle *-- LocaleFileJPAHelper
+        JPAHelperBundle *-- LocaleContentJPAHelper
+        note "Autoupdate SQL scripts live here" as N4
+    }
+    class DtdFile
+    interface EditableLocaleContent
+    class Glossary
+    class ImageFile
+    class L10n
+    interface LocaleContent
+    class LocaleContainer
+    class LTContent
+    class LocalePath
+    class Product
+    class PropertiesFile
+    note "Rest of model classes" as N5
+}
+package net.localizethat.resources {
+    note "Images and other static resources" as N6
+}
+package net.localizethat.system {
+    class AppSettings
+    class DBChecker
+    class SQLScriptRunner
+    DBChecker -- SQLScriptRunner
+}
+package net.localizethat.tasks {
+    class CSVImporterWorker
+    class CheckGlossaryWorker
+    class ExportProductWorker
+    class ImportProductWorker
+    class SavePreferencesWorker
+    class UpdateProductWorker
+}
+package net.localizethat.util {
+    package gui {
+        class JPathField
+        class JStatusBar
+        class ModalDialog
+        note "Other utility GUI-related classes and interfaces" as N7
+    }
+    class BlobChecker
+    class DateToStringConverter
+    class VersionObject
+    note "Other utility classes" as N8
+}
+class Main
+@enduml
