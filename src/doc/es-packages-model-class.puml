@@ -14,7 +14,7 @@ package net.localizethat.gui {
         class ContentListEditPanel
         class ContentListTable
         class EllipsisUnicodeCharKeyAdapter
-        note bottom: "Permite obtener el carácter elipsis rápidamente"
+        note bottom: Permite obtener el carácter elipsis rápidamente
     }
     package dialogs {
         class ChooseTreePanel
@@ -43,9 +43,9 @@ package net.localizethat.gui {
         class L10nGuiManager
         class ProductManager
         class UpdateProductPanel
-        AbstractTabPanel <|-- EditContentPanel
-        AbstractTabPanel <|-- ExportProductPanel
-        AbstractTabPanel <|-- GlossaryGuiManager
+        AbstractTabPanel <|- EditContentPanel
+        AbstractTabPanel <|- ExportProductPanel
+        AbstractTabPanel <|- GlossaryGuiManager
         AbstractTabPanel <|-- ImportProductPanel
         AbstractTabPanel <|-- L10nGuiManager
         AbstractTabPanel <|-- ProductManager
