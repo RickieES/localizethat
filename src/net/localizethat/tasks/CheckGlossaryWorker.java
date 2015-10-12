@@ -7,7 +7,6 @@
 package net.localizethat.tasks;
 
 import java.awt.Color;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,9 +18,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.text.SimpleAttributeSet;
@@ -47,7 +44,6 @@ public class CheckGlossaryWorker
     private L10n locale;
     private EntityManager em;
     private JTextPane origStrPane;
-    private JPanel resultsPanel;
     private List<Glossary> glsToCheckList;
     private List<CheckGlossaryWorker.FailedEntry> failedEntriesList;
 
@@ -59,7 +55,7 @@ public class CheckGlossaryWorker
     }
 
     public CheckGlossaryWorker(String original, String translated, L10n locale,
-            EntityManager em, JTextPane origStrPane, JPanel resultsPanel, Glossary... glsList) {
+            EntityManager em, JTextPane origStrPane, Glossary... glsList) {
         int glsLength = glsList.length;
 
         this.original = original;
@@ -73,7 +69,6 @@ public class CheckGlossaryWorker
         }
 
         this.origStrPane = origStrPane;
-        this.resultsPanel = resultsPanel;
 
         if (glsLength > 0) {
             this.glsToCheckList = Arrays.asList(glsList);
@@ -164,16 +159,19 @@ public class CheckGlossaryWorker
         
             for(GlsEntry ge : fe.getGlsEntriesList()) {
                 for(GlsTranslation gt : ge.getGlsTranslationCollection()) {
-                    int index;
-                    if (fe.isMatchCase()) {
-                        index = Collections.binarySearch(translatedWords, gt.getValue());
-                    } else {
-                        index = Collections.binarySearch(translatedWords, gt.getValue(), ncsComp);
-                    }
-                    if (index >= 0) {
-                        translatedWords.remove(index);
-                        translationFound = true;
-                        break;
+                    // Check only if this translation belongs to the wanted L10n
+                    if (gt.getL10nId().equals(locale)) {
+                        int index;
+                        if (fe.isMatchCase()) {
+                            index = Collections.binarySearch(translatedWords, gt.getValue());
+                        } else {
+                            index = Collections.binarySearch(translatedWords, gt.getValue(), ncsComp);
+                        }
+                        if (index >= 0) {
+                            translatedWords.remove(index);
+                            translationFound = true;
+                            break;
+                        }
                     }
                 }
                 if (translationFound) {
@@ -237,43 +235,15 @@ public class CheckGlossaryWorker
     public void done() {
         // origStrPane.setDocument(doc);
         origStrPane.repaint();
-        if (failedEntriesList.isEmpty()) {
-            JLabel allOkLabel = new JLabel("Everything seems OK");
-            resultsPanel.add(allOkLabel);
-        } else {
-            for (FailedEntry fe : failedEntriesList) {
-                StringBuilder sb = new StringBuilder(20);
-                sb.append("<html>");
-                for (GlsEntry ge : fe.getGlsEntriesList()) {
-                    for (GlsTranslation gt : ge.getGlsTranslationCollection()) {
-                        sb.append("<b>");
-                        sb.append(gt.getValue());
-                        sb.append("</b>");
-                        sb.append(" (from ");
-                        sb.append(ge.getGlosId().getName());
-                        sb.append(")");
-                        sb.append("<br>");
-                    }
-                }
-                sb.append("</html>");
-                JButton b = new JButton(fe.getWord());
-                b.setToolTipText(sb.toString());
-                b.setMargin(new Insets(5, 5, 5, 5));
-                resultsPanel.add(b);
-            }
-        }
-        resultsPanel.repaint();
-        resultsPanel.updateUI();
     }
 
     private List<String> slicePhrase(String phrase) {
         List<String> words = new ArrayList<>(5);
 
-        StringTokenizer st = new StringTokenizer(phrase);
+        StringTokenizer st = new StringTokenizer(phrase, " \\.,'");
         while (st.hasMoreTokens()) {
             words.add(st.nextToken());
         }
-
         return words;
     }
 
