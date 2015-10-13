@@ -15,8 +15,10 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import net.localizethat.Main;
+import net.localizethat.gui.listeners.CheckGlossaryTranslatedTextListener;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.model.EditableLocaleContent;
+import net.localizethat.model.Glossary;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
@@ -41,16 +43,20 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private JPAHelperBundle jhb;
     private final EllipsisUnicodeCharKeyAdapter ellipsisCharKeyAdapter;
     private LocaleFile lastParent;
+    private final Glossary g;
+    private final CheckGlossaryTranslatedTextListener cgttl;
 
     /**
      * Creates new form ContentEditionPanel
      */
     public ContentEditionPanel() {
         if (Beans.isDesignTime()) {
+            g = null;
         } else {
             emf = Main.emf;
             entityManager = emf.createEntityManager();
             jhb = JPAHelperBundle.getInstance(entityManager);
+            g = entityManager.find(Glossary.class, 1);
         }
         initComponents();
         for(TranslationStatus ts : TranslationStatus.values()) {
@@ -61,6 +67,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         trnsTextArea.setText("");
         ellipsisCharKeyAdapter = new EllipsisUnicodeCharKeyAdapter();
         trnsTextArea.addKeyListener(ellipsisCharKeyAdapter);
+        cgttl = new CheckGlossaryTranslatedTextListener(origTextPane.getText(),
+                trnsTextArea, null, entityManager, origTextPane, g);
+        trnsTextArea.getDocument().addDocumentListener(cgttl);
     }
 
     /**
@@ -91,6 +100,11 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             entityManager.getTransaction().begin();
         }
         setAssociatedTable(associatedTable);
+        g = entityManager.find(Glossary.class, 1);
+        cgttl = new CheckGlossaryTranslatedTextListener(origTextPane.getText(),
+                trnsTextArea, tableModel.getLocalizationCode(),
+                entityManager, origTextPane, g);
+        trnsTextArea.getDocument().addDocumentListener(cgttl);
     }
 
     /**
@@ -101,7 +115,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     public final void setAssociatedTable(JTable associatedTable) {
         if (associatedTable != null) {
             this.associatedTable = associatedTable;
-            this.tableModel = (ContentListTableModel) this.associatedTable.getModel();
+            tableModel = (ContentListTableModel) this.associatedTable.getModel();
+            cgttl.setLocale(tableModel.getLocalizationCode());
         }
     }
 
@@ -784,7 +799,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             LocaleContent origLc = selectedLObject.getOriginalNode();
             LocaleContent trnsLc = origLc.getTwinByLocale(tableModel.getLocalizationCode());
             origTextPane.setText(origLc.getTextValue());
-
+            cgttl.setLocale(tableModel.getLocalizationCode());
+            cgttl.setOriginal(origTextPane.getText());
+            
             if (origLc instanceof EditableLocaleContent) {
                 EditableLocaleContent trnsElc = (EditableLocaleContent) trnsLc;
 

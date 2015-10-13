@@ -233,7 +233,6 @@ public class CheckGlossaryWorker
 
     @Override
     public void done() {
-        // origStrPane.setDocument(doc);
         origStrPane.repaint();
     }
 
