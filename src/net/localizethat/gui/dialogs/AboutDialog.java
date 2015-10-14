@@ -60,6 +60,7 @@ public class AboutDialog extends javax.swing.JDialog {
         totalMemLabel = new javax.swing.JLabel();
         freeMemLabel = new javax.swing.JLabel();
         maxMemLabel = new javax.swing.JLabel();
+        ltLogoLabel = new javax.swing.JLabel();
         javax.swing.JPanel licencePanel = new javax.swing.JPanel();
         licenceArea = new javax.swing.JTextArea();
         javax.swing.JPanel addressPanel = new javax.swing.JPanel();
@@ -71,11 +72,11 @@ public class AboutDialog extends javax.swing.JDialog {
         setTitle("About LocalizeThat!");
         setModal(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                closeDialog(evt);
-            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                closeDialog(evt);
             }
         });
 
@@ -94,9 +95,10 @@ public class AboutDialog extends javax.swing.JDialog {
         generalArea.setEditable(false);
         generalArea.setBackground(new java.awt.Color(184, 207, 229));
         generalArea.setColumns(15);
-        generalArea.setRows(10);
+        generalArea.setRows(2);
         generalArea.setText("\nDesktop localization tool for Mozilla\nThe replacement for MozillaTranslator");
         generalArea.setOpaque(false);
+        generalArea.setPreferredSize(new java.awt.Dimension(215, 70));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -133,6 +135,12 @@ public class AboutDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 2;
         generalPanel.add(maxMemLabel, gridBagConstraints);
 
+        ltLogoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/localizethatlogo2.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        generalPanel.add(ltLogoLabel, gridBagConstraints);
+
         aboutTabbedPane.addTab("General", null, generalPanel, "");
 
         licencePanel.setLayout(new java.awt.BorderLayout());
@@ -158,7 +166,6 @@ public class AboutDialog extends javax.swing.JDialog {
         websiteLinkButton.setText("http://www.localizethat.net/");
         websiteLinkButton.setBorder(null);
         websiteLinkButton.setBorderPainted(false);
-        websiteLinkButton.setOpaque(false);
         websiteLinkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 websiteLinkButtonActionPerformed(evt);
@@ -211,6 +218,7 @@ public class AboutDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel freeMemLabel;
     private javax.swing.JTextArea licenceArea;
+    private javax.swing.JLabel ltLogoLabel;
     private javax.swing.JLabel maxMemLabel;
     private javax.swing.JButton okButton;
     private javax.swing.JPanel okButtonPanel;
