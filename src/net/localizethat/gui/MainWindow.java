@@ -191,9 +191,6 @@ public class MainWindow extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
         editContentMenuItem = new javax.swing.JMenuItem();
         preferencesMenuItem = new javax.swing.JMenuItem();
         toolsMenu = new javax.swing.JMenu();
@@ -285,18 +282,6 @@ public class MainWindow extends javax.swing.JFrame {
         editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
         editContentMenuItem.setAction(editContentAction);
         editMenu.add(editContentMenuItem);
 
@@ -382,8 +367,6 @@ public class MainWindow extends javax.swing.JFrame {
     private net.localizethat.actions.ChannelManagerAction channelManagerAction;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JMenuItem contentsMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
     private net.localizethat.actions.EditContentAction editContentAction;
     private javax.swing.JButton editContentButton;
     private javax.swing.JMenuItem editContentMenuItem;
@@ -411,7 +394,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem manageLocalesMenuItem;
     private javax.swing.JMenuItem manageProductsMenuItem;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem pasteMenuItem;
     private net.localizethat.actions.PreferencesAction preferencesAction;
     private javax.swing.JButton preferencesButton;
     private javax.swing.JMenuItem preferencesMenuItem;
