@@ -74,9 +74,9 @@ public class JStatusBar extends javax.swing.JPanel {
 
         okButton.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         okButton.setText("OK");
-        okButton.setMaximumSize(new java.awt.Dimension(139, 25));
-        okButton.setMinimumSize(new java.awt.Dimension(139, 25));
-        okButton.setPreferredSize(new java.awt.Dimension(139, 25));
+        okButton.setMaximumSize(new java.awt.Dimension(122, 29));
+        okButton.setMinimumSize(new java.awt.Dimension(122, 29));
+        okButton.setPreferredSize(new java.awt.Dimension(122, 29));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
