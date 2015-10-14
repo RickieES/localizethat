@@ -86,6 +86,9 @@ public class ContentListEditPanel extends AbstractTabPanel {
         contentEditionPanel = new net.localizethat.gui.components.ContentEditionPanel(entityManager, contentListTable.getTable());
 
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        contentListTable.setMinimumSize(new java.awt.Dimension(635, 150));
+        contentListTable.setPreferredSize(new java.awt.Dimension(806, 357));
         jSplitPane2.setLeftComponent(contentListTable);
         jSplitPane2.setRightComponent(contentEditionPanel);
 
