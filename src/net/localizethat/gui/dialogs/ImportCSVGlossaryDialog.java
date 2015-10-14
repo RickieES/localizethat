@@ -279,29 +279,32 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
                 .addContainerGap()
                 .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(generalPanelLayout.createSequentialGroup()
-                        .addComponent(importToGlossaryLabel)
-                        .addGap(3, 3, 3)
-                        .addComponent(importToGlossaryCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(generalPanelLayout.createSequentialGroup()
-                        .addComponent(filenameLabel)
-                        .addGap(26, 26, 26)
-                        .addComponent(filenamePathField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(generalPanelLayout.createSequentialGroup()
                         .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(testRunCheck)
                             .addComponent(descrip1Label, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tipImport)
                             .addComponent(testTipLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 204, Short.MAX_VALUE))
+                    .addGroup(generalPanelLayout.createSequentialGroup()
+                        .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(importToGlossaryLabel)
+                            .addComponent(filenameLabel))
+                        .addGap(3, 3, 3)
+                        .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filenamePathField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(importToGlossaryCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         generalPanelLayout.setVerticalGroup(
             generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(generalPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(filenamePathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filenameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(generalPanelLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(filenameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(generalPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(filenamePathField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(generalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(importToGlossaryCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -314,7 +317,7 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
                 .addComponent(descrip1Label, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(testTipLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(183, Short.MAX_VALUE))
+                .addContainerGap(188, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("General values", generalPanel);
@@ -388,7 +391,7 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
                             .addComponent(firstRowHeadersCheck)))
                     .addGroup(fileFormatPanelLayout.createSequentialGroup()
                         .addComponent(descrip2Label, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 62, Short.MAX_VALUE)))
+                        .addGap(0, 202, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         fileFormatPanelLayout.setVerticalGroup(
@@ -513,7 +516,7 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
                             .addComponent(trnsLocaleLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(FieldAssignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(trnsLastUpdateCombo, javax.swing.GroupLayout.Alignment.LEADING, 0, 486, Short.MAX_VALUE)
+                            .addComponent(trnsLastUpdateCombo, javax.swing.GroupLayout.Alignment.LEADING, 0, 524, Short.MAX_VALUE)
                             .addComponent(trnsCommentCombo, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(trnsCreationDateCombo, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(trnsValueCombo, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -573,7 +576,7 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
                     .addComponent(trnsLocaleLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(FieldAssignmentPanel);
@@ -589,7 +592,7 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
                     .addGroup(importDetailsPanelLayout.createSequentialGroup()
                         .addComponent(onExistingTermsLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(onExistingTermsCombo, 0, 1, Short.MAX_VALUE))
+                        .addComponent(onExistingTermsCombo, 0, 0, Short.MAX_VALUE))
                     .addGroup(importDetailsPanelLayout.createSequentialGroup()
                         .addComponent(multipleValuesInTrnsCheck)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -600,10 +603,10 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
         importDetailsPanelLayout.setVerticalGroup(
             importDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, importDetailsPanelLayout.createSequentialGroup()
-                .addGroup(importDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(onExistingTermsCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(onExistingTermsLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(importDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(onExistingTermsLabel)
+                    .addComponent(onExistingTermsCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(importDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(multipleValuesInTrnsCheck)
                     .addComponent(multValueSeparatorField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -615,13 +618,16 @@ public class ImportCSVGlossaryDialog extends javax.swing.JPanel implements Modal
         tabbedPane.addTab("Import Details", importDetailsPanel);
 
         okButton.setText("Next");
-        okButton.setMaximumSize(new java.awt.Dimension(81, 25));
-        okButton.setMinimumSize(new java.awt.Dimension(81, 25));
-        okButton.setPreferredSize(new java.awt.Dimension(81, 25));
+        okButton.setMaximumSize(new java.awt.Dimension(81, 31));
+        okButton.setMinimumSize(new java.awt.Dimension(81, 31));
+        okButton.setPreferredSize(new java.awt.Dimension(81, 31));
         okButton.addActionListener(formListener);
         buttonPanel.add(okButton);
 
         cancelButton.setText("Cancel");
+        cancelButton.setMaximumSize(new java.awt.Dimension(81, 31));
+        cancelButton.setMinimumSize(new java.awt.Dimension(81, 31));
+        cancelButton.setPreferredSize(new java.awt.Dimension(81, 31));
         cancelButton.addActionListener(formListener);
         buttonPanel.add(cancelButton);
 
