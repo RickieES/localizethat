@@ -196,8 +196,7 @@ public class ContentListTable extends javax.swing.JPanel {
         rowsInfoText.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         rowsInfoText.setText("0");
 
-        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/choose-columns.png"))); // NOI18N
-        columnsButton.setText("Columns");
+        columnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-choose-columns.png"))); // NOI18N
         columnsButton.setToolTipText("Choose columns");
         columnsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,7 +217,7 @@ public class ContentListTable extends javax.swing.JPanel {
                 .addComponent(rowsInfoLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(rowsInfoText, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                 .addComponent(columnsButton)
                 .addContainerGap())
         );
@@ -238,7 +237,7 @@ public class ContentListTable extends javax.swing.JPanel {
         jScrollPane1.setMinimumSize(new java.awt.Dimension(22, 48));
 
         contentTable.setModel(tableModel);
-        contentTable.setMinimumSize(new java.awt.Dimension(90, 48));
+        contentTable.setMinimumSize(new java.awt.Dimension(90, 100));
         jScrollPane1.setViewportView(contentTable);
         contentTable.setColumnModel(tableColumnModel);
 
@@ -254,7 +253,7 @@ public class ContentListTable extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(auxPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

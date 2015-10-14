@@ -142,7 +142,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="auxPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="201" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="215" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -162,7 +162,7 @@
                   <Component id="rowsInfoLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="rowsInfoText" min="-2" pref="45" max="-2" attributes="0"/>
-                  <EmptySpace pref="167" max="32767" attributes="0"/>
+                  <EmptySpace pref="247" max="32767" attributes="0"/>
                   <Component id="columnsButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -219,9 +219,8 @@
         <Component class="javax.swing.JButton" name="columnsButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/net/localizethat/resources/choose-columns.png"/>
+              <Image iconType="3" name="/net/localizethat/resources/16-choose-columns.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Columns"/>
             <Property name="toolTipText" type="java.lang.String" value="Choose columns"/>
           </Properties>
           <Events>
@@ -251,7 +250,7 @@
               <Connection component="tableColumnModel" type="bean"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[90, 48]"/>
+              <Dimension value="[90, 100]"/>
             </Property>
           </Properties>
         </Component>
