@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
 package net.localizethat.gui.dialogs;
 
 import java.awt.Color;
@@ -23,17 +22,21 @@ import net.localizethat.gui.models.ListComboBoxGenericModel;
 import net.localizethat.model.L10n;
 import net.localizethat.system.AppSettings;
 import net.localizethat.util.gui.GuiUtils;
+import net.localizethat.util.gui.JStatusBar;
+import net.localizethat.util.gui.JStatusBar.LogMsgType;
 import net.localizethat.util.gui.SimpleFontChooser;
 
 /**
  * The Preferences dialog for LocalizeThat!
+ *
  * @author rpalomares
  */
 public class PreferencesDialog extends javax.swing.JDialog {
     private final EntityManagerFactory emf;
     private boolean okay;
     private final List<String> availableLafs;
-  
+    private final DefaultComboBoxModel logMsgTypeCbModel;
+
     /**
      * Creates new form SetupDialog
      */
@@ -44,6 +47,10 @@ public class PreferencesDialog extends javax.swing.JDialog {
         // entityManager = emf.createEntityManager();
 
         availableLafs = GuiUtils.getAvailableLookAndFeels();
+        logMsgTypeCbModel = new DefaultComboBoxModel();
+        for (LogMsgType logLevel : LogMsgType.values()) {
+            logMsgTypeCbModel.addElement(logLevel);
+        }
         initComponents();
         // JDialogHelper.setupOKCancelHotkeys(this, okButton, cancelButton);
     }
@@ -55,12 +62,13 @@ public class PreferencesDialog extends javax.swing.JDialog {
         listModel.addAll(l10nQuery.getResultList());
     }
 
-/**
- * Shows the dialog (in a modal way)
- */
-public void showDialog() {
+    /**
+     * Shows the dialog (in a modal way)
+     */
+    public void showDialog() {
         L10n defL10n = null;
         AppSettings appSettings = Main.appSettings;
+        LogMsgType logLevel;
         okay = false;
 
         if (entityManager == null || !entityManager.isOpen()) {
@@ -71,12 +79,12 @@ public void showDialog() {
         // Display Tab
         Font f;
         f = new Font(appSettings.getString(AppSettings.PREF_FONT_EDITPHRASE_NAME),
-                     appSettings.getInteger(AppSettings.PREF_FONT_EDITPHRASE_STYLE),
-                     appSettings.getInteger(AppSettings.PREF_FONT_EDITPHRASE_SIZE));
+                appSettings.getInteger(AppSettings.PREF_FONT_EDITPHRASE_STYLE),
+                appSettings.getInteger(AppSettings.PREF_FONT_EDITPHRASE_SIZE));
         editPhraseFontLabel.setFont(f);
         f = new Font(appSettings.getString(AppSettings.PREF_FONT_TABLEVIEW_NAME),
-                     appSettings.getInteger(AppSettings.PREF_FONT_TABLEVIEW_STYLE),
-                     appSettings.getInteger(AppSettings.PREF_FONT_TABLEVIEW_SIZE));
+                appSettings.getInteger(AppSettings.PREF_FONT_TABLEVIEW_STYLE),
+                appSettings.getInteger(AppSettings.PREF_FONT_TABLEVIEW_SIZE));
         tableViewFontLabel.setFont(f);
         editPhraseFontLabel.repaint();
         tableViewFontLabel.repaint();
@@ -90,7 +98,7 @@ public void showDialog() {
         tsclTranslated.setBackground(appSettings.getColor(AppSettings.PREF_TRNS_STATUS_TRANSLATED));
 
         String defL10nCode = appSettings.getString(AppSettings.PREF_DEFAULT_ORIGINAL_LANGUAGE);
-        for(L10n l : defaultLanguageComboModel.getAll()) {
+        for (L10n l : defaultLanguageComboModel.getAll()) {
             if (l.getCode().equals(defL10nCode)) {
                 defL10n = l;
                 break;
@@ -101,37 +109,42 @@ public void showDialog() {
         }
 
         /*
-        // Input/Output Tab
-        replaceEnUSCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_REPLACE_ENUS));
-        exportOnlyModifFilesCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_ONLY_MODIFIED));
-        emptyTrnsAsOriginalCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_ENUS_VALUE_ON_EMPTY_TRANSLATIONS));
-        baseDirForReposField.setText(appSettings.getString(AppSettings.REPOSITORIES_BASE));
+         // Input/Output Tab
+         replaceEnUSCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_REPLACE_ENUS));
+         exportOnlyModifFilesCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_ONLY_MODIFIED));
+         emptyTrnsAsOriginalCheck.setSelected(appSettings.getBoolean(AppSettings.EXPORT_ENUS_VALUE_ON_EMPTY_TRANSLATIONS));
+         baseDirForReposField.setText(appSettings.getString(AppSettings.REPOSITORIES_BASE));
 
-        // Translation Assistance Tab
-        useSuggCheckBox.setSelected(appSettings.getBoolean(AppSettings.USE_SUGGESTIONS));
-        percentCoincidenceTextField.setValue(appSettings.getInteger(AppSettings.SUGGESTIONS_MATCH_VALUE));
-        autoTranslateCheck.setSelected(appSettings.getBoolean(AppSettings.AUTOTRANSLATE_ON_UPDATE));
+         // Translation Assistance Tab
+         useSuggCheckBox.setSelected(appSettings.getBoolean(AppSettings.USE_SUGGESTIONS));
+         percentCoincidenceTextField.setValue(appSettings.getInteger(AppSettings.SUGGESTIONS_MATCH_VALUE));
+         autoTranslateCheck.setSelected(appSettings.getBoolean(AppSettings.AUTOTRANSLATE_ON_UPDATE));
 
-        // Key Connection Tab
-        akeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_AKEYS_CASESENSE));
-        akeyPatternField.setText(appSettings.getString(AppSettings.CONN_AKEYS_PATTERNS));
-        ckeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_CKEYS_CASESENSE));
-        ckeyPatternField.setText(appSettings.getString(AppSettings.CONN_CKEYS_PATTERNS));
-        labelCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_LABEL_CASESENSE));
-        labelPatternField.setText(appSettings.getString(AppSettings.CONN_LABEL_PATTERNS));
+         // Key Connection Tab
+         akeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_AKEYS_CASESENSE));
+         akeyPatternField.setText(appSettings.getString(AppSettings.CONN_AKEYS_PATTERNS));
+         ckeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_CKEYS_CASESENSE));
+         ckeyPatternField.setText(appSettings.getString(AppSettings.CONN_CKEYS_PATTERNS));
+         labelCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_LABEL_CASESENSE));
+         labelPatternField.setText(appSettings.getString(AppSettings.CONN_LABEL_PATTERNS));
 
-        // Automated Tests tab
-        origDTDEntField.setText(appSettings.getString(AppSettings.QA_DTD_ORIG_ENTITIES_IGNORED));
-        trnsDTDEntField.setText(appSettings.getString(AppSettings.QA_DTD_TRNS_ENTITIES_IGNORED));
-        endingCheckedCharsField.setText(appSettings.getString(AppSettings.QA_ENDING_CHECKED_CHARS));
-        useSuggCheckBox.setSelected(appSettings.getBoolean(AppSettings.USE_SUGGESTIONS));
-        pairedCharsListField.setText(appSettings.getString(AppSettings.QA_PAIRED_CHARS_LIST));
-
+         // Automated Tests tab
+         origDTDEntField.setText(appSettings.getString(AppSettings.QA_DTD_ORIG_ENTITIES_IGNORED));
+         trnsDTDEntField.setText(appSettings.getString(AppSettings.QA_DTD_TRNS_ENTITIES_IGNORED));
+         endingCheckedCharsField.setText(appSettings.getString(AppSettings.QA_ENDING_CHECKED_CHARS));
+         useSuggCheckBox.setSelected(appSettings.getBoolean(AppSettings.USE_SUGGESTIONS));
+         pairedCharsListField.setText(appSettings.getString(AppSettings.QA_PAIRED_CHARS_LIST));
+         */
         // Data Store tab
-        pathGlossaryTextField.setText(appSettings.getString(AppSettings.DATAMODEL_FILENAME));
-        useOneFilePerProductCheck.setSelected(appSettings.getBoolean(AppSettings.DATAMODEL_ONE_FILE_PER_PRODUCT));
-        */
-
+        logFilenameField.setText(appSettings.getString(AppSettings.PREF_LOGGING_FILENAME));
+        try {
+            logLevel = JStatusBar.LogMsgType.valueOf(appSettings.getString(AppSettings.PREF_LOGGING_LOGLEVEL));
+        } catch (IllegalArgumentException e) {
+            logLevel = LogMsgType.WARNING;
+        }
+        if (logLevel != null) {
+            logLevelCombo.setSelectedItem(logLevel);
+        }
         setVisible(true);
 
         if (okay) {
@@ -158,36 +171,36 @@ public void showDialog() {
             appSettings.setString(AppSettings.PREF_DEFAULT_ORIGINAL_LANGUAGE, defL10n.getCode());
 
             /*
-            // Input/Output Tab
-            appSettings.setBoolean(AppSettings.EXPORT_REPLACE_ENUS, replaceEnUSCheck.isSelected());
-            appSettings.setBoolean(AppSettings.EXPORT_ONLY_MODIFIED, exportOnlyModifFilesCheck.isSelected());
-            appSettings.setBoolean(AppSettings.DATAMODEL_ONE_FILE_PER_PRODUCT, useOneFilePerProductCheck.isSelected());
-            appSettings.setString(AppSettings.REPOSITORIES_BASE, baseDirForReposField.getText());
+             // Input/Output Tab
+             appSettings.setBoolean(AppSettings.EXPORT_REPLACE_ENUS, replaceEnUSCheck.isSelected());
+             appSettings.setBoolean(AppSettings.EXPORT_ONLY_MODIFIED, exportOnlyModifFilesCheck.isSelected());
+             appSettings.setBoolean(AppSettings.DATAMODEL_ONE_FILE_PER_PRODUCT, useOneFilePerProductCheck.isSelected());
+             appSettings.setString(AppSettings.REPOSITORIES_BASE, baseDirForReposField.getText());
 
-            // Translation Assistance Tab
-            appSettings.setBoolean(AppSettings.USE_SUGGESTIONS, useSuggCheckBox.isSelected());
-            appSettings.setInteger(AppSettings.SUGGESTIONS_MATCH_VALUE, (Integer) percentCoincidenceTextField.getValue());
-            appSettings.setBoolean(AppSettings.AUTOTRANSLATE_ON_UPDATE, autoTranslateCheck.isSelected());
-            
-            // Key Connection Tab
-            appSettings.setBoolean(AppSettings.CONN_AKEYS_CASESENSE, akeyCaseCheck.isSelected());
-            appSettings.setString(AppSettings.CONN_AKEYS_PATTERNS, akeyPatternField.getText());
-            appSettings.setBoolean(AppSettings.CONN_CKEYS_CASESENSE, ckeyCaseCheck.isSelected());
-            appSettings.setString(AppSettings.CONN_CKEYS_PATTERNS, ckeyPatternField.getText());
-            appSettings.setBoolean(AppSettings.CONN_LABEL_CASESENSE, labelCaseCheck.isSelected());
-            appSettings.setString(AppSettings.CONN_LABEL_PATTERNS, labelPatternField.getText());
+             // Translation Assistance Tab
+             appSettings.setBoolean(AppSettings.USE_SUGGESTIONS, useSuggCheckBox.isSelected());
+             appSettings.setInteger(AppSettings.SUGGESTIONS_MATCH_VALUE, (Integer) percentCoincidenceTextField.getValue());
+             appSettings.setBoolean(AppSettings.AUTOTRANSLATE_ON_UPDATE, autoTranslateCheck.isSelected());
 
-            // Automated tests tab
-            appSettings.setString(AppSettings.QA_DTD_ORIG_ENTITIES_IGNORED, origDTDEntField.getText());
-            appSettings.setString(AppSettings.QA_DTD_TRNS_ENTITIES_IGNORED, trnsDTDEntField.getText());
-            appSettings.setString(AppSettings.QA_ENDING_CHECKED_CHARS, endingCheckedCharsField.getText());
-            appSettings.setBoolean(AppSettings.USE_SUGGESTIONS, useSuggCheckBox.isSelected());
-            appSettings.setString(AppSettings.QA_PAIRED_CHARS_LIST, pairedCharsListField.getText());
+             // Key Connection Tab
+             appSettings.setBoolean(AppSettings.CONN_AKEYS_CASESENSE, akeyCaseCheck.isSelected());
+             appSettings.setString(AppSettings.CONN_AKEYS_PATTERNS, akeyPatternField.getText());
+             appSettings.setBoolean(AppSettings.CONN_CKEYS_CASESENSE, ckeyCaseCheck.isSelected());
+             appSettings.setString(AppSettings.CONN_CKEYS_PATTERNS, ckeyPatternField.getText());
+             appSettings.setBoolean(AppSettings.CONN_LABEL_CASESENSE, labelCaseCheck.isSelected());
+             appSettings.setString(AppSettings.CONN_LABEL_PATTERNS, labelPatternField.getText());
 
+             // Automated tests tab
+             appSettings.setString(AppSettings.QA_DTD_ORIG_ENTITIES_IGNORED, origDTDEntField.getText());
+             appSettings.setString(AppSettings.QA_DTD_TRNS_ENTITIES_IGNORED, trnsDTDEntField.getText());
+             appSettings.setString(AppSettings.QA_ENDING_CHECKED_CHARS, endingCheckedCharsField.getText());
+             appSettings.setBoolean(AppSettings.USE_SUGGESTIONS, useSuggCheckBox.isSelected());
+             appSettings.setString(AppSettings.QA_PAIRED_CHARS_LIST, pairedCharsListField.getText());
+             */
             // Data Store tab
-            appSettings.setString(AppSettings.DATAMODEL_FILENAME, pathGlossaryTextField.getText());
-            appSettings.setBoolean(AppSettings.EXPORT_ENUS_VALUE_ON_EMPTY_TRANSLATIONS, emptyTrnsAsOriginalCheck.isSelected());
-            */
+            appSettings.setString(AppSettings.PREF_LOGGING_FILENAME, logFilenameField.getText());
+            appSettings.setString(AppSettings.PREF_LOGGING_LOGLEVEL,
+                    ((LogMsgType) logLevelCombo.getSelectedItem()).toString());
         }
         dispose();
     }
@@ -264,18 +277,18 @@ public void showDialog() {
         pairedCharsListField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         prefDataStorePanel = new javax.swing.JPanel();
-        locationAndStructureLabel = new javax.swing.JLabel();
-        pathGlossaryLabel = new javax.swing.JLabel();
-        pathGlossaryTextField = new javax.swing.JTextField();
-        pathGlossaryButton = new javax.swing.JButton();
-        useOneFilePerProductCheck = new javax.swing.JCheckBox();
+        loggingSectionLabel = new javax.swing.JLabel();
+        logFilenameLabel = new javax.swing.JLabel();
+        logFilenameField = new net.localizethat.util.gui.JPathField();
+        logLevelLabel = new javax.swing.JLabel();
+        logLevelCombo = new javax.swing.JComboBox<LogMsgType>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         okButton.setText("OK");
-        okButton.setMaximumSize(new java.awt.Dimension(81, 25));
-        okButton.setMinimumSize(new java.awt.Dimension(81, 25));
-        okButton.setPreferredSize(new java.awt.Dimension(81, 25));
+        okButton.setMaximumSize(new java.awt.Dimension(81, 31));
+        okButton.setMinimumSize(new java.awt.Dimension(81, 31));
+        okButton.setPreferredSize(new java.awt.Dimension(81, 31));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonPressed(evt);
@@ -284,6 +297,9 @@ public void showDialog() {
         buttonPanel.add(okButton);
 
         cancelButton.setText("Cancel");
+        cancelButton.setMaximumSize(new java.awt.Dimension(81, 31));
+        cancelButton.setMinimumSize(new java.awt.Dimension(81, 31));
+        cancelButton.setPreferredSize(new java.awt.Dimension(81, 31));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonPressed(evt);
@@ -834,23 +850,16 @@ public void showDialog() {
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-qa-tests.png")), prefAutoTestsPanel, "Automated Tests"); // NOI18N
 
-        locationAndStructureLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
-        locationAndStructureLabel.setText("Glossary.zip location and structure");
+        loggingSectionLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
+        loggingSectionLabel.setText("Logging");
 
-        pathGlossaryLabel.setLabelFor(pathGlossaryTextField);
-        pathGlossaryLabel.setText("Path to Glossary.zip:");
+        logFilenameLabel.setText("Log filename:");
 
-        pathGlossaryButton.setMnemonic('C');
-        pathGlossaryButton.setText("Choose...");
-        pathGlossaryButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pathGlossaryButtonActionPerformed(evt);
-            }
-        });
+        logLevelLabel.setText("Log level:");
 
-        useOneFilePerProductCheck.setMnemonic('W');
-        useOneFilePerProductCheck.setText("When saving glossary, use one file per product");
-        useOneFilePerProductCheck.setToolTipText("Use this to save memory while saving Glossary.zip");
+        logLevelCombo.setModel(logMsgTypeCbModel);
+        logLevelCombo.setMinimumSize(new java.awt.Dimension(23, 25));
+        logLevelCombo.setPreferredSize(new java.awt.Dimension(23, 25));
 
         javax.swing.GroupLayout prefDataStorePanelLayout = new javax.swing.GroupLayout(prefDataStorePanel);
         prefDataStorePanel.setLayout(prefDataStorePanelLayout);
@@ -859,32 +868,34 @@ public void showDialog() {
             .addGroup(prefDataStorePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(locationAndStructureLabel)
                     .addGroup(prefDataStorePanelLayout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(prefDataStorePanelLayout.createSequentialGroup()
-                                .addComponent(pathGlossaryLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(pathGlossaryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(pathGlossaryButton))
-                            .addComponent(useOneFilePerProductCheck))))
-                .addContainerGap(75, Short.MAX_VALUE))
+                            .addComponent(logLevelLabel)
+                            .addComponent(logFilenameLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(logFilenameField, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(logLevelCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 280, Short.MAX_VALUE))
+                    .addGroup(prefDataStorePanelLayout.createSequentialGroup()
+                        .addComponent(loggingSectionLabel)
+                        .addGap(248, 248, 248))))
         );
         prefDataStorePanelLayout.setVerticalGroup(
             prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(prefDataStorePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(locationAndStructureLabel)
+                .addComponent(loggingSectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pathGlossaryLabel)
-                    .addComponent(pathGlossaryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pathGlossaryButton))
+                .addGroup(prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(logFilenameLabel)
+                    .addComponent(logFilenameField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(useOneFilePerProductCheck)
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addGroup(prefDataStorePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(logLevelCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logLevelLabel))
+                .addContainerGap(190, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-db.png")), prefDataStorePanel, "Data Store"); // NOI18N
@@ -982,23 +993,6 @@ public void showDialog() {
         }
     }//GEN-LAST:event_baseDirForReposButtonActionPerformed
 
-    private void pathGlossaryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pathGlossaryButtonActionPerformed
-        File defaultFile;
-        JFileChooser chooser;
-        int result;
-
-        defaultFile = new File(pathGlossaryTextField.getText());
-        chooser = new JFileChooser(".");
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setDialogTitle("Select the path to Glossary.zip");
-        chooser.setSelectedFile(defaultFile);
-        result = chooser.showDialog(this, "Choose");
-        if (result == JFileChooser.APPROVE_OPTION) {
-            defaultFile = chooser.getSelectedFile();
-            pathGlossaryTextField.setText(defaultFile.toString());
-        }
-    }//GEN-LAST:event_pathGlossaryButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox akeyCaseCheck;
     private javax.swing.JTextField akeyPatternField;
@@ -1035,16 +1029,17 @@ public void showDialog() {
     private javax.swing.JCheckBox labelCaseCheck;
     private javax.swing.JTextField labelPatternField;
     private javax.swing.JLabel labelPatternLabel;
-    private javax.swing.JLabel locationAndStructureLabel;
+    private net.localizethat.util.gui.JPathField logFilenameField;
+    private javax.swing.JLabel logFilenameLabel;
+    private javax.swing.JComboBox<LogMsgType> logLevelCombo;
+    private javax.swing.JLabel logLevelLabel;
+    private javax.swing.JLabel loggingSectionLabel;
     private javax.swing.JComboBox lookAndFeelCombo;
     private javax.swing.JLabel lookAndFeelLabel;
     private javax.swing.JButton okButton;
     private javax.swing.JTextField origDTDEntField;
     private javax.swing.JTextField pairedCharsListField;
     private javax.swing.JLabel pairedCharsListLabel;
-    private javax.swing.JButton pathGlossaryButton;
-    private javax.swing.JLabel pathGlossaryLabel;
-    private javax.swing.JTextField pathGlossaryTextField;
     private javax.swing.JSpinner percentCoincidenceTextField;
     private javax.swing.JPanel prefAutoTestsPanel;
     private javax.swing.JPanel prefDataStorePanel;
@@ -1067,7 +1062,6 @@ public void showDialog() {
     private javax.swing.JLabel tsclProposed;
     private javax.swing.JLabel tsclTranslated;
     private javax.swing.JLabel tsclUntranslated;
-    private javax.swing.JCheckBox useOneFilePerProductCheck;
     private javax.swing.JCheckBox useSuggCheckBox;
     // End of variables declaration//GEN-END:variables
 }

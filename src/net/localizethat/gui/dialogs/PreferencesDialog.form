@@ -69,13 +69,13 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="OK"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[81, 25]"/>
+              <Dimension value="[81, 31]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[81, 25]"/>
+              <Dimension value="[81, 31]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[81, 25]"/>
+              <Dimension value="[81, 31]"/>
             </Property>
           </Properties>
           <Events>
@@ -85,6 +85,15 @@
         <Component class="javax.swing.JButton" name="cancelButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cancel"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[81, 31]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[81, 31]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[81, 31]"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonPressed"/>
@@ -1081,77 +1090,83 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="locationAndStructureLabel" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="pathGlossaryLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="pathGlossaryTextField" min="-2" pref="275" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="pathGlossaryButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="useOneFilePerProductCheck" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="logLevelLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="logFilenameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="logFilenameField" min="-2" pref="231" max="-2" attributes="0"/>
+                                  <Component id="logLevelCombo" min="-2" pref="231" max="-2" attributes="1"/>
+                              </Group>
+                              <EmptySpace min="0" pref="280" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="loggingSectionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="248" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="75" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="locationAndStructureLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="loggingSectionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="pathGlossaryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="pathGlossaryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="pathGlossaryButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="logFilenameLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="logFilenameField" min="-2" pref="25" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="useOneFilePerProductCheck" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="196" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="logLevelCombo" min="-2" max="-2" attributes="0"/>
+                          <Component id="logLevelLabel" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="190" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="locationAndStructureLabel">
+            <Component class="javax.swing.JLabel" name="loggingSectionLabel">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="DejaVu Sans" size="13" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Glossary.zip location and structure"/>
+                <Property name="text" type="java.lang.String" value="Logging"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="pathGlossaryLabel">
+            <Component class="javax.swing.JLabel" name="logFilenameLabel">
               <Properties>
-                <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                  <ComponentRef name="pathGlossaryTextField"/>
+                <Property name="text" type="java.lang.String" value="Log filename:"/>
+              </Properties>
+            </Component>
+            <Component class="net.localizethat.util.gui.JPathField" name="logFilenameField">
+            </Component>
+            <Component class="javax.swing.JLabel" name="logLevelLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Log level:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="logLevelCombo">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="logMsgTypeCbModel" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Path to Glossary.zip:"/>
+                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[23, 25]"/>
+                </Property>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[23, 25]"/>
+                </Property>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="pathGlossaryTextField">
-            </Component>
-            <Component class="javax.swing.JButton" name="pathGlossaryButton">
-              <Properties>
-                <Property name="mnemonic" type="int" value="67"/>
-                <Property name="text" type="java.lang.String" value="Choose..."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pathGlossaryButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="useOneFilePerProductCheck">
-              <Properties>
-                <Property name="mnemonic" type="int" value="87"/>
-                <Property name="text" type="java.lang.String" value="When saving glossary, use one file per product"/>
-                <Property name="toolTipText" type="java.lang.String" value="Use this to save memory while saving Glossary.zip"/>
-              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;LogMsgType&gt;"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
