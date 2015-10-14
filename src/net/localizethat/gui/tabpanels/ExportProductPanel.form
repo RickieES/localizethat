@@ -90,10 +90,12 @@
                   <Component id="jScrollPane1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="selectAllProductsCheck" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="targetLocaleCombo" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="targetLocaleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="selectAllProductsCheck" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="targetLocaleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="targetLocaleCombo" alignment="1" min="-2" pref="27" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="removeObsoleteCheck" min="-2" max="-2" attributes="0"/>
