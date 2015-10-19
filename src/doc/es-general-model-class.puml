@@ -1,0 +1,53 @@
+@startuml
+interface net.localizethat.model.LocaleNode {
+    Integer getId();
+    String getName();
+    LocaleNode getParent();
+    Date getCreationDate();
+    Date getLastUpdate();
+    String getFilePath();
+    boolean addChild();
+    boolean hasChild();
+    LocaleNode getChildByName();
+    Collection<? extends LocaleNode> getChildren();
+    LocaleNode removeChild();
+    boolean clearChildren();
+    LocaleNode getDefLocaleTwin();
+    boolean addTwin();
+    boolean removeTwin();
+    boolean isATwin();
+    LocaleNode getTwinByLocale();
+    L10n getL10nId();
+    Collection<? extends LocaleNode> getTwins();
+}
+interface net.localizethat.model.LocaleContent {
+    int getOrderInFile();
+    String getTextValue();
+    boolean isDontExport();
+    boolean isEditable();
+    boolean isKeepOriginal();
+    boolean isMarkedForDeletion();
+}
+
+class net.localizethat.model.LocaleContainer {
+    boolean addFileChild();
+    boolean hasFileChild();
+    LocaleFile getFileChildByName();
+    Collection<? extends LocaleFile> getFileChildren();
+    LocaleFile removeFileChild();
+    boolean clearFileChildren();
+}
+class net.localizethat.model.LocaleFile {
+    {static} createFile(String fileName, LocaleContainer parent);
+    boolean isDontExport();
+}
+class net.localizethat.model.LTContent
+
+net.localizethat.model.LocaleNode <|. net.localizethat.model.LocaleContainer
+net.localizethat.model.LocaleNode <|. net.localizethat.model.LocaleFile
+net.localizethat.model.LocaleNode <|. net.localizethat.model.LocaleContent
+net.localizethat.model.LocaleContent <|.down. net.localizethat.model.LTContent
+net.localizethat.model.LocaleContainer "*" - "0" net.localizethat.model.LocaleContainer
+net.localizethat.model.LocaleFile "*" - "0" net.localizethat.model.LocaleContainer
+net.localizethat.model.LocaleContent "*" - "0" net.localizethat.model.LocaleFile
+@enduml
