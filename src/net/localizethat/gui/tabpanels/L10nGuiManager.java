@@ -413,14 +413,16 @@ public class L10nGuiManager extends AbstractTabPanel {
     }//GEN-LAST:event_newButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-
         // validateOnSave will report the specific problem in the status bar
         if (!validateOnSave()) {
             return;
         }
 
         int index = l10nTable.convertRowIndexToModel(l10nTable.getSelectedRow());
-        L10n l = l10nTableModel.getElement(index);
+        if (!entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().begin();
+        }
+        L10n l = entityManager.find(L10n.class, selectedL10n.getId());
         l.setCode(l10nCodeField.getText());
         l.setName(l10nDescriptionField.getText());
         l.setTeamName(l10nTeamNameField.getText());

@@ -349,7 +349,10 @@ public class ChannelGuiManager extends AbstractTabPanel {
         }
 
         int index = channelTable.convertRowIndexToModel(channelTable.getSelectedRow());
-        Channel c = channelTableModel.getElement(index);
+        if (!entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().begin();
+        }
+        Channel c = entityManager.find(Channel.class, selectedChannel.getId());
         c.setName(channelNameField.getText());
         c.setDescription(channelDescriptionField.getText());
         c.setReplacementTag(channelTagField.getText());

@@ -174,19 +174,23 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         glossaryTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(glossaryTable);
 
+        newGlossaryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-new.png"))); // NOI18N
         newGlossaryButton.setText("New");
         newGlossaryButton.setToolTipText("Create a new empty glossary");
         newGlossaryButton.addActionListener(formListener);
 
+        saveGlossaryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-save.png"))); // NOI18N
         saveGlossaryButton.setText("Save");
         saveGlossaryButton.setToolTipText("Save changes to selected glossary");
         saveGlossaryButton.setEnabled(false);
         saveGlossaryButton.addActionListener(formListener);
 
+        refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/view-refresh.png"))); // NOI18N
         refreshButton.setText("Refresh");
         refreshButton.setEnabled(false);
         refreshButton.addActionListener(formListener);
 
+        deleteGlossaryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/edit-delete.png"))); // NOI18N
         deleteGlossaryButton.setText("Delete");
         deleteGlossaryButton.setEnabled(false);
         deleteGlossaryButton.addActionListener(formListener);
@@ -383,15 +387,15 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         }
 
         int index = glossaryTable.convertRowIndexToModel(glossaryTable.getSelectedRow());
-        // Glossary g = glosTableModel.getElement(index);
+        if (!entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().begin();
+        }
         Glossary g = entityManager.find(Glossary.class, selectedGlossary.getId());
         g.setName(glosNameField.getText());
         g.setVersion(glosVersionField.getText());
         g.setLastUpdate(new Date());
         g.setL10nId((L10n) glosMasterLocaleCombo.getSelectedItem());
         try {
-            boolean dummy = entityManager.contains(g);
-            // gpc.edit(g);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             glosTableModel.fireTableRowsUpdated(index, index);

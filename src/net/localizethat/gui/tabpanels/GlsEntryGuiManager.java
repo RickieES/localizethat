@@ -415,12 +415,15 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
         glseLastUpdatedField.setEditable(false);
         glseLastUpdatedField.setEnabled(false);
 
+        newGlseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-new.png"))); // NOI18N
         newGlseButton.setText("New");
         newGlseButton.addActionListener(formListener);
 
+        saveGlseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-save.png"))); // NOI18N
         saveGlseButton.setText("Save");
         saveGlseButton.addActionListener(formListener);
 
+        deleteGlseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/edit-delete.png"))); // NOI18N
         deleteGlseButton.setText("Delete");
         deleteGlseButton.addActionListener(formListener);
 
@@ -473,7 +476,7 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
                 .addGroup(glseDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(glseCommentLabel)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 6, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(glseDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(glseCreationDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(glseCreationDateLabel))
@@ -512,7 +515,7 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
                     .addComponent(glseFilterLabel)
                     .addComponent(glseFilterField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(glseDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -555,12 +558,15 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
         glstLastUpdatedField.setEditable(false);
         glstLastUpdatedField.setEnabled(false);
 
+        newGlstButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-new.png"))); // NOI18N
         newGlstButton.setText("New");
         newGlstButton.addActionListener(formListener);
 
+        saveGlstButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-save.png"))); // NOI18N
         saveGlstButton.setText("Save");
         saveGlstButton.addActionListener(formListener);
 
+        deleteGlstButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/edit-delete.png"))); // NOI18N
         deleteGlstButton.setText("Delete");
         deleteGlstButton.addActionListener(formListener);
 
@@ -646,7 +652,7 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
                     .addComponent(glstFilterLabel)
                     .addComponent(glstFilterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(glstDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -781,7 +787,12 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
 
     private void saveGlseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGlseButtonActionPerformed
         int index = glseTable.convertRowIndexToModel(glseTable.getSelectedRow());
-        GlsEntry ge = glosEntryTableModel.getElement(index);
+        if (!entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().begin();
+        }
+        GlsEntry ge = entityManager.find(GlsEntry.class,
+                glosEntryTableModel.getElement(index).getId());
+
         // validateOnSave will report the specific problem in the status bar
         if (!validateOnGlsEntrySave(ge)) {
             return;
@@ -838,7 +849,11 @@ public class GlsEntryGuiManager extends AbstractTabPanel {
 
     private void saveGlstButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveGlstButtonActionPerformed
         int index = glstTable.convertRowIndexToModel(glstTable.getSelectedRow());
-        GlsTranslation gt = glosTranslationTableModel.getElement(index);
+        if (!entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().begin();
+        }
+        GlsTranslation gt = entityManager.find(GlsTranslation.class,
+                glosTranslationTableModel.getElement(index).getId());
 
         // validateOnSave will report the specific problem in the status bar
         if (!validateOnGlsTranslationSave(gt)) {

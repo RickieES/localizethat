@@ -23,7 +23,7 @@ import net.localizethat.tasks.CreateEntityManagerTask;
 public class UpdateProductsAction extends AbstractAction {
     private static final String TITLE = "Update Products";
     private static final String DESCRIPTION = "Opens " + TITLE + " panel";
-    private static final String ICON = "view-refresh.png";
+    private static final String ICON = "product-update.png";
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_U;
     private static final long serialVersionUID = 1L;
     private UpdateProductPanel updateProductPanel;

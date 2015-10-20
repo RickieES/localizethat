@@ -771,7 +771,10 @@ public class ProductManager extends AbstractTabPanel {
             return;
         }
 
-        Product p = productListModel.getSelectedTypedItem();
+        if (!entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().begin();
+        }
+        Product p = entityManager.find(Product.class, selectedProduct.getId());
         p.setChannelId(channelListModel.getSelectedTypedItem());
         String hexRGBColor = Integer.toHexString(prodColorValue.getBackground().getRGB());
         p.setColor(hexRGBColor);
