@@ -153,6 +153,7 @@ public class UpdateProductWorker extends SwingWorker<List<LocaleContent>, String
 
         // Take the real files & dirs in the disk and add those missing in the datamodel
         try {
+            publish("    Processing " + currentPath);
             if (!em.isJoinedToTransaction()) {
                 em.getTransaction().begin();
             }
