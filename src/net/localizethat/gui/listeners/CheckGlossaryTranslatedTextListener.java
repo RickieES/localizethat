@@ -6,17 +6,23 @@
 
 package net.localizethat.gui.listeners;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
+import net.localizethat.model.FailedEntry;
 import net.localizethat.model.Glossary;
 import net.localizethat.model.L10n;
 import net.localizethat.tasks.CheckGlossaryWorker;
-
+import net.localizethat.tasks.SearchGlossaryWorker;
 
 public class CheckGlossaryTranslatedTextListener extends AbstractSimpleDocumentListener {
     private CheckGlossaryWorker cgw;
+    private SearchGlossaryWorker sgw;
     private String original;
     private final JTextArea translatedTextArea;
     private L10n locale;
@@ -37,13 +43,20 @@ public class CheckGlossaryTranslatedTextListener extends AbstractSimpleDocumentL
     public void setOriginal(String original) {
         this.original = original;
         cancelTask();
-        doTask(null);
+        if (original.length() < 2048) { // We only check glossaries for short strings
+            // Original string has changed, so we rebuild the list of glossary entries
+            if ((sgw != null) && (!sgw.isDone())) {
+                sgw.cancel(true);
+            }
+            sgw = new SearchGlossaryWorker(original, em, glsList);
+            sgw.execute();
+            doTask(null);
+        }
     }
 
     public void setLocale(L10n locale) {
         this.locale = locale;
         cancelTask();
-        doTask(null);
     }
 
     public void setEntityManager(EntityManager em) {
@@ -59,10 +72,17 @@ public class CheckGlossaryTranslatedTextListener extends AbstractSimpleDocumentL
 
     @Override
     protected void doTask(DocumentEvent e) {
-        if ((cgw == null) || (cgw.isDone())) {
-            cgw = new CheckGlossaryWorker(original, translatedTextArea.getText(),
-                    locale, em, origStrPane, glsList);
-            cgw.execute();
+        if ( (sgw != null) && (sgw.isDone()) &&
+                (cgw == null || cgw.isDone()) ) {
+            try {
+                List<FailedEntry> feList = sgw.get();
+                cgw = new CheckGlossaryWorker(original, translatedTextArea.getText(),
+                        locale, origStrPane, feList);
+                cgw.execute();
+            } catch (InterruptedException | ExecutionException ex) {
+                Logger.getLogger(CheckGlossaryTranslatedTextListener.class.getName()).log(
+                        Level.WARNING, "Glossary check couldn't complete", ex);
+            }
         }
     }
 }
