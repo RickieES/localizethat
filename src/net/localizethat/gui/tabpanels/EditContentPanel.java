@@ -52,6 +52,7 @@ public class EditContentPanel extends AbstractTabPanel {
     public void refreshTree(Product p) {
         lntm = LocaleNodeTreeModel.createFromProduct(p);
         dataTree.setModel(lntm);
+        this.contentEditionPanel.activatePanel(targetLocale, contentListTable.getTable());
     }
 
     public void refreshTree(List<LocalePath> pathList) {

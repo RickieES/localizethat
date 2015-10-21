@@ -54,12 +54,13 @@ public class ContentListEditPanel extends AbstractTabPanel {
         for(LocaleContent lc : lcList) {
             managedLcList.add(entityManager.find(lc.getClass(), lc.getId()));
         }
-        
-        this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
-        this.contentListTable.addTableListSelectionListener(contentEditionPanel);
+
         ContentListTableModel tableModel = contentListTable.getTableModel();
         tableModel.setLocalizationCode(targetLocale);
         tableModel.replaceData(managedLcList);
+        this.contentEditionPanel.activatePanel(targetLocale, contentListTable.getTable());
+        this.contentEditionPanel.setAssociatedTable(contentListTable.getTable());
+        this.contentListTable.addTableListSelectionListener(contentEditionPanel);
     }
 
     public L10n getTargetLocale() {
@@ -127,5 +128,4 @@ public class ContentListEditPanel extends AbstractTabPanel {
     public void onTabPanelRemoved() {
         // Nothing to do here
     }
-
 }
