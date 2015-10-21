@@ -338,12 +338,12 @@ public class UpdateProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_productListKeyTyped
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        if (upw != null) {
+        if ((upw != null) && (!upw.isDone())) {
             upw.cancel(true);
+            statusBar.endProgress();
+        } else {
+            Main.mainWindow.removeTab(this);
         }
-
-        statusBar.endProgress();
-        Main.mainWindow.removeTab(this);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed

@@ -332,11 +332,12 @@ public class ExportProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_productListKeyTyped
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        if (xpw != null) {
+        if ((xpw != null) && (!xpw.isDone())) {
             xpw.cancel(true);
+            statusBar.endProgress();
+        } else {
+            Main.mainWindow.removeTab(this);
         }
-        statusBar.endProgress();
-        Main.mainWindow.removeTab(this);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed

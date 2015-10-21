@@ -353,11 +353,12 @@ public class ImportProductPanel extends AbstractTabPanel {
     }//GEN-LAST:event_productListKeyTyped
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        if (ipw != null) {
+        if ((ipw != null) && (!ipw.isDone())) {
             ipw.cancel(true);
+            statusBar.endProgress();
+        } else {
+            Main.mainWindow.removeTab(this);
         }
-        statusBar.endProgress();
-        Main.mainWindow.removeTab(this);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void importButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importButtonActionPerformed
