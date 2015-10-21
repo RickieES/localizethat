@@ -152,6 +152,8 @@ public class ImportProductWorker extends SwingWorker<List<LocaleContent>, String
             return;
         }
 
+        publish("    Processing " + currentPath);
+
         if (!em.isJoinedToTransaction()) {
             em.getTransaction().begin();
         }

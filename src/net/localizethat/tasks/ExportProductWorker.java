@@ -153,6 +153,8 @@ public class ExportProductWorker extends SwingWorker<Void, String> {
             return;
         }
         
+        publish("    Processing " + currentPath);
+
         /*
          * Traverse LocaleContainer list, comparing the list with existing
          * folders in disk, to end with a list of obsolete folders, in
