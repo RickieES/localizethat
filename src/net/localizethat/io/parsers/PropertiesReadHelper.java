@@ -324,6 +324,9 @@ public class PropertiesReadHelper implements ReadHelper {
                     lc.setCreationDate(new Date());
                     lc.setLastUpdate(lc.getCreationDate());
                     lcList.add(lc);
+                    parseCurrentStatus = STATUS_NULL;
+                    value = null;
+                    lc = null;
                     break;
             }
             line = getNextLine();
