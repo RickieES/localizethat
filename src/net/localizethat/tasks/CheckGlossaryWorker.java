@@ -36,7 +36,6 @@ public class CheckGlossaryWorker
         extends SwingWorker<List<FailedEntry>, Void> {
     private static ImageIcon FAILED_ENTRY_ICON = new ImageIcon(CheckGlossaryWorker.class.getResource(
                     "/net/localizethat/resources/16-sug-button.png"));
-    private StyledDocument doc;
     private String original;
     private String translated;
     private L10n locale;
@@ -65,7 +64,8 @@ public class CheckGlossaryWorker
         SimpleAttributeSet regularStyle = new SimpleAttributeSet();
         SimpleAttributeSet failedCheckStyle = new SimpleAttributeSet();
         SimpleAttributeSet suggestionStyle;
-        int docPos = 0;
+        StyledDocument doc;
+        int docPos;
         int stringPos; // Position in original text where next word is found
         int lastStringPos = 0; // Position in original text right after last word was found
         long start = System.currentTimeMillis();
@@ -84,6 +84,7 @@ public class CheckGlossaryWorker
         Collections.sort(translatedWords, ncsComp);
         doc = origStrPane.getStyledDocument();
         doc.remove(0, doc.getLength());
+        docPos = 0;
 
         // For each original word, we must search if any of the possible translations is in the
         // list of translated words. If it is, we remove the "potentially failed entry" and the

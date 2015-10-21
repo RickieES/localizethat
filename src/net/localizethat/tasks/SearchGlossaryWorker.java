@@ -18,10 +18,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.swing.SwingWorker;
 import net.localizethat.Main;
-import net.localizethat.gui.listeners.CheckGlossaryTranslatedTextListener;
 import net.localizethat.model.Glossary;
 import net.localizethat.model.GlsEntry;
-import net.localizethat.model.L10n;
 import net.localizethat.util.NoCaseStringComparator;
 
 /**
@@ -112,11 +110,6 @@ public class SearchGlossaryWorker
 
         }
         return failedEntriesList;
-    }
-
-    @Override
-    public void done() {
-        // origStrPane.repaint();
     }
 
     private List<String> slicePhrase(String phrase) {
