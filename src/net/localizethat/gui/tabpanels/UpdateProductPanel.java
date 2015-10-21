@@ -420,6 +420,7 @@ public class UpdateProductPanel extends AbstractTabPanel {
         refreshL10nList(listL10nModel);
         originalPathsListModel.clearAll();
         updateOutputArea.setText("");
+        editChangesButton.setEnabled(false);
     }
 
     @Override
