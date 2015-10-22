@@ -65,7 +65,17 @@ public class VersionObject implements Comparable {
         this.payLoad = payLoad;
     }
 
-    
+    @Override
+    public String toString() {
+        StringBuilder stringVersion = new StringBuilder(10);
+
+        stringVersion.append(getMajorValue());
+        stringVersion.append(".");
+        stringVersion.append(getMinorValue());
+        stringVersion.append(".");
+        stringVersion.append(getBugRelease());
+        return stringVersion.toString();
+    }
 
     @Override
     public int compareTo(Object o) throws NullPointerException, ClassCastException {
@@ -92,7 +102,4 @@ public class VersionObject implements Comparable {
             return (this.getMajorValue() - v2.getMajorValue());
         }
     }
-
-
-
 }

@@ -33,7 +33,7 @@ public final class DBChecker {
     private static final String[] scriptList = {"script-0.0.a1.sql", "script-0.0.a2.sql",
                                                 "script-0.0.a3.sql", "script-0.3.a1.sql",
                                                 "script-0.3.a2.sql", "script-0.3.a3.sql",
-                                                "script-0.6.a1.sql",};
+                                                "script-0.6.a1.sql", "script-0.9.a1.sql",};
     private final String pathToDB; // Base dir for Derby databases; the actual database dir lives inside this one
     private final String login;
     private final String passwd;
@@ -145,7 +145,9 @@ public final class DBChecker {
 
         for(VersionObject vo : versionObjects) {
             if (vo.compareTo(currentDBVersion) > 0) {
-                is = getClass().getResourceAsStream("../model/jpa/" + (String) vo.getPayLoad());
+                Logger.getLogger(DBChecker.class.getName()).log(Level.INFO,
+                        "Updating database to version {0}", vo.toString());
+                is = getClass().getResourceAsStream("/net/localizethat/model/jpa/" + (String) vo.getPayLoad());
                 SQLScriptRunner sqlr = new SQLScriptRunner(dbConnection, is);
                 result = sqlr.runScript();
                 if (!result) {
