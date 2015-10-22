@@ -36,9 +36,10 @@ public class PreferencesAction extends AbstractAction {
             prefDialog = new PreferencesDialog();
         }
 
-        prefDialog.showDialog();
-        SavePreferencesWorker spw = new SavePreferencesWorker();
-        spw.execute();
+        if (prefDialog.showDialog()) {
+            SavePreferencesWorker spw = new SavePreferencesWorker();
+            spw.execute();
+        }
     }
 
 }

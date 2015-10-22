@@ -64,8 +64,9 @@ public class PreferencesDialog extends javax.swing.JDialog {
 
     /**
      * Shows the dialog (in a modal way)
+     * @return true if the user clicked OK, false otherwise
      */
-    public void showDialog() {
+    public boolean showDialog() {
         L10n defL10n = null;
         AppSettings appSettings = Main.appSettings;
         LogMsgType logLevel;
@@ -203,6 +204,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     ((LogMsgType) logLevelCombo.getSelectedItem()).toString());
         }
         dispose();
+        return okay;
     }
 
     /**
@@ -245,7 +247,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
         baseDirForReposLabel = new javax.swing.JLabel();
         baseDirForReposField = new javax.swing.JTextField();
         baseDirForReposButton = new javax.swing.JButton();
-        jPathField1 = new net.localizethat.util.gui.JPathField();
         prefTrnsAssistPanel = new javax.swing.JPanel();
         translationSuggestionsLabel = new javax.swing.JLabel();
         useSuggCheckBox = new javax.swing.JCheckBox();
@@ -558,15 +559,10 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addGroup(prefIOPanelLayout.createSequentialGroup()
                         .addComponent(baseDirForReposLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addComponent(jPathField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(prefIOPanelLayout.createSequentialGroup()
-                                .addComponent(baseDirForReposField)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(baseDirForReposButton)
-                                .addGap(25, 25, 25))))))
+                        .addComponent(baseDirForReposField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(baseDirForReposButton)
+                        .addGap(25, 25, 25))))
         );
         prefIOPanelLayout.setVerticalGroup(
             prefIOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -584,9 +580,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
                     .addComponent(baseDirForReposLabel)
                     .addComponent(baseDirForReposField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(baseDirForReposButton))
-                .addGap(18, 18, 18)
-                .addComponent(jPathField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("", new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/pref-io.png")), prefIOPanel, "Input/Output"); // NOI18N
@@ -1023,7 +1017,6 @@ public class PreferencesDialog extends javax.swing.JDialog {
     private javax.swing.JLabel ignoredTrnsEntLabel;
     private javax.swing.JLabel importExportLabel;
     private javax.swing.JLabel jLabel1;
-    private net.localizethat.util.gui.JPathField jPathField1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel keyConnLabel;
     private javax.swing.JCheckBox labelCaseCheck;
