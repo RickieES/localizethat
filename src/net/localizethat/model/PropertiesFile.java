@@ -40,7 +40,7 @@ public class PropertiesFile extends ParseableFileAdapter {
 
     @Override
     protected List<LocaleContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
-        PropertiesFileAccess propFA = new PropertiesFileAccess();
+        PropertiesFileAccess propFA = new PropertiesFileAccess(this);
         List<LocaleContent> parsedContentList = propFA.parse(fileReader);
         return parsedContentList;
     }

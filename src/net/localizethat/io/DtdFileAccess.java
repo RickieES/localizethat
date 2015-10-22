@@ -13,13 +13,23 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.localizethat.io.parsers.DTDReadHelper;
+import net.localizethat.model.DtdFile;
 import net.localizethat.model.LocaleContent;
+import net.localizethat.model.ParseableFile;
 
 /**
  * DTD ParseableFileAccess utility class that returns a list of LTContent objects
  * @author rpalomares
  */
 public class DtdFileAccess implements ParseableFileAccess {
+    private ParseableFile parseableFile;
+
+    private DtdFileAccess() {
+    }
+
+    public DtdFileAccess(DtdFile dtdFile) {
+        this.parseableFile = dtdFile;
+    }
 
     @Override
     public List<LocaleContent> parse(Reader is) throws ParseException {
@@ -39,10 +49,11 @@ public class DtdFileAccess implements ParseableFileAccess {
             lnr.close();
         } catch (ParseException ex) {
             Logger.getLogger(DtdFileAccess.class.getName()).log(Level.SEVERE,
-                    "Error parsing DTD file", ex);
+                    "Error parsing DTD file " + parseableFile.getFilePath(), ex);
             lcList = null;
         } catch (IOException ex) {
-            Logger.getLogger(DtdFileAccess.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DtdFileAccess.class.getName()).log(Level.SEVERE,
+                    "General IO exception parsing DTD file " + parseableFile.getFilePath(), ex);
             lcList = null;
         }
         return lcList;

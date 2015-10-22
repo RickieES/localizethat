@@ -47,7 +47,7 @@ public class DtdFile extends ParseableFileAdapter {
 
     @Override
     protected List<LocaleContent> beforeParsingHook(LineNumberReader fileReader) throws ParseException {
-        DtdFileAccess dtdFA = new DtdFileAccess();
+        DtdFileAccess dtdFA = new DtdFileAccess(this);
         List<LocaleContent> parsedContentList = dtdFA.parse(fileReader);
         return parsedContentList;
     }
