@@ -164,7 +164,7 @@ public class ContentListTableModel extends AbstractTableModel {
     }
 
     public class ContentListObject {
-        private final LocaleContent originalNode;
+        private LocaleContent originalNode;
         private LocaleContent siblingNode;
         private final LocaleFile parentFile;
 
@@ -184,6 +184,10 @@ public class ContentListTableModel extends AbstractTableModel {
 
         public LocaleFile getParentFile() {
             return parentFile;
+        }
+
+        public void setOriginalNode(LocaleContent originalNode) {
+            this.originalNode = originalNode;
         }
 
         public void setSiblingNode(LocaleContent siblingNode) {

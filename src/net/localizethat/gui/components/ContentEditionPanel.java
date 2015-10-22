@@ -20,6 +20,7 @@ import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.model.EditableLocaleContent;
 import net.localizethat.model.Glossary;
 import net.localizethat.model.L10n;
+import net.localizethat.model.LTContent;
 import net.localizethat.model.LTKeyValuePair;
 import net.localizethat.model.LocaleContent;
 import net.localizethat.model.LocaleFile;
@@ -114,7 +115,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     }
 
 //    Code commented because we need to update TranslationStatus even in some ocassions where
-//    nothing has changed in the UI. After some time, this commente code could be safely deleted
+//    nothing has changed in the UI. After some time, this commented code could be safely deleted
 //    /**
 //     * This method checks if there is anything to be updated in the target locale, to
 //     * avoid wasting resources modifying the DB when there is no reason to do it
@@ -199,6 +200,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         elc = (EditableLocaleContent) selectedLObject.getOriginalNode()
                 .getTwinByLocale(tableModel.getLocalizationCode());
         elc = (EditableLocaleContent) entityManager.find(elc.getClass(), elc.getId());
+        entityManager.refresh(elc);
         // Update in-memory table model with the merged object from EntityManager
         selectedLObject.setSiblingNode(elc);
         previousTextValue = (elc.getTextValue() == null) ? "" : elc.getTextValue();
@@ -266,6 +268,13 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         elc.setLastUpdate(new Date());
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
+        // Refresh in-memory objects that might have changed from DB
+        LocaleContent lc = entityManager.find(LTContent.class, selectedLObject.getOriginalNode().getId());
+        entityManager.refresh(lc);
+        selectedLObject.setOriginalNode(lc);
+        lc = entityManager.find(LTContent.class, selectedLObject.getSiblingNode().getId());
+        entityManager.refresh(lc);
+        selectedLObject.setSiblingNode(lc);
     }
 
     private void fillKeyConnections() {
@@ -792,6 +801,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             LocaleContent origLc = selectedLObject.getOriginalNode();
             LocaleContent trnsLc = origLc.getTwinByLocale(tableModel.getLocalizationCode());
             origTextPane.setText(origLc.getTextValue());
+            origTextPane.repaint();
             cgttl.setLocale(tableModel.getLocalizationCode());
             cgttl.setOriginal(origLc.getTextValue());
             
