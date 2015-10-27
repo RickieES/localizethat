@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdesktop.beansbinding.Converter;
 
 /**
  * A Date to String converter
