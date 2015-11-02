@@ -97,7 +97,8 @@ public class ProductManager extends AbstractTabPanel {
 
         saveProductButton.setEnabled(activate);
         deleteProductButton.setEnabled(activate);
-        // copyProductButton.setEnabled(activate); TODO Commented out until we actually implement the feature
+        // copyProductButton.setEnabled(activate);
+        // TODO Commented out until we actually implement the feature
 
         origPathTable.setEnabled(activate);
         targetPathTable.setEnabled(activate);
@@ -181,15 +182,19 @@ public class ProductManager extends AbstractTabPanel {
         List<Product> colProd = validationQuery.getResultList();
         int colLength = colProd.size();
         boolean isOk;
-        if (colLength == 0) {
-            isOk = true;
-        } else if (colLength == 1) {
-            Product productInDB = colProd.get(0);
-            isOk = (Objects.equals(productInDB.getId(), selectedProduct.getId()));
-        } else {
-            // This should never be reached, since we don't allow more than one product
-            // with the same name, but it is checked just as defensive programming
-            isOk = false;
+        switch (colLength) {
+            case 0:
+                isOk = true;
+                break;
+            case 1:
+                Product productInDB = colProd.get(0);
+                isOk = (Objects.equals(productInDB.getId(), selectedProduct.getId()));
+                break;
+            default:
+                // This should never be reached, since we don't allow more than one product
+                // with the same name, but it is checked just as defensive programming
+                isOk = false;
+                break;
         }
         if (!isOk) {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
@@ -787,6 +792,7 @@ public class ProductManager extends AbstractTabPanel {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             refreshProductList();
+            enableProductFields(false);
             productListModel.setSelectedItem(p);
             statusBar.setText(JStatusBar.LogMsgType.INFO, "Changes saved");
         } catch (Exception ex) {

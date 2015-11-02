@@ -39,13 +39,14 @@ public class L10nGuiManager extends AbstractTabPanel {
         dateFormat = new SimpleDateFormat("HH:mm:ss");
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
+
         // The following code is executed inside initComponents()
         // entityManager = emf.createEntityManager();
-
         initComponents();
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
+
         l10nTable.getSelectionModel().addListSelectionListener(new L10nTableRowListener());
     }
 
@@ -54,6 +55,18 @@ public class L10nGuiManager extends AbstractTabPanel {
                 L10n.class);
         l10nTableModel.clearAll();
         l10nTableModel.addAll(l10nQuery.getResultList());
+    }
+
+    private void enableButtonsAndFields(boolean activate) {
+        l10nCodeField.setEnabled(activate);
+        l10nDescriptionField.setEnabled(activate);
+        l10nTeamNameField.setEnabled(activate);
+        l10nUrlField.setEnabled(activate);
+        l10nCreationDateField.setText(selectedL10n.getCreationDate().toString());
+        l10nLastUpdatedField.setText(selectedL10n.getLastUpdate().toString());
+        saveButton.setEnabled(activate);
+        refreshButton.setEnabled(activate);
+        deleteButton.setEnabled(activate);
     }
 
     private boolean validateOnSave() {
@@ -249,6 +262,14 @@ public class L10nGuiManager extends AbstractTabPanel {
         lblL10nLastUpdated.setLabelFor(l10nLastUpdatedField);
         lblL10nLastUpdated.setText("Last update");
 
+        l10nCodeField.setEnabled(false);
+
+        l10nDescriptionField.setEnabled(false);
+
+        l10nTeamNameField.setEnabled(false);
+
+        l10nUrlField.setEnabled(false);
+
         l10nCreationDateField.setEditable(false);
         l10nCreationDateField.setEnabled(false);
 
@@ -276,6 +297,7 @@ public class L10nGuiManager extends AbstractTabPanel {
         saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/document-save.png"))); // NOI18N
         saveButton.setMnemonic('S');
         saveButton.setText("Save");
+        saveButton.setEnabled(false);
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
@@ -285,6 +307,7 @@ public class L10nGuiManager extends AbstractTabPanel {
         deleteButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/edit-delete.png"))); // NOI18N
         deleteButton.setMnemonic('l');
         deleteButton.setText("Delete");
+        deleteButton.setEnabled(false);
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteButtonActionPerformed(evt);
@@ -384,6 +407,7 @@ public class L10nGuiManager extends AbstractTabPanel {
         statusBar.setInfoText("Data refreshed");
         Date now = new Date();
         refreshButton.setToolTipText("Last refreshed at " + dateFormat.format(now));
+        enableButtonsAndFields(false);
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
@@ -546,6 +570,7 @@ public class L10nGuiManager extends AbstractTabPanel {
                 l10nUrlField.setText(selectedL10n.getUrl());
                 l10nCreationDateField.setText(selectedL10n.getCreationDate().toString());
                 l10nLastUpdatedField.setText(selectedL10n.getLastUpdate().toString());
+                enableButtonsAndFields(true);
             }
         }
     }

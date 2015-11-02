@@ -29,10 +29,9 @@ import net.localizethat.util.gui.JStatusBar;
 public class GlossaryGuiManager extends AbstractTabPanel {
     private static final long serialVersionUID = 1L;
     EntityManagerFactory emf;
-    // GlossaryJpaController gpc;
+    JStatusBar statusBar;
     SimpleDateFormat dateFormat;
     Glossary selectedGlossary;
-    JStatusBar statusBar;
 
     /**
      * Creates new form GlossaryGuiManager
@@ -41,17 +40,14 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         dateFormat = new SimpleDateFormat("HH:mm:ss");
         statusBar = Main.mainWindow.getStatusBar();
         emf = Main.emf;
-        // gpc = new GlossaryJpaController(emf);
+
         // The following code is executed inside initComponents()
         // entityManager = emf.createEntityManager();
-
         initComponents();
         if (!Beans.isDesignTime()) {
             entityManager.getTransaction().begin();
         }
 
-        refreshGlossaryList();
-        refreshL10nList();
         glossaryTable.getSelectionModel().addListSelectionListener(new GlossaryTableRowListener());
     }
 
@@ -96,15 +92,19 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         List<Glossary> listGlossary = validationQuery.getResultList();
         int listLength = listGlossary.size();
         boolean isOk;
-        if (listLength == 0) {
-            isOk = true;
-        } else if (listLength == 1) {
-            Glossary glosInDB = listGlossary.get(0);
-            isOk = (Objects.equals(glosInDB.getId(), selectedGlossary.getId()));
-        } else {
-            // This should never be reached, since we don't allow more than one product
-            // with the same name, but it is checked just as defensive programming
-            isOk = false;
+        switch (listLength) {
+            case 0:
+                isOk = true;
+                break;
+            case 1:
+                Glossary glosInDB = listGlossary.get(0);
+                isOk = (Objects.equals(glosInDB.getId(), selectedGlossary.getId()));
+                break;
+            default:
+                // This should never be reached, since we don't allow more than one product
+                // with the same name, but it is checked just as defensive programming
+                isOk = false;
+                break;
         }
         if (!isOk) {
             statusBar.logMessage(JStatusBar.LogMsgType.ERROR,
@@ -148,7 +148,7 @@ public class GlossaryGuiManager extends AbstractTabPanel {
 
         entityManager = emf.createEntityManager();
         glosTableModel = new net.localizethat.gui.models.GlossaryTableModel();
-        l10nComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<L10n>();
+        l10nComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         glossaryTable = new javax.swing.JTable();
         buttonPanel = new javax.swing.JPanel();
@@ -165,7 +165,7 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         glosLastUpdateLabel = new javax.swing.JLabel();
         glosLastUpdateField = new javax.swing.JTextField();
         glosMasterLocaleLabel = new javax.swing.JLabel();
-        glosMasterLocaleCombo = new javax.swing.JComboBox<L10n>();
+        glosMasterLocaleCombo = new javax.swing.JComboBox<>();
 
         FormListener formListener = new FormListener();
 
@@ -187,7 +187,6 @@ public class GlossaryGuiManager extends AbstractTabPanel {
 
         refreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/view-refresh.png"))); // NOI18N
         refreshButton.setText("Refresh");
-        refreshButton.setEnabled(false);
         refreshButton.addActionListener(formListener);
 
         deleteGlossaryButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/edit-delete.png"))); // NOI18N
@@ -229,13 +228,12 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         buttonPanelLayout.setHorizontalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(newGlossaryButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(saveGlossaryButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(refreshButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(newGlossaryButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(saveGlossaryButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(deleteGlossaryButton))
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -465,13 +463,13 @@ public class GlossaryGuiManager extends AbstractTabPanel {
         }
 
         refreshL10nList();
-//        selectedL10n = null;
-//        l10nCodeField.setText("");
-//        l10nDescriptionField.setText("");
-//        l10nTeamNameField.setText("");
-//        l10nUrlField.setText("");
-//        l10nCreationDateField.setText("");
-//        l10nLastUpdatedField.setText("");
+        refreshGlossaryList();
+        selectedGlossary = null;
+        glosNameField.setText("");
+        glosVersionField.setText("");
+        glosCreationDateField.setText("");
+        glosLastUpdateField.setText("");
+        glosMasterLocaleCombo.setSelectedItem(null);
     }
 
     @Override

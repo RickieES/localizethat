@@ -156,6 +156,7 @@
         <Component class="javax.swing.JTextField" name="channelNameField">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value="A short, identificative name"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -170,6 +171,7 @@
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="5"/>
                 <Property name="toolTipText" type="java.lang.String" value="You can add notes for yourself or others that may come in the future about this channel"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -177,11 +179,13 @@
         <Component class="javax.swing.JTextField" name="channelTagField">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;You will use this tag inside paths of products, and it will be replaced by the replacement text.&lt;br&gt;&#xa;This allows you to switch a product from channel without having to edit every path.&lt;br&gt;&#xa;Hint: surround the tag with brackets that can&apos;t be part of the path (e.g.: [aurora])&#xa;&lt;/html&gt;"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="channelReplacementTextFieldField">
           <Properties>
             <Property name="toolTipText" type="java.lang.String" value="Text that will be put in the place of tags in every path of a product before updating, importing or exporting it."/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="channelCreationDateField">
@@ -273,6 +277,7 @@
             </Property>
             <Property name="mnemonic" type="int" value="83"/>
             <Property name="text" type="java.lang.String" value="Save"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>
@@ -285,6 +290,7 @@
             </Property>
             <Property name="mnemonic" type="int" value="68"/>
             <Property name="text" type="java.lang.String" value="Delete"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteButtonActionPerformed"/>
