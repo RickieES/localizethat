@@ -205,6 +205,7 @@ public class EditContentPanel extends AbstractTabPanel {
             entityManager = emf.createEntityManager();
             entityManager.getTransaction().begin();
         }
+        contentListTable.activatePanel();
     }
 
     @Override

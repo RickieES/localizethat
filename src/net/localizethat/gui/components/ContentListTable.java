@@ -5,6 +5,7 @@
  */
 package net.localizethat.gui.components;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import javax.swing.JList;
@@ -19,9 +20,11 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import net.localizethat.Main;
 import net.localizethat.gui.models.ContentListTableModel;
 import net.localizethat.gui.models.SelectableItem;
 import net.localizethat.gui.renderers.SelectableListItem;
+import net.localizethat.system.AppSettings;
 
 /**
  * Panel containing a JTable to display a list of LocaleContent entries
@@ -30,13 +33,14 @@ import net.localizethat.gui.renderers.SelectableListItem;
 public class ContentListTable extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private final TableRowSorter<ContentListTableModel> tableRowSorter;
+    private Font f;
 
     /**
      * Creates new form ContentListTable
      */
     public ContentListTable() {
         super();
-
+        
         initComponents();
         columnChooserDialog.pack();
         columnChooserDialog.setLocationRelativeTo(null);
@@ -60,6 +64,13 @@ public class ContentListTable extends javax.swing.JPanel {
 
     public ContentListTableModel getTableModel() {
         return tableModel;
+    }
+    
+    public void activatePanel() {
+        f = new Font(Main.appSettings.getString(AppSettings.PREF_FONT_TABLEVIEW_NAME),
+                     Main.appSettings.getInteger(AppSettings.PREF_FONT_TABLEVIEW_STYLE),
+                     Main.appSettings.getInteger(AppSettings.PREF_FONT_TABLEVIEW_SIZE));
+        contentTable.setFont(f);        
     }
 
     public void addTableListSelectionListener(ListSelectionListener lsl) {
@@ -94,7 +105,7 @@ public class ContentListTable extends javax.swing.JPanel {
         columnsList = new javax.swing.JList();
         columnsOkButton = new javax.swing.JButton();
         columnsCancelButton = new javax.swing.JButton();
-        columnChooserModel = new net.localizethat.gui.models.ListComboBoxGenericModel<SelectableItem<TableColumn>>();
+        columnChooserModel = new net.localizethat.gui.models.ListComboBoxGenericModel<>();
         auxPanel = new javax.swing.JPanel();
         filterLabel = new javax.swing.JLabel();
         filterField = new javax.swing.JTextField();
@@ -155,14 +166,13 @@ public class ContentListTable extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(columnChooserDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
-                    .addGroup(columnChooserDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(columnChooserDialogLayout.createSequentialGroup()
-                            .addComponent(selectColumnsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(columnChooserDialogLayout.createSequentialGroup()
-                            .addComponent(columnsOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(columnsCancelButton))))
+                    .addGroup(columnChooserDialogLayout.createSequentialGroup()
+                        .addComponent(selectColumnsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(columnChooserDialogLayout.createSequentialGroup()
+                        .addComponent(columnsOkButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(columnsCancelButton)))
                 .addContainerGap())
         );
         columnChooserDialogLayout.setVerticalGroup(

@@ -5,6 +5,7 @@
  */
 package net.localizethat.gui.components;
 
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.beans.Beans;
 import java.util.Date;
@@ -27,6 +28,7 @@ import net.localizethat.model.LocaleFile;
 import net.localizethat.model.TranslationStatus;
 import net.localizethat.model.jpa.JPAHelperBundle;
 import net.localizethat.model.jpa.LocaleContentJPAHelper;
+import net.localizethat.system.AppSettings;
 
 /**
  * Content edition panel
@@ -47,6 +49,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private LocaleFile lastParent;
     private Glossary g;
     private CheckGlossaryTranslatedTextListener cgttl;
+    private Font f;
 
     /**
      * Creates new form ContentEditionPanel
@@ -94,6 +97,11 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
      * @param associatedTable table to which this panel is linked to
      */
     public void activatePanel(L10n l, JTable associatedTable) {
+        f = new Font(Main.appSettings.getString(AppSettings.PREF_FONT_EDITPHRASE_NAME),
+                 Main.appSettings.getInteger(AppSettings.PREF_FONT_EDITPHRASE_STYLE),
+                 Main.appSettings.getInteger(AppSettings.PREF_FONT_EDITPHRASE_SIZE));
+        origTextPane.setFont(f);
+        trnsTextArea.setFont(f);
         trnsTextArea.addKeyListener(ellipsisCharKeyAdapter);
 
         cgttl = new CheckGlossaryTranslatedTextListener(origTextPane.getText(),
@@ -300,8 +308,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        connAccessKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair>();
-        connCommandKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<LTKeyValuePair>();
+        connAccessKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<>();
+        connCommandKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<>();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         mainPanel = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -317,16 +325,16 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         trnsTextArea = new javax.swing.JTextArea();
         copyOrigButton = new javax.swing.JButton();
         keepOriginalCheck = new javax.swing.JCheckBox();
-        trnsStatusCombo = new javax.swing.JComboBox<TranslationStatus>();
+        trnsStatusCombo = new javax.swing.JComboBox<>();
         accessKeyLabel = new javax.swing.JLabel();
         accessKeyField = new javax.swing.JTextField();
         commandKeyLabel = new javax.swing.JLabel();
         commandKeyField = new javax.swing.JTextField();
         advancedPanel = new javax.swing.JPanel();
         objectForAKLabel = new javax.swing.JLabel();
-        objectForAKCombo = new javax.swing.JComboBox<LTKeyValuePair>();
+        objectForAKCombo = new javax.swing.JComboBox<>();
         objectForCKLabel = new javax.swing.JLabel();
-        objectForCKCombo = new javax.swing.JComboBox<LTKeyValuePair>();
+        objectForCKCombo = new javax.swing.JComboBox<>();
         buttonPanel = new javax.swing.JPanel();
         nextButton = new javax.swing.JButton();
         prevButton = new javax.swing.JButton();

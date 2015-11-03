@@ -121,7 +121,7 @@ public class ContentListEditPanel extends AbstractTabPanel {
 
     @Override
     public void onTabPanelAdded() {
-        // Nothing to do here
+        contentListTable.activatePanel();
     }
 
     @Override
