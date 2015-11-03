@@ -22,6 +22,10 @@ public class AboutAction extends AbstractAction {
     private AboutDialog aboutDialog;
     private JStatusBar statusBar;
 
+    /**
+     * Default constructor for wonderful and absolutely needed About Box dialog
+     * action
+     */
     public AboutAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);

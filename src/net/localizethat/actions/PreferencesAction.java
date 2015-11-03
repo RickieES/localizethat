@@ -21,6 +21,9 @@ public class PreferencesAction extends AbstractAction {
     private static final String ICON = "preferences.png";
     private PreferencesDialog prefDialog;
 
+    /**
+     * Default constructor for Preferences dialog action
+     */
     public PreferencesAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
