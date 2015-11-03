@@ -13,12 +13,15 @@ import javax.swing.UIManager;
 import net.localizethat.gui.models.SelectableItem;
 
 /**
- *
+ * Renderer for JList items that can be selected/unselected using a JCheckBox
  * @author rpalomares
  */
 public class SelectableListItem extends JCheckBox
         implements ListCellRenderer {
 
+    /**
+     * Default constructor for SelectableListItem
+     */
     public SelectableListItem() {
       setForeground(UIManager.getColor("List.foreground"));
       setBackground(UIManager.getColor("List.background"));
@@ -40,6 +43,13 @@ public class SelectableListItem extends JCheckBox
       return this;
     }
 
+    /**
+     * Returns the String representation of the object. This method is public
+     * and not final so it can be overriden to display more elaborated texts
+     * if needed
+     * @param item the item to be dislayed
+     * @return a String reprsentation of the item passed as a parameter
+     */
     public String printableText(Object item) {
         return item.toString();
     }
