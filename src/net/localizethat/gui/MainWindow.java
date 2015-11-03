@@ -40,20 +40,44 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
     }
 
+    /**
+     * Returns a reference to the status bar, which is used to display informational
+     * and warning/error messages
+     * @return the status bar at the bottom of the window
+     */
     public JStatusBar getStatusBar() {
         return statusBar;
     }
 
-    public void addTab(AbstractTabPanel content, String title, int order) {
+    /**
+     * Adds a panel to the main window as a tab, with a title, a close button and
+     * a position in the tab collection
+     * @param content the panel to be added. On addition, its onTabPanelAdded method is executed
+     * @param title the title to be displayed in the tab itself
+     * @param position the position where the tab should be inserted. Not working now, so any tab
+     * is added to the right
+     */
+    public void addTab(AbstractTabPanel content, String title, int position) {
         // TODO: change addClosableTab to allow order positioning
         addClosableTab(tabPanel, content, title, null);
     }
 
+    /**
+     * Adds a panel to the main window as a tab, with a title and a close button. The tab is
+     * appended at the far right side
+     * @param content the panel to be added. On addition, its onTabPanelAdded method is executed
+     * @param title the title to be displayed in the tab itself
+     */
     public void addTab(AbstractTabPanel content, String title) {
         content.onTabPanelAdded();
         addClosableTab(tabPanel, content, title, null);
     }
 
+    /**
+     * Removes the tab containing the panel passed as a parameter. Right after hiding the panel,
+     * its onTabPanelRemoved method is executed
+     * @param content the panel to be removed
+     */
     public void removeTab(AbstractTabPanel content) {
         tabPanel.remove(content);
         content.setVisible(false);
