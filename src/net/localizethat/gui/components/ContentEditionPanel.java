@@ -91,7 +91,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     }
 
     /**
-     * Temporary hack to isolate dependencies between GUI components and
+     * Temporary? hack to isolate dependencies between GUI components and
      * remove NPEs
      * @param l locale code for translation panel, glossary checks and translation memories
      * @param associatedTable table to which this panel is linked to
@@ -122,63 +122,74 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         }
     }
 
-//    Code commented because we need to update TranslationStatus even in some ocassions where
-//    nothing has changed in the UI. After some time, this commented code could be safely deleted
-//    /**
-//     * This method checks if there is anything to be updated in the target locale, to
-//     * avoid wasting resources modifying the DB when there is no reason to do it
-//     * @return true if something has to be updated/persisted in the DB
-//     */
-//    private boolean hasTargetLocaleChanged() {
-//        boolean result;
-//        LocaleContent origLc = selectedLObject.getOriginalNode();
-//        EditableLocaleContent elc;
-//        LTKeyValuePair lkvp;
-//        LTKeyValuePair connAccessKey;
-//        LTKeyValuePair connCommandKey;
-//
-//        if (!(origLc instanceof EditableLocaleContent)) {
-//            return false;
-//        }
-//
-//        // elc can be null, but if not, it will be of the same type of original node, thus
-//        // an EditableLocaleContent (because otherwise we would have returned false above)
-//        elc = (EditableLocaleContent) selectedLObject.getSiblingNode();
-//
-//        if (elc == null) {
-//            result = (trnsTextArea.getText() != null)
-//                    && (!trnsTextArea.getText().isEmpty());
-//            result |= (keepOriginalCheck.isSelected());
-//        } else {
-//            result = (trnsTextArea.getText() != null)
-//                    && (!trnsTextArea.getText().isEmpty())
-//                    && (trnsTextArea.getText().compareTo(elc.getTextValue()) != 0);
-//            result |= (elc.isKeepOriginal() != keepOriginalCheck.isSelected());
-//
-//            if (trnsStatusCombo.getSelectedItem() != null) {
-//                result |= (!trnsStatusCombo.getSelectedItem().equals(elc.getTrnsStatus()));
-//            }
-//
-//            if (elc instanceof LTKeyValuePair) {
-//                lkvp = (LTKeyValuePair) elc;
-//                connAccessKey = lkvp.getConnAccesskey();
-//                connCommandKey = lkvp.getConnCommandkey();
-//                result |= (
-//                        ((connAccessKey == null) && (objectForAKCombo.getSelectedItem() != null))
-//                        ||
-//                        ((connAccessKey != null) && (connAccessKey.getTextValue() != null)
-//                            && (connAccessKey.getTextValue().compareTo(accessKeyField.getText()) != 0))
-//                        );
-//                result |= (
-//                        ((connCommandKey == null) && (objectForCKCombo.getSelectedItem() != null))
-//                        ||
-//                        ((connCommandKey != null) && (connCommandKey.getTextValue() != null)
-//                            && (connCommandKey.getTextValue().compareTo(commandKeyField.getText()) != 0))
-//                        );
-//            }
-//        }
-//        return result;
-//    }
+    /**
+     * This method checks if there is anything to be updated in the target locale,
+     * to avoid wasting resources modifying the DB when there is no reason to do
+     * it
+     * @return true if something has to be updated/persisted in the DB
+     */
+    private boolean hasTargetLocaleChanged() {
+        boolean result;
+        LocaleContent origLc = selectedLObject.getOriginalNode();
+        LocaleContent trnsLc = selectedLObject.getSiblingNode();
+        EditableLocaleContent trnsElc;
+        LTKeyValuePair lkvp;
+        LTKeyValuePair connAccessKey;
+        LTKeyValuePair connCommandKey;
+
+        if (!(origLc instanceof EditableLocaleContent)) {
+            return false;
+        } else {
+            trnsElc = (EditableLocaleContent) trnsLc;
+        }
+
+        if (trnsElc == null) {
+            result = (trnsTextArea.getText() != null)
+                    && (!trnsTextArea.getText().isEmpty());
+            result |= (keepOriginalCheck.isSelected());
+            result |= (trnsStatusCombo.getSelectedItem() != null);
+            result |= (objectForAKCombo.getSelectedItem() != null);
+            result |= (objectForCKCombo.getSelectedItem() != null);
+        } else {
+            result = (trnsTextArea.getText() != null)
+                    && (!trnsTextArea.getText().isEmpty())
+                    && (trnsTextArea.getText().compareTo(trnsElc.getTextValue()) != 0);
+            result |= (trnsElc.isKeepOriginal() != keepOriginalCheck.isSelected());
+
+            if (trnsStatusCombo.getSelectedItem() != null) {
+                // It "has changed" either if it has actually changed...
+                result |= (!trnsStatusCombo.getSelectedItem().equals(trnsElc.getTrnsStatus()));
+                
+                // ...or if it is equal and has a value possibly coming from autotranslations
+                result |= ((trnsStatusCombo.getSelectedItem().equals(trnsElc.getTrnsStatus()))
+                            && (trnsElc.getTrnsStatus().equals(TranslationStatus.Copied)
+                                || trnsElc.getTrnsStatus().equals(TranslationStatus.Proposed)));
+            }
+
+            if (trnsElc instanceof LTKeyValuePair) {
+                lkvp = (LTKeyValuePair) trnsElc;
+                connAccessKey = lkvp.getConnAccesskey();
+                connCommandKey = lkvp.getConnCommandkey();
+                result |= (
+                        ((connAccessKey == null) && (objectForAKCombo.getSelectedItem() != null))
+                        ||
+                        ((connAccessKey != null) && (!connAccessKey.equals(objectForAKCombo.getSelectedItem())))
+                        ||
+                        ((connAccessKey != null) && (connAccessKey.getTextValue() != null)
+                            && (connAccessKey.getTextValue().compareTo(accessKeyField.getText()) != 0))
+                        );
+                result |= (
+                        ((connCommandKey == null) && (objectForCKCombo.getSelectedItem() != null))
+                        ||
+                        ((connCommandKey != null) && (!connCommandKey.equals(objectForCKCombo.getSelectedItem())))
+                        ||
+                        ((connCommandKey != null) && (connCommandKey.getTextValue() != null)
+                            && (connCommandKey.getTextValue().compareTo(commandKeyField.getText()) != 0))
+                        );
+            }
+        }
+        return result;
+    }
 
     private void updateTargetLocale() {
         EditableLocaleContent elc;
@@ -628,7 +639,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         editingRowInView = associatedTable.getSelectedRow();
         editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
-        updateTargetLocale();
+        if (hasTargetLocaleChanged()) {
+            updateTargetLocale();
+        }
         tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
 
         do {
@@ -662,7 +675,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         editingRowInView = associatedTable.getSelectedRow();
         editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
-        updateTargetLocale();
+        if (hasTargetLocaleChanged()) {
+            updateTargetLocale();
+        }
         tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
 
         do {
@@ -815,6 +830,13 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             
             if (origLc instanceof EditableLocaleContent) {
                 EditableLocaleContent trnsElc = (EditableLocaleContent) trnsLc;
+                copyOrigButton.setEnabled(true);
+                sugButton.setEnabled(true);
+                trnsTextArea.setEnabled(true);
+                keepOriginalCheck.setEnabled(true);
+                trnsStatusCombo.setEnabled(true);
+                objectForAKCombo.setEnabled(true);
+                objectForCKCombo.setEnabled(true);
 
                 if (trnsElc != null) {
                     trnsTextArea.setText(trnsElc.getTextValue());
@@ -841,6 +863,14 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                         }
                     }
                 }
+            } else {
+                copyOrigButton.setEnabled(false);
+                sugButton.setEnabled(false);
+                trnsTextArea.setEnabled(false);
+                keepOriginalCheck.setEnabled(false);
+                trnsStatusCombo.setEnabled(false);
+                objectForAKCombo.setEnabled(false);
+                objectForCKCombo.setEnabled(false);
             }
         }
     }
