@@ -635,13 +635,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         int editingRowInView;
         int editingRowInModel;
         LocaleContent lc;
-        EditableLocaleContent elc;
 
         editingRowInView = associatedTable.getSelectedRow();
         editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
-        if (hasTargetLocaleChanged()) {
-            updateTargetLocale();
-        }
         tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
 
         do {
@@ -654,7 +650,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 foundEditable = lc.isEditable();
 
                 if (foundEditable) {
-                    elc = (EditableLocaleContent) lc;
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
                     editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                     Rectangle rect = associatedTable.getCellRect(editingRowInView, 0, true);
@@ -671,13 +666,9 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         int editingRowInView;
         int editingRowInModel;
         LocaleContent lc;
-        EditableLocaleContent elc;
-
+ 
         editingRowInView = associatedTable.getSelectedRow();
         editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
-        if (hasTargetLocaleChanged()) {
-            updateTargetLocale();
-        }
         tableModel.fireTableRowsUpdated(editingRowInModel, editingRowInModel);
 
         do {
@@ -690,7 +681,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 foundEditable = lc.isEditable();
 
                 if (foundEditable) {
-                    elc = (EditableLocaleContent) lc;
                     associatedTable.getSelectionModel().setSelectionInterval(editingRowInView, editingRowInView);
                     editingRowInModel = associatedTable.convertRowIndexToModel(editingRowInView);
                     Rectangle rect = associatedTable.getCellRect(editingRowInView, 0, true);
@@ -806,6 +796,10 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting()) {
             return;
+        }
+
+        if (selectedLObject != null && hasTargetLocaleChanged()) {
+            updateTargetLocale();
         }
 
         origTextPane.setText("");
