@@ -28,14 +28,12 @@ import net.localizethat.io.PropertiesFileAccess;
 public class PropertiesFile extends ParseableFileAdapter {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Default constructor for Properties file, which only invokes superclass
+     * constructor
+     */
     public PropertiesFile() {
       super();
-      // children = new ArrayList<>(25);
-    }
-
-    @Override
-    public List<LTContent> getLObjectCollection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

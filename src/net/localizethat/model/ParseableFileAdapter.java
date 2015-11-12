@@ -458,9 +458,4 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
     public void setFileLicense(LTLicense fileLicense) {
         this.fileLicense = fileLicense;
     }
-
-    @Override
-    public List<LTContent> getLObjectCollection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

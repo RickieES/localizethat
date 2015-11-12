@@ -119,7 +119,4 @@ public interface ParseableFile extends LocaleNode {
      * @param fileLicense an object representing the license header of the file
      */
     void setFileLicense(LTLicense fileLicense);
-
-    // List<LObject> getLObjectCollection();
-    List<LTContent> getLObjectCollection();
 }
