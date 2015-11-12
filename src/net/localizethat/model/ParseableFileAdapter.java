@@ -41,8 +41,6 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
                 throws ParseException {
         List<LocaleContent> newAndModifiedList = new ArrayList<>(10);
         // We're parsing the original if this file has no default twin
-        boolean isParsingOriginal = (this.getDefLocaleTwin() == null);
-        boolean changed;
 
         LineNumberReader fileReader = this.getAsLineNumberReader();
         if (fileReader == null) {
@@ -378,6 +376,13 @@ public abstract class ParseableFileAdapter extends LocaleFile implements Parseab
     protected abstract List<LocaleContent> beforeParsingHook(LineNumberReader fileReader)
             throws ParseException;
 
+    /**
+     * Performs post-read operations to parse. This is to allow subclasses to
+     * add post-read operations while parsing if needed; most subclasses will
+     * likely implement this as an empty method.
+     * @param fileReader a LineNumberReader with the character stream from the
+     *                   file that is to be parsed
+     */
     protected abstract void afterParsingHook(LineNumberReader fileReader);
 
     @Override
