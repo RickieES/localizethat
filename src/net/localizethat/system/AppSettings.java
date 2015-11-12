@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.localizethat.model.TranslationStatus;
 
 /**
  * Class implementing application settings
@@ -80,6 +81,16 @@ public class AppSettings {
      */
     public static final String PREF_DEFAULT_ORIGINAL_LANGUAGE = "general.default.original.language";
 
+    /**
+     * Keys for commandkey and accesskey connections
+     */
+    public static final String PREF_CONN_LABEL_PATTERNS = "connection.label.patterns";
+    public static final String PREF_CONN_AKEYS_PATTERNS = "connection.accesskey.patterns";
+    public static final String PREF_CONN_CKEYS_PATTERNS = "connection.commandkey.patterns";
+    public static final String PREF_CONN_LABEL_CASESENSE = "connection.label.casesensitive";
+    public static final String PREF_CONN_AKEYS_CASESENSE = "connection.accesskey.casesensitive";
+    public static final String PREF_CONN_CKEYS_CASESENSE = "connection.commandkey.casesensitive";
+    
     /**
      * Keys for logging preferences
      */
@@ -301,8 +312,23 @@ public class AppSettings {
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_STYLE, Integer.toString(Font.PLAIN));
         defaultPrefs.setProperty(PREF_FONT_TABLEVIEW_SIZE, "12");
 
+        // Set the default original language
         defaultPrefs.setProperty(PREF_DEFAULT_ORIGINAL_LANGUAGE, "en-US");
 
+        // Set default Translation Status colors
+        for(TranslationStatus ts : TranslationStatus.values()) {
+            defaultPrefs.setProperty(PREF_TRNS_STATUS + "_" + ts.toString().toLowerCase(),
+                    ts.colorAsRGBString());
+        }
+
+        // Set accesskey and commandkey connection parameters
+        defaultPrefs.setProperty(PREF_CONN_LABEL_PATTERNS, ".label|.button|[:empty:]");
+        defaultPrefs.setProperty(PREF_CONN_AKEYS_PATTERNS, ".accesskey|.akey");
+        defaultPrefs.setProperty(PREF_CONN_CKEYS_PATTERNS, ".key|.commandkey");
+        defaultPrefs.setProperty(PREF_CONN_LABEL_CASESENSE, "false");
+        defaultPrefs.setProperty(PREF_CONN_AKEYS_CASESENSE, "false");
+        defaultPrefs.setProperty(PREF_CONN_CKEYS_CASESENSE, "false");
+        
         return defaultPrefs;
     }
 

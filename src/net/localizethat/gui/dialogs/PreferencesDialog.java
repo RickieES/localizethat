@@ -120,15 +120,17 @@ public class PreferencesDialog extends javax.swing.JDialog {
          useSuggCheckBox.setSelected(appSettings.getBoolean(AppSettings.USE_SUGGESTIONS));
          percentCoincidenceTextField.setValue(appSettings.getInteger(AppSettings.SUGGESTIONS_MATCH_VALUE));
          autoTranslateCheck.setSelected(appSettings.getBoolean(AppSettings.AUTOTRANSLATE_ON_UPDATE));
+        */
 
          // Key Connection Tab
-         akeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_AKEYS_CASESENSE));
-         akeyPatternField.setText(appSettings.getString(AppSettings.CONN_AKEYS_PATTERNS));
-         ckeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_CKEYS_CASESENSE));
-         ckeyPatternField.setText(appSettings.getString(AppSettings.CONN_CKEYS_PATTERNS));
-         labelCaseCheck.setSelected(appSettings.getBoolean(AppSettings.CONN_LABEL_CASESENSE));
-         labelPatternField.setText(appSettings.getString(AppSettings.CONN_LABEL_PATTERNS));
+         akeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.PREF_CONN_AKEYS_CASESENSE));
+         akeyPatternField.setText(appSettings.getString(AppSettings.PREF_CONN_AKEYS_PATTERNS));
+         ckeyCaseCheck.setSelected(appSettings.getBoolean(AppSettings.PREF_CONN_CKEYS_CASESENSE));
+         ckeyPatternField.setText(appSettings.getString(AppSettings.PREF_CONN_CKEYS_PATTERNS));
+         labelCaseCheck.setSelected(appSettings.getBoolean(AppSettings.PREF_CONN_LABEL_CASESENSE));
+         labelPatternField.setText(appSettings.getString(AppSettings.PREF_CONN_LABEL_PATTERNS));
 
+         /*
          // Automated Tests tab
          origDTDEntField.setText(appSettings.getString(AppSettings.QA_DTD_ORIG_ENTITIES_IGNORED));
          trnsDTDEntField.setText(appSettings.getString(AppSettings.QA_DTD_TRNS_ENTITIES_IGNORED));
@@ -182,15 +184,17 @@ public class PreferencesDialog extends javax.swing.JDialog {
              appSettings.setBoolean(AppSettings.USE_SUGGESTIONS, useSuggCheckBox.isSelected());
              appSettings.setInteger(AppSettings.SUGGESTIONS_MATCH_VALUE, (Integer) percentCoincidenceTextField.getValue());
              appSettings.setBoolean(AppSettings.AUTOTRANSLATE_ON_UPDATE, autoTranslateCheck.isSelected());
+            */
 
              // Key Connection Tab
-             appSettings.setBoolean(AppSettings.CONN_AKEYS_CASESENSE, akeyCaseCheck.isSelected());
-             appSettings.setString(AppSettings.CONN_AKEYS_PATTERNS, akeyPatternField.getText());
-             appSettings.setBoolean(AppSettings.CONN_CKEYS_CASESENSE, ckeyCaseCheck.isSelected());
-             appSettings.setString(AppSettings.CONN_CKEYS_PATTERNS, ckeyPatternField.getText());
-             appSettings.setBoolean(AppSettings.CONN_LABEL_CASESENSE, labelCaseCheck.isSelected());
-             appSettings.setString(AppSettings.CONN_LABEL_PATTERNS, labelPatternField.getText());
+             appSettings.setBoolean(AppSettings.PREF_CONN_AKEYS_CASESENSE, akeyCaseCheck.isSelected());
+             appSettings.setString(AppSettings.PREF_CONN_AKEYS_PATTERNS, akeyPatternField.getText());
+             appSettings.setBoolean(AppSettings.PREF_CONN_CKEYS_CASESENSE, ckeyCaseCheck.isSelected());
+             appSettings.setString(AppSettings.PREF_CONN_CKEYS_PATTERNS, ckeyPatternField.getText());
+             appSettings.setBoolean(AppSettings.PREF_CONN_LABEL_CASESENSE, labelCaseCheck.isSelected());
+             appSettings.setString(AppSettings.PREF_CONN_LABEL_PATTERNS, labelPatternField.getText());
 
+             /*
              // Automated tests tab
              appSettings.setString(AppSettings.QA_DTD_ORIG_ENTITIES_IGNORED, origDTDEntField.getText());
              appSettings.setString(AppSettings.QA_DTD_TRNS_ENTITIES_IGNORED, trnsDTDEntField.getText());
@@ -215,7 +219,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        defaultLanguageComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<L10n>();
+        defaultLanguageComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<>();
         entityManager = emf.createEntityManager();
         buttonPanel = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
@@ -238,7 +242,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         tsclTranslated = new javax.swing.JLabel();
         generalLabel = new javax.swing.JLabel();
         defaultLanguageLabel = new javax.swing.JLabel();
-        defaultLanguageCombo = new javax.swing.JComboBox<L10n>();
+        defaultLanguageCombo = new javax.swing.JComboBox<>();
         prefIOPanel = new javax.swing.JPanel();
         importExportLabel = new javax.swing.JLabel();
         replaceEnUSCheck = new javax.swing.JCheckBox();
@@ -282,7 +286,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
         logFilenameLabel = new javax.swing.JLabel();
         logFilenameField = new net.localizethat.util.gui.JPathField();
         logLevelLabel = new javax.swing.JLabel();
-        logLevelCombo = new javax.swing.JComboBox<LogMsgType>();
+        logLevelCombo = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -412,6 +416,7 @@ public class PreferencesDialog extends javax.swing.JDialog {
             }
         });
 
+        generalLabel.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
         generalLabel.setText("General");
 
         defaultLanguageLabel.setText("Default language");
