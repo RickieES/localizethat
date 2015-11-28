@@ -323,18 +323,17 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         connCommandKeyComboModel = new net.localizethat.gui.models.ListComboBoxGenericModel<>();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         mainPanel = new javax.swing.JPanel();
-        jSplitPane1 = new javax.swing.JSplitPane();
-        upperPanel = new javax.swing.JPanel();
         origLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         origTextPane = new javax.swing.JTextPane();
         commentTButton = new javax.swing.JToggleButton();
-        lowerPanel = new javax.swing.JPanel();
         trnsLabel = new javax.swing.JLabel();
-        sugButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         trnsTextArea = new javax.swing.JTextArea();
         copyOrigButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
+        sugButton = new javax.swing.JButton();
+        metadataPanel = new javax.swing.JPanel();
         keepOriginalCheck = new javax.swing.JCheckBox();
         trnsStatusCombo = new javax.swing.JComboBox<>();
         accessKeyLabel = new javax.swing.JLabel();
@@ -350,12 +349,11 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         nextButton = new javax.swing.JButton();
         prevButton = new javax.swing.JButton();
 
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        origLabel.setText("Original");
 
-        origLabel.setText("Original____");
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(223, 78));
 
-        origTextPane.setEditable(false);
-        origTextPane.setText("1\n2\n3\n4\n5");
+        origTextPane.setPreferredSize(null);
         jScrollPane1.setViewportView(origTextPane);
 
         commentTButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-comment.png"))); // NOI18N
@@ -366,59 +364,39 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             }
         });
 
-        javax.swing.GroupLayout upperPanelLayout = new javax.swing.GroupLayout(upperPanel);
-        upperPanel.setLayout(upperPanelLayout);
-        upperPanelLayout.setHorizontalGroup(
-            upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(upperPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(origLabel)
-                    .addGroup(upperPanelLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(commentTButton)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        upperPanelLayout.setVerticalGroup(
-            upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(upperPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(upperPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(upperPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(upperPanelLayout.createSequentialGroup()
-                        .addComponent(origLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(commentTButton)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-        );
-
-        jSplitPane1.setTopComponent(upperPanel);
-
-        trnsLabel.setDisplayedMnemonic('T');
-        trnsLabel.setLabelFor(trnsTextArea);
         trnsLabel.setText("Translation");
-
-        sugButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-dialog-information.png"))); // NOI18N
-        sugButton.setToolTipText("Cycle over suggestions");
 
         trnsTextArea.setColumns(20);
         trnsTextArea.setLineWrap(true);
-        trnsTextArea.setRows(3);
-        trnsTextArea.setText("1\n2\n3\n4\n5");
+        trnsTextArea.setRows(5);
         trnsTextArea.setWrapStyleWord(true);
+        trnsTextArea.setPreferredSize(null);
         jScrollPane2.setViewportView(trnsTextArea);
 
         copyOrigButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-edit-copy.png"))); // NOI18N
         copyOrigButton.setToolTipText("Copy from original value");
+        copyOrigButton.setMaximumSize(new java.awt.Dimension(26, 26));
+        copyOrigButton.setMinimumSize(new java.awt.Dimension(26, 26));
+        copyOrigButton.setPreferredSize(new java.awt.Dimension(26, 26));
         copyOrigButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyOrigButtonActionPerformed(evt);
             }
         });
+
+        clearButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-edit-clear.png"))); // NOI18N
+        clearButton.setToolTipText("Clear current value");
+        clearButton.setMaximumSize(new java.awt.Dimension(26, 26));
+        clearButton.setMinimumSize(new java.awt.Dimension(26, 26));
+        clearButton.setPreferredSize(new java.awt.Dimension(26, 26));
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+
+        sugButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-dialog-information.png"))); // NOI18N
+        sugButton.setToolTipText("Cycle over suggestions");
 
         keepOriginalCheck.setMnemonic('K');
         keepOriginalCheck.setText("Keep original value");
@@ -443,76 +421,90 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         commandKeyField.setToolTipText("");
 
-        javax.swing.GroupLayout lowerPanelLayout = new javax.swing.GroupLayout(lowerPanel);
-        lowerPanel.setLayout(lowerPanelLayout);
-        lowerPanelLayout.setHorizontalGroup(
-            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(lowerPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, lowerPanelLayout.createSequentialGroup()
-                        .addGap(0, 12, Short.MAX_VALUE)
-                        .addComponent(keepOriginalCheck)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(trnsStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(accessKeyLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(commandKeyLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(commandKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(lowerPanelLayout.createSequentialGroup()
-                        .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(lowerPanelLayout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(copyOrigButton)
-                                    .addComponent(sugButton)))
-                            .addComponent(trnsLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2)))
-                .addContainerGap())
-        );
-        lowerPanelLayout.setVerticalGroup(
-            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(lowerPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(lowerPanelLayout.createSequentialGroup()
-                        .addComponent(trnsLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(copyOrigButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sugButton)
-                        .addGap(0, 20, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2))
+        javax.swing.GroupLayout metadataPanelLayout = new javax.swing.GroupLayout(metadataPanel);
+        metadataPanel.setLayout(metadataPanelLayout);
+        metadataPanelLayout.setHorizontalGroup(
+            metadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, metadataPanelLayout.createSequentialGroup()
+                .addContainerGap(37, Short.MAX_VALUE)
+                .addComponent(keepOriginalCheck)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(trnsStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(keepOriginalCheck)
-                    .addComponent(trnsStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(accessKeyLabel)
-                    .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(commandKeyLabel)
-                    .addComponent(commandKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(accessKeyLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(commandKeyLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(commandKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        jSplitPane1.setRightComponent(lowerPanel);
+        metadataPanelLayout.setVerticalGroup(
+            metadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(metadataPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(metadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(trnsStatusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(commandKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(commandKeyLabel)
+                    .addComponent(accessKeyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(accessKeyLabel)
+                    .addComponent(keepOriginalCheck))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(metadataPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(trnsLabel)
+                    .addComponent(origLabel)
+                    .addComponent(commentTButton)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(copyOrigButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sugButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(origLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(commentTButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(trnsLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(copyOrigButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sugButton)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(metadataPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTabbedPane1.addTab("Main", mainPanel);
+        mainPanel.getAccessibleContext().setAccessibleName("");
 
         objectForAKLabel.setText("Object for Access Key:");
 
@@ -554,7 +546,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(objectForAKCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(objectForCKCombo, 0, 283, Short.MAX_VALUE))
+                    .addComponent(objectForCKCombo, 0, 307, Short.MAX_VALUE))
                 .addContainerGap())
         );
         advancedPanelLayout.setVerticalGroup(
@@ -568,7 +560,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                 .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(objectForCKLabel)
                     .addComponent(objectForCKCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addContainerGap(197, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Details", advancedPanel);
@@ -692,35 +684,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         } while ((editingRowInView > 0) && !foundEditable);
     }//GEN-LAST:event_prevButtonActionPerformed
 
-    private void commentTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentTButtonActionPerformed
-        LTKeyValuePair origNode = (LTKeyValuePair) selectedLObject.getOriginalNode();
-        if (commentTButton.isSelected()) {
-            origTextPane.setText(origNode.getComment().getTextValue());
-        } else {
-            origTextPane.setText(origNode.getTextValue());
-        }
-    }//GEN-LAST:event_commentTButtonActionPerformed
-
-    private void keepOriginalCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keepOriginalCheckActionPerformed
-        if (keepOriginalCheck.isSelected()) {
-            trnsTextArea.setText("");
-            trnsStatusCombo.setSelectedItem(TranslationStatus.Translated);
-        }
-    }//GEN-LAST:event_keepOriginalCheckActionPerformed
-
-    private void copyOrigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyOrigButtonActionPerformed
-        trnsTextArea.setText(origTextPane.getText());
-    }//GEN-LAST:event_copyOrigButtonActionPerformed
-
-    private void trnsStatusComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trnsStatusComboActionPerformed
-        TranslationStatus t = (TranslationStatus) trnsStatusCombo.getSelectedItem();
-        if (t != null) {
-            trnsStatusCombo.setToolTipText(t.description());
-        } else {
-           trnsStatusCombo.setToolTipText("");
-        }
-    }//GEN-LAST:event_trnsStatusComboActionPerformed
-
     private void objectForAKComboKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_objectForAKComboKeyTyped
         if (java.awt.event.KeyEvent.VK_DELETE == evt.getKeyChar()) {
             connAccessKeyComboModel.setSelectedIndex(-1);
@@ -759,11 +722,45 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         }
     }//GEN-LAST:event_objectForCKComboKeyTyped
 
+    private void keepOriginalCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keepOriginalCheckActionPerformed
+        if (keepOriginalCheck.isSelected()) {
+            trnsTextArea.setText("");
+            trnsStatusCombo.setSelectedItem(TranslationStatus.Translated);
+        }
+    }//GEN-LAST:event_keepOriginalCheckActionPerformed
+
+    private void trnsStatusComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trnsStatusComboActionPerformed
+        TranslationStatus t = (TranslationStatus) trnsStatusCombo.getSelectedItem();
+        if (t != null) {
+            trnsStatusCombo.setToolTipText(t.description());
+        } else {
+           trnsStatusCombo.setToolTipText("");
+        }
+    }//GEN-LAST:event_trnsStatusComboActionPerformed
+
+    private void commentTButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentTButtonActionPerformed
+        LTKeyValuePair origNode = (LTKeyValuePair) selectedLObject.getOriginalNode();
+        if (commentTButton.isSelected()) {
+            origTextPane.setText(origNode.getComment().getTextValue());
+        } else {
+            origTextPane.setText(origNode.getTextValue());
+        }
+    }//GEN-LAST:event_commentTButtonActionPerformed
+
+    private void copyOrigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyOrigButtonActionPerformed
+        trnsTextArea.setText(origTextPane.getText());
+    }//GEN-LAST:event_copyOrigButtonActionPerformed
+
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        trnsTextArea.setText("");
+    }//GEN-LAST:event_clearButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField accessKeyField;
     private javax.swing.JLabel accessKeyLabel;
     private javax.swing.JPanel advancedPanel;
     private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton clearButton;
     private javax.swing.JTextField commandKeyField;
     private javax.swing.JLabel commandKeyLabel;
     private javax.swing.JToggleButton commentTButton;
@@ -772,11 +769,10 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private javax.swing.JButton copyOrigButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JCheckBox keepOriginalCheck;
-    private javax.swing.JPanel lowerPanel;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JPanel metadataPanel;
     private javax.swing.JButton nextButton;
     private javax.swing.JComboBox<LTKeyValuePair> objectForAKCombo;
     private javax.swing.JLabel objectForAKLabel;
@@ -789,7 +785,6 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
     private javax.swing.JLabel trnsLabel;
     private javax.swing.JComboBox<TranslationStatus> trnsStatusCombo;
     private javax.swing.JTextArea trnsTextArea;
-    private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -810,7 +805,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         commandKeyField.setText("");
         commandKeyField.setEnabled(false);
         commentTButton.setEnabled(false);
-
+        sugButton.setEnabled(false);
+        
         int selectedRow = associatedTable.getSelectedRow();
         if (selectedRow != -1) {
             selectedRow = associatedTable.convertRowIndexToModel(selectedRow);
@@ -824,19 +820,19 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             
             if (origLc instanceof EditableLocaleContent) {
                 EditableLocaleContent trnsElc = (EditableLocaleContent) trnsLc;
+                objectForAKCombo.setEnabled(true);
+                objectForCKCombo.setEnabled(true);
                 copyOrigButton.setEnabled(true);
-                sugButton.setEnabled(true);
+                clearButton.setEnabled(true);
                 trnsTextArea.setEnabled(true);
                 keepOriginalCheck.setEnabled(true);
                 trnsStatusCombo.setEnabled(true);
-                objectForAKCombo.setEnabled(true);
-                objectForCKCombo.setEnabled(true);
-
+                
                 if (trnsElc != null) {
                     trnsTextArea.setText(trnsElc.getTextValue());
                     trnsStatusCombo.setSelectedItem(trnsElc.getTrnsStatus());
                     keepOriginalCheck.setSelected(trnsElc.isKeepOriginal());
-
+                    
                     if (trnsElc instanceof LTKeyValuePair) {
                         fillKeyConnections();
                         LTKeyValuePair lkvp = (LTKeyValuePair) trnsElc;
@@ -846,25 +842,28 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
                         commentTButton.setEnabled(((LTKeyValuePair) origLc).getComment() != null);
 
                         if (connAccessKey != null) {
+                            connAccessKeyComboModel.setSelectedItem(connAccessKey);
+
                             accessKeyField.setText(connAccessKey.getTextValue());
                             accessKeyField.setEnabled(true);
-                            connAccessKeyComboModel.setSelectedItem(connAccessKey);
                         }
                         if (connCommandKey != null) {
+                            connCommandKeyComboModel.setSelectedItem(connCommandKey);
+
                             commandKeyField.setText(connCommandKey.getTextValue());
                             commandKeyField.setEnabled(true);
-                            connCommandKeyComboModel.setSelectedItem(connCommandKey);
                         }
                     }
                 }
             } else {
+                objectForAKCombo.setEnabled(false);
+                objectForCKCombo.setEnabled(false);
                 copyOrigButton.setEnabled(false);
+                clearButton.setEnabled(false);
                 sugButton.setEnabled(false);
                 trnsTextArea.setEnabled(false);
                 keepOriginalCheck.setEnabled(false);
                 trnsStatusCombo.setEnabled(false);
-                objectForAKCombo.setEnabled(false);
-                objectForCKCombo.setEnabled(false);
             }
         }
     }
