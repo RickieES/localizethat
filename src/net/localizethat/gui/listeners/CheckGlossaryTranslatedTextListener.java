@@ -3,7 +3,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-
 package net.localizethat.gui.listeners;
 
 import java.util.List;
@@ -72,8 +71,8 @@ public class CheckGlossaryTranslatedTextListener extends AbstractSimpleDocumentL
 
     @Override
     protected void doTask(DocumentEvent e) {
-        if ( (sgw != null) && (sgw.isDone()) &&
-                (cgw == null || cgw.isDone()) ) {
+        if ((sgw != null) && (sgw.isDone())
+                && (cgw == null || cgw.isDone())) {
             try {
                 List<FailedEntry> feList = sgw.get();
                 cgw = new CheckGlossaryWorker(original, translatedTextArea.getText(),
