@@ -104,10 +104,10 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
         trnsTextArea.setFont(f);
         trnsTextArea.addKeyListener(ellipsisCharKeyAdapter);
 
-        cgttl = new CheckGlossaryTranslatedTextListener(origTextPane.getText(),
-                trnsTextArea, l, null, origTextPane, g);
+        // cgttl = new CheckGlossaryTranslatedTextListener(origTextPane.getText(),
+        //         trnsTextArea, l, null, origTextPane, g);
         setAssociatedTable(associatedTable);
-        trnsTextArea.getDocument().addDocumentListener(cgttl);
+        // trnsTextArea.getDocument().addDocumentListener(cgttl);
     }
 
     /**
@@ -815,8 +815,8 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
             LocaleContent trnsLc = origLc.getTwinByLocale(tableModel.getLocalizationCode());
             origTextPane.setText(origLc.getTextValue());
             origTextPane.repaint();
-            cgttl.setLocale(tableModel.getLocalizationCode());
-            cgttl.setOriginal(origLc.getTextValue());
+            // cgttl.setLocale(tableModel.getLocalizationCode());
+            // cgttl.setOriginal(origLc.getTextValue());
             
             if (origLc instanceof EditableLocaleContent) {
                 EditableLocaleContent trnsElc = (EditableLocaleContent) trnsLc;
