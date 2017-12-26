@@ -233,15 +233,12 @@ public class ContentListTable extends javax.swing.JPanel {
         );
         auxPanelLayout.setVerticalGroup(
             auxPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(auxPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(auxPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(filterLabel)
-                    .addComponent(filterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(columnsButton)
-                    .addComponent(rowsInfoLabel)
-                    .addComponent(rowsInfoText))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(auxPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(filterField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(filterLabel)
+                .addComponent(rowsInfoLabel)
+                .addComponent(rowsInfoText))
+            .addComponent(columnsButton)
         );
 
         jScrollPane1.setMinimumSize(new java.awt.Dimension(22, 48));
@@ -263,7 +260,7 @@ public class ContentListTable extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(auxPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
