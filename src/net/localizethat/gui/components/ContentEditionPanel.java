@@ -397,6 +397,7 @@ public class ContentEditionPanel extends javax.swing.JPanel implements ListSelec
 
         sugButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/net/localizethat/resources/16-dialog-information.png"))); // NOI18N
         sugButton.setToolTipText("Cycle over suggestions");
+        sugButton.setEnabled(false);
 
         keepOriginalCheck.setMnemonic('K');
         keepOriginalCheck.setText("Keep original value");
