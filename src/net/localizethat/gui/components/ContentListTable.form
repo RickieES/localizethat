@@ -140,7 +140,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="auxPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="215" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="316" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -168,17 +168,13 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="filterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="filterField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="columnsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="rowsInfoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="rowsInfoText" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="filterField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="filterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="rowsInfoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="rowsInfoText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <Component id="columnsButton" min="-2" max="-2" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

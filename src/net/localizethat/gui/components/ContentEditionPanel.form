@@ -231,6 +231,7 @@
                   <Image iconType="3" name="/net/localizethat/resources/16-dialog-information.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Cycle over suggestions"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JPanel" name="metadataPanel">
