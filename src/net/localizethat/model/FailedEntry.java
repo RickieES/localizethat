@@ -7,11 +7,12 @@ package net.localizethat.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.localizethat.model.GlsEntry;
 
 /**
- * Used in glossary checks, this class representes a (potential or real) failed entry
+ * Used in glossary checks, this class representes a (potential or real) failed
+ * entry
  * in a glossary
+ * 
  * @author rpalomares
  */
 public class FailedEntry {
@@ -20,7 +21,7 @@ public class FailedEntry {
     private boolean matchCase;
     private List<GlsEntry> GlsEntriesList;
 
-    public FailedEntry(String word, int pos, boolean matchCase, GlsEntry ge) {
+    public FailedEntry(String word, int pos, GlsEntry ge) {
         this.word = word;
         this.pos = pos;
         this.GlsEntriesList = new ArrayList<>(0);

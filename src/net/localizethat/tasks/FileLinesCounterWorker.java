@@ -15,6 +15,7 @@ import javax.swing.SwingWorker;
 
 /**
  * SwingWorker task that tries to return the number of lines of a text file
+ * 
  * @author rpalomares
  */
 public class FileLinesCounterWorker extends SwingWorker<Integer, Void> {
@@ -29,8 +30,6 @@ public class FileLinesCounterWorker extends SwingWorker<Integer, Void> {
     @Override
     protected Integer doInBackground() throws Exception {
         int lines;
-        String l;
-
         try (LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(textFile))) {
             lineNumberReader.skip(Long.MAX_VALUE);
             // LineNumberReader counts from 0, but we want a "human value", so we add 1

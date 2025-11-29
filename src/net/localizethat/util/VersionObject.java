@@ -8,19 +8,21 @@ package net.localizethat.util;
 
 /**
  * Object representing a version of the application.
+ * 
  * @author rpalomares
  */
-public class VersionObject implements Comparable {
-    public static int MAJOR = 0;
-    public static int MINOR = 1;
-    public static int BUGRELEASE = 2;
-    public static int VERSION_CHUNKS = 3;
+public class VersionObject implements Comparable<VersionObject> {
+    public static final int MAJOR = 0;
+    public static final int MINOR = 1;
+    public static final int BUGRELEASE = 2;
+    public static final int VERSION_CHUNKS = 3;
     private int majorValue;
     private int minorValue;
-    private String bugRelease;
+    private String bugReleaseValue;
 
     /**
-     * payLoad is a container for reference objects thay may be associated to the version
+     * payLoad is a container for reference objects thay may be associated to the
+     * version
      */
     private Object payLoad;
 
@@ -30,7 +32,7 @@ public class VersionObject implements Comparable {
         parts = versionString.split("\\.", VERSION_CHUNKS);
         majorValue = Integer.parseInt(parts[MAJOR]);
         minorValue = Integer.parseInt(parts[MINOR]);
-        bugRelease = parts[BUGRELEASE];
+        bugReleaseValue = parts[BUGRELEASE];
     }
 
     public int getMajorValue() {
@@ -49,12 +51,12 @@ public class VersionObject implements Comparable {
         this.minorValue = minorValue;
     }
 
-    public String getBugRelease() {
-        return bugRelease;
+    public String getBugReleaseValue() {
+        return bugReleaseValue;
     }
 
-    public void setBugRelease(String bugRelease) {
-        this.bugRelease = bugRelease;
+    public void setBugReleaseValue(String bugReleaseValue) {
+        this.bugReleaseValue = bugReleaseValue;
     }
 
     public Object getPayLoad() {
@@ -73,28 +75,21 @@ public class VersionObject implements Comparable {
         stringVersion.append(".");
         stringVersion.append(getMinorValue());
         stringVersion.append(".");
-        stringVersion.append(getBugRelease());
+        stringVersion.append(getBugReleaseValue());
         return stringVersion.toString();
     }
 
     @Override
-    public int compareTo(Object o) throws NullPointerException, ClassCastException {
+    public int compareTo(VersionObject v2) {
 
-        if (o == null) {
+        if (v2 == null) {
             throw new NullPointerException(
                     "The passed parameter to this VersionObject.compareTo method invocation is null");
         }
 
-        if (!(o instanceof VersionObject)) {
-            throw new ClassCastException(
-                    "The passed parameter to this VersionObject.compareTo method invocation is not of VersionObject type");
-        }
-
-        VersionObject v2 = (VersionObject) o;
-
         if (this.getMajorValue() == v2.getMajorValue()) {
             if (this.getMinorValue() == v2.getMinorValue()) {
-                return this.getBugRelease().compareTo(v2.getBugRelease());
+                return this.getBugReleaseValue().compareTo(v2.getBugReleaseValue());
             } else {
                 return (this.getMinorValue() - v2.getMinorValue());
             }

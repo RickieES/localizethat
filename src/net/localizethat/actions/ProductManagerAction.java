@@ -13,22 +13,26 @@ import net.localizethat.gui.tabpanels.ProductManager;
 
 /**
  * Opens a tab with the product manager in the main window
+ * 
  * @author rpalomares
  */
 public class ProductManagerAction extends AbstractAction {
     private static final String TITLE = "Product Manager";
     private static final String DESCRIPTION = "Opens " + TITLE;
     private static final int MNEMONIC = java.awt.event.KeyEvent.VK_P;
+    private static final long serialVersionUID = 1L;
     private ProductManager productGuiMgr;
 
     /**
-     * Action representing the launching of LocaleManager panel as a tab in main window
+     * Action representing the launching of LocaleManager panel as a tab in main
+     * window
      */
     public ProductManagerAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
         putValue(MNEMONIC_KEY, MNEMONIC);
-        putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC, java.awt.event.InputEvent.CTRL_MASK));
+        putValue(ACCELERATOR_KEY,
+                javax.swing.KeyStroke.getKeyStroke(MNEMONIC, java.awt.event.InputEvent.CTRL_DOWN_MASK));
     }
 
     @Override

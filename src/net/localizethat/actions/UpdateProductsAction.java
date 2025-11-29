@@ -18,6 +18,7 @@ import net.localizethat.tasks.CreateEntityManagerTask;
 
 /**
  * Opens a tab with the Update product panel in the main window
+ * 
  * @author rpalomares
  */
 public class UpdateProductsAction extends AbstractAction {
@@ -29,16 +30,17 @@ public class UpdateProductsAction extends AbstractAction {
     private UpdateProductPanel updateProductPanel;
 
     /**
-     * Action representing the launching of UpdateProductPanel as a tab in main window
+     * Action representing the launching of UpdateProductPanel as a tab in main
+     * window
      */
     public UpdateProductsAction() {
         super(TITLE);
         putValue(SHORT_DESCRIPTION, DESCRIPTION);
         putValue(MNEMONIC_KEY, MNEMONIC);
         putValue(ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(MNEMONIC,
-                java.awt.event.InputEvent.CTRL_MASK));
+                java.awt.event.InputEvent.CTRL_DOWN_MASK));
         ImageIcon icon = new ImageIcon(UpdateProductsAction.class.getResource(
-                    "/net/localizethat/resources/" + ICON));
+                "/net/localizethat/resources/" + ICON));
         putValue(LARGE_ICON_KEY, icon);
     }
 

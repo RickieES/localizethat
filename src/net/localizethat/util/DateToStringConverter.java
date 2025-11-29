@@ -13,41 +13,36 @@ import java.util.logging.Logger;
 
 /**
  * A Date to String converter
+ * 
  * @author rpalomares
  */
-public class DateToStringConverter extends Converter {
+public class DateToStringConverter extends Converter<Date, String> {
     /**
      * Converts forward the value (from Date to String)
+     * 
      * @param value a valid Date object
-     * @return the String representation, or "(undefined)" if the conversion raises an exception
+     * @return the String representation
      */
     @Override
-    public Object convertForward(Object value) {
-        Date v;
-
-        try {
-            v = (Date) value;
-            return v.toString();
-        } catch (ClassCastException e) {
-            return "(undefined)";
-        }
+    public String convertForward(Date value) {
+        return value.toString();
     }
 
     /**
      * Converts reverse the value (from String to Date)
+     * 
      * @param value an String supposedly containing a Date value
-     * @return a Date object with the date value of value, or the current date and time if the parsing fails
+     * @return a Date object with the date value of value, or the current date and
+     *         time if the parsing fails
      */
     @Override
-    public Object convertReverse(Object value) {
-        String s;
+    public Date convertReverse(String value) {
         Date d;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 
         try {
-            s = (String) value;
-            d = sdf.parse(s);
-        } catch (ClassCastException | ParseException e) {
+            d = sdf.parse(value);
+        } catch (ParseException e) {
             Logger.getLogger(DateToStringConverter.class.getName()).log(Level.SEVERE, null, e);
             d = new Date();
         }

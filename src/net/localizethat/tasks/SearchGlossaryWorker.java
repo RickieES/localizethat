@@ -9,7 +9,6 @@ package net.localizethat.tasks;
 import net.localizethat.model.FailedEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -20,11 +19,12 @@ import javax.swing.SwingWorker;
 import net.localizethat.Main;
 import net.localizethat.model.Glossary;
 import net.localizethat.model.GlsEntry;
-import net.localizethat.util.NoCaseStringComparator;
 
 /**
- * SwingWorker task to check the string in original language against terms of any number
+ * SwingWorker task to check the string in original language against terms of
+ * any number
  * of glossaries to build a list of entries to be checked
+ * 
  * @author rpalomares
  */
 public class SearchGlossaryWorker
@@ -60,11 +60,12 @@ public class SearchGlossaryWorker
 
     @Override
     protected List<FailedEntry> doInBackground() throws Exception {
-        int stringPos = 0; // Position in original text where next word is found
-        int lastStringPos = 0; // Position in original text right after last word was found
+        int stringPos = 0;
+        // Position in original text right after last word was
+        // Position in original text where next word is found
+        // found
         List<String> originalWords;
         List<GlsEntry> entries;
-        NoCaseStringComparator ncsComp = new NoCaseStringComparator();
 
         TypedQuery<GlsEntry> glseQuery = em.createNamedQuery("GlsEntry.findByGlsAndTerm",
                 GlsEntry.class);
@@ -74,39 +75,38 @@ public class SearchGlossaryWorker
         originalWords = slicePhrase(original);
 
         try {
-        // Build a list of words from the original text present in glossaries
-        Iterator<String> origWordsIt = originalWords.iterator();
-        while (origWordsIt.hasNext()) {
-            String word = origWordsIt.next();
-            stringPos = original.indexOf(word, stringPos);
-            FailedEntry fe = new FailedEntry(word, stringPos, true, null);
+            // Build a list of words from the original text present in glossaries
             
-            glseQuery.setParameter("glseterm", word);
-            glse2Query.setParameter("glseterm", word);
-            stringPos += word.length();
+            for (String word : originalWords) {
+                stringPos = original.indexOf(word, stringPos);
+                FailedEntry fe = new FailedEntry(word, stringPos, null);
 
-            for(Glossary g : glsToCheckList) {
-                glseQuery.setParameter("glosid", g);
-                entries = glseQuery.getResultList();
+                glseQuery.setParameter("glseterm", word);
+                glse2Query.setParameter("glseterm", word);
+                stringPos += word.length();
 
-                if (entries.isEmpty()) {
-                    fe.setMatchCase(false);
-                    glse2Query.setParameter("glosid", g);
-                    entries = glse2Query.getResultList();
+                for (Glossary g : glsToCheckList) {
+                    glseQuery.setParameter("glosid", g);
+                    entries = glseQuery.getResultList();
+
+                    if (entries.isEmpty()) {
+                        fe.setMatchCase(false);
+                        glse2Query.setParameter("glosid", g);
+                        entries = glse2Query.getResultList();
+                    }
+                    for (GlsEntry ge : entries) {
+                        fe.addGe(ge);
+                    }
                 }
-                for(GlsEntry ge : entries) {
-                    fe.addGe(ge);
+
+                if (!fe.getGlsEntriesList().isEmpty()) {
+                    // Just a "potential" failed entry at the moment
+                    failedEntriesList.add(fe);
                 }
             }
-
-            if (fe.getGlsEntriesList().size() > 0) {
-                // Just a "potential" failed entry at the moment
-                failedEntriesList.add(fe);
-            }
-        }
         } catch (Exception ex) {
-                Logger.getLogger(SearchGlossaryWorker.class.getName()).log(
-                        Level.WARNING, "Error during glossary search", ex);
+            Logger.getLogger(SearchGlossaryWorker.class.getName()).log(
+                    Level.WARNING, "Error during glossary search", ex);
 
         }
         return failedEntriesList;
